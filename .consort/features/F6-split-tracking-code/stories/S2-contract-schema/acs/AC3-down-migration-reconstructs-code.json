@@ -1,0 +1,13 @@
+{
+  "id": "AC3-down-migration-reconstructs-code",
+  "given": "the up-migrated schema with inventory_code already dropped and batch_number/serial_number populated",
+  "when": "the single-step down migration is applied",
+  "then": "the inventory_code column is restored and repopulated by recomposing the canonical location, batch_number, and serial_number joined with the '-' delimiter (the mirror of S1's decomposition), while location stays canonical and unchanged",
+  "status": "draft",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1/AC2 cover the up (drop) path and row survival; AC3 covers the down path reconstructing the combined code. A correct up migration can ship with a broken or absent down path (AC3 red while AC1/AC2 green), and the down path can reconstruct the code without the up drop being row-safe — each is independently breakable."
+  },
+  "layer": "Infra",
+  "architectural_notes": "Infra: the reverse half of the migration-reversibility contract (PI3-contract-migration-reversible), owned by the repository/infrastructure migration layer. The single-step down migration reconstructs inventory_code by recomposing canonical location + batch_number + serial_number with the '-' delimiter (mirror of S1's decomposition, per OD1), leaving location unchanged. This is a schema-mutating test on an isolated ephemeral migration branch (alembic downgrade -1): it MUST be kind:fitness with @pytest.mark.migration, NOT a pytest-bdd behavior scenario — a downgrade run inside a behavior step on the shared experiment branch would drop the post-UP columns and corrupt the schema the other F6 behavior tests depend on. Matches T17/T18/T21's migration-branch pattern."
+}

@@ -40,6 +40,18 @@
       "type": "transactional",
       "table": "stock_records",
       "brief": "The expand migration adds the two columns and backfills them from inventory_code within one transaction: either every pre-existing row is present with columns added and conforming rows backfilled, or the migration does not commit — no torn/partial state and no dropped row (realizes R1 at the migration boundary)."
+    },
+    {
+      "id": "PI3-contract-migration-reversible",
+      "type": "migration_reversible",
+      "table": "stock_records",
+      "brief": "S2 contract migration on the pre-existing stock_records table: the up migration DROPs inventory_code (batch_number + serial_number remain). It is reversible as a round-trip — a single-step downgrade RECONSTRUCTS inventory_code and repopulates it by recomposing location-batch-serial joined with the delimiter (the mirror of S1's decomposition, per OD1), leaving location canonical/unchanged; a re-upgrade re-drops inventory_code returning to the dropped end state (AC1, AC3, AC4). Since the table pre-exists and the drop removes only a column, every pre-existing row PERSISTS across the round-trip with location/batch/serial unchanged (data-preservation is legitimate here — this is a column drop on a pre-existing table, not an initial create_table). ISOLATION REQUIREMENT: this verification MUTATES the schema (drop, then downgrade/re-upgrade) and MUST be exercised on its OWN isolated ephemeral migration branch (@pytest.mark.migration), NOT against the shared post-migration verify DB — the shared branch has inventory_code already dropped, and downgrading it there would corrupt the schema every other test depends on."
+    },
+    {
+      "id": "PI4-contract-drop-preserves-rows",
+      "type": "transactional",
+      "table": "stock_records",
+      "brief": "The S2 contract migration drops inventory_code atomically: either the column is fully removed with all pre-existing rows present and their location/batch_number/serial_number unchanged, or the migration does not commit — no torn state, no dropped or corrupted row (AC2, realizes R1 at the contract boundary). Verified by seeding rows then applying the drop on an isolated ephemeral migration branch (schema-mutating)."
     }
   ],
   "open_decisions": [
@@ -53,7 +65,9 @@
     {
       "id": "OD2-nonconforming-remediation",
       "question": "Rows whose inventory_code does not parse are left with NULL batch_number/serial_number (AC2). Do these rows require a remediation/backfill-correction path BEFORE the S2 contract story drops inventory_code (which permanently discards the original code, the only source of the unparsed batch/serial), or is a NULL-forever state acceptable? The integrity-probe count (AC3) exists precisely to gate that decision.",
-      "decision_status": "deferred"
+      "decision_status": "resolved",
+      "resolved_by_story": "S2-contract-schema",
+      "resolution": "NULL-forever is accepted: S2 proceeds with the drop of inventory_code WITHOUT a remediation/backfill-correction path — none of S2's ACs (AC1-AC4) gate the drop on the integrity-probe being zero or introduce a correction step, so a non-conforming row keeps its NULL batch_number/serial_number and simply survives the drop unchanged (AC2). Consistent with S1, which deliberately stored NULL for non-parsing rows and supplied the integrity-probe count as visibility, not as a hard gate; no gated S1 AC required remediation before contract. Documented lossiness of the reverse path: for a NULL-batch/serial row the down migration (AC3) can only recompose from the canonical columns it has, so such a row round-trips to a location-only inventory_code rather than its original combined string — acceptable because inventory_code is not part of the accepted end state (AC4) and the original code is intentionally discarded by the contract step."
     }
   ],
   "nfrs": [
@@ -67,7 +81,8 @@
       "fitness_function": "the F6 expand migration preserves every pre-existing stock_records row (no loss/corruption) and is reversible as a round-trip; verified against the paired Lakebase branch.",
       "fitness_functions": [
         "the F6 expand migration (adding batch_number + serial_number and backfilling from inventory_code) preserves every pre-existing stock_records row: post-migration the row count is unchanged and no row is dropped or corrupted (R1, AC2).",
-        "the expand migration is reversible as a round-trip: a single-step downgrade drops only the two added columns while every pre-existing row persists, and a re-upgrade re-adds them (PI1). This clause MUTATES schema and MUST be verified on its own isolated ephemeral migration branch (schema-mutating / @pytest.mark.migration), never against the shared post-migration verify DB that the other F6 tests depend on."
+        "the expand migration is reversible as a round-trip: a single-step downgrade drops only the two added columns while every pre-existing row persists, and a re-upgrade re-adds them (PI1). This clause MUTATES schema and MUST be verified on its own isolated ephemeral migration branch (schema-mutating / @pytest.mark.migration), never against the shared post-migration verify DB that the other F6 tests depend on.",
+        "S2-contract-migration: the contract migration that DROPS inventory_code preserves every pre-existing stock_records row (row count unchanged, no row dropped or corrupted, per-row location/batch_number/serial_number unchanged) — realizing R1 (no silent data loss) at the CONTRACT boundary (PI4, AC2). Distinct from the expand clauses above (which cover the S1 add/backfill side): this covers the S2 drop side. Verified by seeding rows then applying the drop on an isolated ephemeral migration branch (schema-mutating / @pytest.mark.migration); the covering S2 test (T17/PI4 or T18/PI3) MUST carry nfr_id NFR-R1-migration-data-survival."
       ]
     },
     {

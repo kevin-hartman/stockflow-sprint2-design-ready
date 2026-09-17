@@ -98,6 +98,39 @@
       "status": "pending",
       "kind": "fitness",
       "nfr_id": "NFR-R3-preserve-unique-sku-location"
+    },
+    {
+      "id": "T13",
+      "description": "on an isolated ephemeral migration branch (@pytest.mark.migration), after applying the S2 contract up migration, a schema diff confirms the stock_records table has no inventory_code column while batch_number and serial_number are present",
+      "ac_id": "AC1-inventory-code-dropped",
+      "status": "pending",
+      "kind": "fitness",
+      "invariant_id": "PI3-contract-migration-reversible"
+    },
+    {
+      "id": "T14",
+      "description": "on an isolated ephemeral migration branch (@pytest.mark.migration), rows seeded before the S2 contract up migration (including rows with NULL batch_number/serial_number, using per-run-unique skus via uuid.uuid4()) are all present after inventory_code is dropped, with location, batch_number, and serial_number values unchanged and no row dropped or corrupted",
+      "ac_id": "AC2-stock-rows-survive-drop",
+      "status": "pending",
+      "kind": "fitness",
+      "invariant_id": "PI4-contract-drop-preserves-rows",
+      "nfr_id": "NFR-R1-migration-data-survival"
+    },
+    {
+      "id": "T15",
+      "description": "on an isolated ephemeral migration branch (@pytest.mark.migration), a single-step alembic downgrade -1 from the S2 contract migration reconstructs inventory_code as a text column recomposed from location + batch_number + serial_number joined with the '-' delimiter, and the canonical location column is unchanged",
+      "ac_id": "AC3-down-migration-reconstructs-code",
+      "status": "pending",
+      "kind": "fitness",
+      "invariant_id": "PI3-contract-migration-reversible"
+    },
+    {
+      "id": "T16",
+      "description": "on an isolated ephemeral migration branch (@pytest.mark.migration), after the down migration reconstructs inventory_code, re-applying the S2 up migration drops inventory_code again, leaving batch_number and serial_number present and every pre-existing row intact with location unchanged — confirming the complete reversibility round-trip",
+      "ac_id": "AC4-round-trip-returns-to-dropped-state",
+      "status": "pending",
+      "kind": "fitness",
+      "invariant_id": "PI3-contract-migration-reversible"
     }
   ]
 }

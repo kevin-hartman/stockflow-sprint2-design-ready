@@ -1,0 +1,13 @@
+{
+  "id": "AC2-stock-rows-survive-drop",
+  "given": "existing stock rows (from sprint 1), each with a canonical location plus its backfilled batch_number and serial_number, some rows having NULL batch_number/serial_number",
+  "when": "the S2 contract migration drops inventory_code",
+  "then": "every pre-existing row is still present after the drop (no row dropped or corrupted) with its location, batch_number, and serial_number unchanged — realizing R1 (no silent data loss) at the contract boundary",
+  "status": "draft",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1 asserts the column is gone from the schema; AC2 asserts the rows survive the drop with their data intact. The drop can succeed (column removed, AC1 green) while a row is lost or a value corrupted (AC2 red), and a row-preserving migration can leave inventory_code in place (AC1 red, AC2 green) — each is independently breakable."
+  },
+  "layer": "Infra",
+  "architectural_notes": "Infra: a persistence guarantee on stock_records (PI4-contract-drop-preserves-rows) that realizes R1 (no silent data loss) at the contract boundary — the drop of inventory_code is atomic and every pre-existing row survives with location/batch_number/serial_number unchanged. Owned by the repository/infrastructure migration layer. This is the S2-contract-migration realization of NFR-R1-migration-data-survival's contract-boundary clause: seed rows, apply the drop on an isolated ephemeral migration branch, assert row count and per-row location/batch/serial are unchanged. The test-list item covering this MUST carry nfr_id NFR-R1-migration-data-survival. It is schema-mutating (@pytest.mark.migration) and runs on its own branch."
+}

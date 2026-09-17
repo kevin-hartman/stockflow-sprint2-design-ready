@@ -23,6 +23,18 @@ which renders the split fields in the SPA.)
 - AC3-integrity-probe-reports-count → **Infra** (read-only integrity probe over the table; owner: repository query in `app/repositories/` surfaced by a service reporting function in `app/services/`).
 - AC4-location-unchanged → **Infra** (migration touches only batch/serial; canonical `location` untouched).
 
+## Layer assignment (S2 contract)
+
+All four S2 ACs are **Infra**: S2 is the pure schema/migration contract step that physically
+DROPs `inventory_code`, with a proven reversible down migration — no HTTP/UI boundary. Owner is
+the Alembic contract migration under `migrations/versions/` (the repository/infrastructure layer
+owns schema); no boundary/service/model code changes.
+
+- AC1-inventory-code-dropped → **Infra** (up migration DROPs `inventory_code`; batch/serial remain — schema-shape contract).
+- AC2-stock-rows-survive-drop → **Infra** (column drop preserves every pre-existing row unchanged; realizes R1 at the contract boundary — PI4).
+- AC3-down-migration-reconstructs-code → **Infra** (down revision re-adds `inventory_code` recomposed from location-batch-serial by the delimiter, the mirror of S1's parse per OD1 — PI3).
+- AC4-round-trip-returns-to-dropped-state → **Infra** (re-applied up after down returns to the dropped end state, rows intact — reversibility is repeatable, PI3).
+
 ## Architectural Concerns Mapping
 
 | Concern | Owner layer / module | Notes |
@@ -64,9 +76,16 @@ which renders the split fields in the SPA.)
   segment is NOT authoritative for `location` (canonical column stays). Resolves F1's deferred
   OD2; consistent with F1's canonical `location` column — no contradiction with gated F1 ACs.
   **Recommendation: accept.**
-- **OD2-nonconforming-remediation (DEFERRED):** whether NULL batch/serial rows need a
-  remediation path before S2 drops `inventory_code`. **Recommendation: defer to S2 review,
-  gated on the AC3 probe count** — proceed with S1 as specified regardless.
+- **OD2-nonconforming-remediation (RESOLVED by S2):** NULL-forever is accepted — S2's ACs
+  (AC1–AC4) proceed with the drop WITHOUT a remediation/backfill-correction path and do not gate
+  the drop on the AC3 probe count. A non-conforming row keeps its NULL batch/serial and simply
+  survives the drop unchanged (AC2). Consistent with S1, which stored NULL for non-parsing rows
+  and supplied the probe as visibility, not a hard gate — no gated S1 AC required remediation.
+  Documented lossiness: for a NULL-batch/serial row the down migration (AC3) recomposes only from
+  the canonical columns it has, so such a row round-trips to a location-only `inventory_code`, not
+  its original combined string — acceptable because `inventory_code` is not part of the accepted
+  end state (AC4) and the original code is intentionally discarded by the contract step.
+  **Recommendation: accept.**
 
 ## Test strategy
 
@@ -75,8 +94,12 @@ branch first; FK-aware targeted-DELETE cleanup). No mocks/stubs/in-memory DB (R4
 through this suite: AC1 (conforming backfill), AC2 (nonconforming → NULL + row survival),
 AC3 (integrity-probe count over mixed rows), AC4 (canonical location untouched). Persistence
 invariants get a real-branch test each: PI1 (additive downgrade/upgrade round-trip preserving
-rows), PI2 (migration atomicity). NFR fitness tests: R1 row survival + reversibility, R2
-preserved non-negative CHECK, R3 preserved UNIQUE(sku,location).
+rows), PI2 (migration atomicity), PI3 (S2 contract-drop reversibility round-trip: down
+reconstructs `inventory_code` by recomposing location-batch-serial, re-up returns to dropped end
+state, rows intact — AC1/AC3/AC4), PI4 (S2 drop atomicity + row preservation — AC2). NFR fitness
+tests: R1 row survival + reversibility, R2 preserved non-negative CHECK, R3 preserved
+UNIQUE(sku,location). S2 ACs verified through the suite: AC1 (drop shape), AC2 (rows survive
+drop), AC3 (down reconstructs code), AC4 (round-trip to dropped state).
 
 **Test isolation (PI1 / R1 reversibility):** the reversibility round-trip is the ONLY F6 test
 that mutates schema (it runs `alembic downgrade -1` then re-upgrades). It MUST be marked as a
@@ -85,6 +108,12 @@ ephemeral branch, NOT the shared post-migration verify DB. All other F6 tests (A
 AC2 NULL-survival, AC3 probe, AC4 location) assume the post-migration schema is intact; a
 downgrade on the shared branch would drop `batch_number`/`serial_number` and break them with
 'column batch_number does not exist' on an otherwise-correct migration.
+
+**Test isolation (S2 PI3/PI4):** every S2 test is schema-mutating (it applies the contract drop,
+and PI3 additionally downgrades then re-upgrades). All S2 tests MUST be marked
+`@pytest.mark.migration` and run on their own isolated ephemeral migration branch, NOT the shared
+post-migration verify DB — on the shared branch `inventory_code` is already dropped, so
+downgrading/re-dropping there would corrupt the schema the other F6 tests depend on.
 
 ## Sign-off
 

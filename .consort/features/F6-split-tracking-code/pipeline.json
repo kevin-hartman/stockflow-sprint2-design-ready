@@ -3,7 +3,7 @@
   "feature_id": "F6-split-tracking-code",
   "stories": {
     "S1-expand-schema": {
-      "status": "awaiting-gate",
+      "status": "building",
       "acceptance": {
         "decision": "revise",
         "history": [
@@ -19,17 +19,53 @@
         "reason": "blocking smell \"reflect-testlist-defect\": reflection gate: T2 performs `alembic downgrade -1` (its description says 'after a single-step downgrade of the F6 expand migration') but unlike T1 it does NOT specify `@pytest.mark.migration`. A test that mutates schema via a downgrade must run on its own isolated ephemeral branch, not the shared verify database. Without the marker, the Driver will author T2 to downgrade the shared experiment branch, corrupting the post-migration schema state that T3, T4, T5, T6, T7, and T8 all depend on — those tests will fail with 'column batch_number does not exist' on an otherwise-correct app. Add `@pytest.mark.migration` to T2's description (matching T1) so it is isolated to its own ephemeral branch."
       },
       "gate": {
-        "status": "open",
-        "history": []
+        "status": "approved",
+        "history": [
+          {
+            "action": "approved",
+            "at": "2026-09-17T08:36:33.699Z",
+            "approver": "Kevin Hartman"
+          }
+        ],
+        "approver": "Kevin Hartman",
+        "approved_at": "2026-09-17T08:36:33.699Z"
       }
     },
     "S2-contract-schema": {
-      "status": "designing"
+      "status": "ready",
+      "acceptance": {
+        "decision": "revise",
+        "history": [
+          {
+            "decision": "revise",
+            "at": "2026-09-17T08:53:29.468Z",
+            "approver": "human-proxy",
+            "reason": "blocking smell \"reflect-testlist-defect\": reflection gate: T19 is kind:behavior (scenario_file in tests/features/S2-contract-schema.feature) but AC3-down-migration-reconstructs-code's architectural_notes explicitly require 'schema-mutating test on an isolated ephemeral migration branch.' Behavior tests connect to the shared experiment branch; running alembic downgrade -1 inside a pytest-bdd step on that branch would corrupt the post-UP schema that T13/T14/T15/T16 depend on. T19 must be kind:fitness with @pytest.mark.migration (matching T17/T18/T21's pattern), not a Gherkin scenario.; T20 is kind:behavior (scenario_file in tests/features/S2-contract-schema.feature) but AC4-round-trip-returns-to-dropped-state's architectural_notes explicitly require 'schema-mutating test (downgrade then re-upgrade) run on an isolated ephemeral migration branch.' Same corruption risk as T19: applying alembic down + re-up inside pytest-bdd step defs on the shared experiment branch would break T13-T16. T20 must be kind:fitness with @pytest.mark.migration, not a Gherkin scenario.; No S2 test-list item carries nfr_id:\"NFR-R1-migration-data-survival\", yet AC2-stock-rows-survive-drop explicitly states it 'realizes R1 at the contract boundary (R1).' T17 (invariant_id:PI4) and T18 (invariant_id:PI3) cover the intent but are untagged for R1. Since NFR-R1 declares a fitness_functions ARRAY, checkFitnessClauseCoverage enforces per-entry nfr_id coverage — but NFR-R1's array has no S2-contract-migration entry, so S2's R1 realization cannot be gated mechanically. Add nfr_id:\"NFR-R1-migration-data-survival\" to T17 (or T18) once the corresponding S2 clause is added to the array (see spec-author finding)."
+          }
+        ],
+        "approver": "human-proxy",
+        "at": "2026-09-17T08:53:29.468Z",
+        "reason": "blocking smell \"reflect-testlist-defect\": reflection gate: T19 is kind:behavior (scenario_file in tests/features/S2-contract-schema.feature) but AC3-down-migration-reconstructs-code's architectural_notes explicitly require 'schema-mutating test on an isolated ephemeral migration branch.' Behavior tests connect to the shared experiment branch; running alembic downgrade -1 inside a pytest-bdd step on that branch would corrupt the post-UP schema that T13/T14/T15/T16 depend on. T19 must be kind:fitness with @pytest.mark.migration (matching T17/T18/T21's pattern), not a Gherkin scenario.; T20 is kind:behavior (scenario_file in tests/features/S2-contract-schema.feature) but AC4-round-trip-returns-to-dropped-state's architectural_notes explicitly require 'schema-mutating test (downgrade then re-upgrade) run on an isolated ephemeral migration branch.' Same corruption risk as T19: applying alembic down + re-up inside pytest-bdd step defs on the shared experiment branch would break T13-T16. T20 must be kind:fitness with @pytest.mark.migration, not a Gherkin scenario.; No S2 test-list item carries nfr_id:\"NFR-R1-migration-data-survival\", yet AC2-stock-rows-survive-drop explicitly states it 'realizes R1 at the contract boundary (R1).' T17 (invariant_id:PI4) and T18 (invariant_id:PI3) cover the intent but are untagged for R1. Since NFR-R1 declares a fitness_functions ARRAY, checkFitnessClauseCoverage enforces per-entry nfr_id coverage — but NFR-R1's array has no S2-contract-migration entry, so S2's R1 realization cannot be gated mechanically. Add nfr_id:\"NFR-R1-migration-data-survival\" to T17 (or T18) once the corresponding S2 clause is added to the array (see spec-author finding)."
+      },
+      "gate": {
+        "status": "approved",
+        "history": [
+          {
+            "action": "approved",
+            "at": "2026-09-17T09:05:07.493Z",
+            "approver": "Kevin Hartman"
+          }
+        ],
+        "approver": "Kevin Hartman",
+        "approved_at": "2026-09-17T09:05:07.493Z"
+      }
     },
     "S3-split-fields-ui": {
       "status": "designing"
     }
   },
-  "build_queue": [],
-  "build_active": null
+  "build_queue": [
+    "S2-contract-schema"
+  ],
+  "build_active": "S1-expand-schema"
 }

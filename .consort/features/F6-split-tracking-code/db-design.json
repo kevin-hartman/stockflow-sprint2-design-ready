@@ -29,22 +29,16 @@
           "description": "On-hand stock level; CHECK(quantity >= 0) preserved through F6 (NFR-R2). Pre-existing from F1."
         },
         {
-          "name": "inventory_code",
-          "type": "text",
-          "nullable": false,
-          "description": "Combined hyphen-delimited location-batch-serial code. Retained in F6 as the backfill source; the S2 contract story drops it later. Pre-existing from F1 (OD1)."
-        },
-        {
           "name": "batch_number",
           "type": "text",
           "nullable": true,
-          "description": "Second hyphen-delimited segment of inventory_code (e.g. 'B7' from 'A12-B7-S001'). Added nullable by F6 so a nonconforming code with no batch segment is a valid NULL state (AC1, AC2). Backfilled from inventory_code within the expand migration."
+          "description": "Second hyphen-delimited segment of the former inventory_code (e.g. 'B7' from 'A12-B7-S001'). Added nullable by S1; a nonconforming code with no batch segment stays NULL forever (OD2, AC2). Survives the S2 drop of inventory_code unchanged (AC1, AC2). Reused by the S2 down migration to recompose inventory_code (AC3)."
         },
         {
           "name": "serial_number",
           "type": "text",
           "nullable": true,
-          "description": "Third hyphen-delimited segment of inventory_code (e.g. 'S001' from 'A12-B7-S001'). Added nullable by F6; NULL when the code has no serial segment (AC1, AC2). Backfilled from inventory_code within the expand migration."
+          "description": "Third hyphen-delimited segment of the former inventory_code (e.g. 'S001' from 'A12-B7-S001'). Added nullable by S1; NULL when the code had no serial segment (OD2, AC2). Survives the S2 drop of inventory_code unchanged (AC1, AC2). Reused by the S2 down migration to recompose inventory_code (AC3)."
         }
       ],
       "primary_key": ["id"],
@@ -70,11 +64,20 @@
       "kind": "add_column",
       "table": "stock_records",
       "detail": "Expand the pre-existing stock_records table (from F1): ADD COLUMN batch_number text NULL and ADD COLUMN serial_number text NULL, then backfill both from inventory_code within the SAME transaction — split inventory_code on '-'; a conforming code sets batch_number = segment 2 and serial_number = segment 3 (AC1); a variable-width code lacking those segments (e.g. 'X-1', bare 'c') leaves both NULL and never guesses (AC2). The canonical location column is NOT rewritten from the leading segment (AC4). No CHECK/UNIQUE weakened: CHECK(quantity >= 0) and UNIQUE(sku, location) stay intact (NFR-R2, NFR-R3).",
-      "migration_note": "Expand step of an expand/contract split; additive and reversible. upgrade(): add the two nullable columns + backfill, all inside one transaction so either every pre-existing row is present with columns added and conforming rows backfilled, or nothing commits (PI2-expand-migration-atomic, R1). downgrade(): DROP COLUMN serial_number and DROP COLUMN batch_number ONLY — no other column touched, every pre-existing row preserved, and a re-upgrade re-adds them (additive round-trip, PI1-expand-migration-reversible). inventory_code is retained here (dropped only later by the S2 contract story) so the backfill source survives. An integrity probe (read-only aggregate count of rows with NULL batch_number AND NULL serial_number) is surfaced for review before acceptance (AC3); it reads via the repository layer and mutates nothing."
+      "migration_note": "Expand step of an expand/contract split; additive and reversible. upgrade(): add the two nullable columns + backfill, all inside one transaction so either every pre-existing row is present with columns added and conforming rows backfilled, or nothing commits (PI2-expand-migration-atomic, R1). downgrade(): DROP COLUMN serial_number and DROP COLUMN batch_number ONLY — no other column touched, every pre-existing row preserved, and a re-upgrade re-adds them (additive round-trip, PI1-expand-migration-reversible). inventory_code is retained here (dropped only later by the S2 contract story) so the backfill source survives. An integrity probe (read-only aggregate count of rows with NULL batch_number AND NULL serial_number) is surfaced for review before acceptance; it reads via the repository layer and mutates nothing."
+    },
+    {
+      "story_id": "S2-contract-schema",
+      "kind": "drop",
+      "table": "stock_records",
+      "detail": "Contract step of the expand/contract split on the pre-existing stock_records table: DROP COLUMN inventory_code. batch_number and serial_number (added + backfilled in S1) remain present, and location/sku/quantity are untouched — so the schema diff shows only inventory_code removed and no combined tracking-code column survives (AC1). This is a column drop on a pre-existing table (not a create_table), so every pre-existing row persists with its location, batch_number and serial_number unchanged — no row deleted or corrupted (AC2, R1). No CHECK or UNIQUE weakened: CHECK(quantity >= 0) and UNIQUE(sku, location) stay intact (NFR-R2, NFR-R3); the canonical location column stays canonical/unchanged (AC4). NULL-forever is accepted (OD2): a non-conforming row keeps NULL batch_number/serial_number and simply survives the drop — S2 gates the drop on no remediation/backfill-correction step.",
+      "migration_note": "Contract half of a reversible paired migration. upgrade(): DROP COLUMN inventory_code inside one transaction — either the column is fully removed with all pre-existing rows present and their location/batch_number/serial_number unchanged, or nothing commits (PI4-contract-drop-preserves-rows, R1). downgrade(): ADD COLUMN inventory_code text, then repopulate it by RECOMPOSING the canonical columns joined with the '-' delimiter — the exact mirror of S1's decomposition per OD1 (e.g. location 'A12' + batch 'B7' + serial 'S001' -> 'A12-B7-S001'); location stays canonical/unchanged (AC3). Documented lossiness (OD2): a row with NULL batch_number/serial_number can only recompose from the columns it has, so it round-trips to a location-only inventory_code rather than its original combined string — acceptable because inventory_code is not part of the accepted end state (AC4). A re-applied upgrade re-drops inventory_code, returning to the accepted dropped end state with batch/serial present and every row intact — reversibility is repeatable, not one-directional (AC4, PI3-contract-migration-reversible). ISOLATION: the drop→downgrade→re-upgrade round-trip MUTATES the schema and MUST be exercised on its OWN isolated ephemeral migration branch (@pytest.mark.migration), NEVER the shared post-migration verify DB (whose inventory_code is already dropped)."
     }
   ],
   "realizes_invariants": [
     "PI1-expand-migration-reversible",
-    "PI2-expand-migration-atomic"
+    "PI2-expand-migration-atomic",
+    "PI3-contract-migration-reversible",
+    "PI4-contract-drop-preserves-rows"
   ]
 }

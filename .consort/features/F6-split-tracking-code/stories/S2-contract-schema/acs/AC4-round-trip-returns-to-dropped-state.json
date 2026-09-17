@@ -1,0 +1,13 @@
+{
+  "id": "AC4-round-trip-returns-to-dropped-state",
+  "given": "the schema after the down migration has reconstructed inventory_code",
+  "when": "the up migration is re-applied",
+  "then": "inventory_code is dropped again, returning the schema to the accepted end state (inventory_code absent, batch_number and serial_number present) — proving reversibility as a complete round-trip that ends up-migrated, not left on the down state",
+  "status": "draft",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC3 asserts the down path reconstructs the code; AC4 asserts the subsequent re-up returns to the dropped end state, closing the round-trip. The re-up can fail to re-drop (AC4 red) while the down reconstruction is correct (AC3 green), and the reconstruction can be wrong (AC3 red) while a re-up still drops the column (AC4 green) — distinct, independently breakable outcomes."
+  },
+  "layer": "Infra",
+  "architectural_notes": "Infra: closes the reversibility round-trip on stock_records (PI3-contract-migration-reversible), owned by the repository/infrastructure migration layer. After the down migration reconstructs inventory_code, re-applying the up migration drops it again, returning to the accepted end state (inventory_code absent, batch_number/serial_number present) — proving a complete downgrade-then-re-upgrade round-trip that ends up-migrated. This is a schema-mutating test (downgrade then re-upgrade) on an isolated ephemeral migration branch: it MUST be kind:fitness with @pytest.mark.migration, NOT a pytest-bdd behavior scenario — running alembic down + re-up inside a behavior step on the shared experiment branch would corrupt the schema the other F6 behavior tests depend on. Matches T17/T18/T21's migration-branch pattern."
+}

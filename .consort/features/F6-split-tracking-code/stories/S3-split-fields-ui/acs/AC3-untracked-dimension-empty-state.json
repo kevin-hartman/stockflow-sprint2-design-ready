@@ -1,0 +1,13 @@
+{
+  "id": "AC3-untracked-dimension-empty-state",
+  "given": "a stock record whose batch_number and/or serial_number is not set",
+  "when": "the operator views that record in the stock table or the SKU detail view",
+  "then": "each unset dimension shows an explicit \"not tracked\" indicator (never a blank region and never an error), while any dimension that is set still shows its value",
+  "status": "draft",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1 and AC2 assert the split-field display for records that HAVE batch and serial values; AC3 asserts the distinct outcome for records where a dimension is unset — a build could render populated values correctly yet crash or blank out on a NULL, so the empty-state behavior is independently breakable from the populated-value display"
+  },
+  "layer": "E2E",
+  "architectural_notes": "Client-to-server contract for the NULL case: when the boundary returns a null batch_number and/or serial_number (the S1 non-conforming rows), the SPA must render an explicit 'not tracked' indicator on both the table and detail surfaces — never a blank region or a null crash (Preferences: missing optional detail renders cleanly). E2E because it verifies the client correctly parses a real null-bearing response envelope from the live API and renders the empty state; a mocked test could fabricate the null shape and miss the real wire contract. No new persistence; the null values originate from the existing stock_records schema, no layer change."
+}

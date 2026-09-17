@@ -1,0 +1,9 @@
+{
+  "id": "AC1-stock-table-shows-split-fields",
+  "given": "the stock table lists stock records that carry a batch_number and a serial_number",
+  "when": "the operator views the stock table",
+  "then": "each row presents batch and serial as two distinct, individually labeled fields, and the former combined inventory_code is no longer shown anywhere in the table",
+  "status": "draft",
+  "layer": "E2E",
+  "architectural_notes": "Client-to-server contract: the React SPA stock-table page fetches stock records from the JSON boundary (app/routes) and renders batch_number and serial_number as two distinct labeled columns, dropping the combined inventory_code. Only a real Playwright e2e against the live API verifies the client parses the actual response envelope (split fields, no inventory_code) and renders it — a mocked component test would let a fabricated shape pass green. No new business logic or persistence; reuses the F1 boundary->service->repository->models layering (NFR-R5 SPA/JSON boundary)."
+}

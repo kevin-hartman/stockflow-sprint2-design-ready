@@ -1,0 +1,9 @@
+{
+  "id": "AC1-inventory-code-dropped",
+  "given": "the stock table after the S1 expand step, which still carries the combined inventory_code column alongside the new batch_number and serial_number columns",
+  "when": "the S2 contract (up) migration is applied to the branch",
+  "then": "the stock table no longer has an inventory_code column (a parent-aware schema diff shows inventory_code removed) while batch_number and serial_number remain present",
+  "status": "draft",
+  "layer": "Infra",
+  "architectural_notes": "Infra: a schema-shape contract on the stock_records table (PI3-contract-migration-reversible). The S2 contract up-migration lives in the Alembic migration owned by the repository/infrastructure layer (app/repositories via the migrations dir); no service/boundary code changes. Verified by a schema-mutating test on an isolated ephemeral migration branch that applies the up migration and asserts a parent-aware schema diff shows inventory_code removed while batch_number/serial_number remain — run on its own branch (@pytest.mark.migration) so the drop cannot corrupt the shared post-UP verify DB that AC2's row-survival probe depends on."
+}

@@ -1,0 +1,13 @@
+{
+  "id": "AC2-sku-detail-shows-split-fields",
+  "given": "a SKU detail view for a stock position that has a batch_number and a serial_number",
+  "when": "the operator opens the SKU detail view",
+  "then": "batch and serial are presented as two separate, individually labeled fields in place of the single combined inventory_code that was previously displayed there",
+  "status": "draft",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1 asserts the split-field rendering on the stock table (the list surface); AC2 asserts it on the SKU detail view (a separate surface with its own layout) — the detail view could still render the old combined code while the table is fixed, and vice versa, so each surface is independently breakable"
+  },
+  "layer": "E2E",
+  "architectural_notes": "Client-to-server contract on a second surface: the SKU detail page consumes the JSON boundary's split batch_number/serial_number and renders them as separate labeled fields in place of the combined inventory_code. E2E because the observable outcome is the SPA rendering fields derived from a real server response on the detail view — a distinct page/layout from AC1's table, independently breakable — and only a live-API Playwright test confirms the detail view binds the real envelope. No new persistence; reuses the inherited app/routes (react) boundary + service/repository layering."
+}
