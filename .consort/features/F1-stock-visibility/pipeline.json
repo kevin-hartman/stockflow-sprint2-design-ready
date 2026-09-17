@@ -3,19 +3,24 @@
   "feature_id": "F1-stock-visibility",
   "stories": {
     "S1-file-stock": {
-      "status": "awaiting-acceptance",
+      "status": "done",
       "acceptance": {
-        "decision": "revise",
+        "decision": "accepted",
         "history": [
           {
             "decision": "revise",
             "at": "2026-09-17T03:12:31.740Z",
             "approver": "human-proxy",
             "reason": "blocking smell \"reflect-spec-defect\": reflection gate: AC3-collision-resolved-at-write declares layer: \"API\" but architecture.md test strategy explicitly assigns it \"(E2E)\" (\"repeat write updates in place; exactly one row (PI1), no error page\") and the covering test T14 is kind: \"client\" (Playwright E2E under client/tests/e2e/). The observable outcome 'no error page shown' requires browser observation, not API-layer inspection. AC3's layer field must be changed to \"E2E\" to align with the architecture assignment and T14's mechanism."
+          },
+          {
+            "decision": "accepted",
+            "at": "2026-09-17T04:44:39.569Z",
+            "approver": "Kevin Hartman"
           }
         ],
-        "approver": "human-proxy",
-        "at": "2026-09-17T03:12:31.740Z",
+        "approver": "Kevin Hartman",
+        "at": "2026-09-17T04:44:39.569Z",
         "reason": "blocking smell \"reflect-spec-defect\": reflection gate: AC3-collision-resolved-at-write declares layer: \"API\" but architecture.md test strategy explicitly assigns it \"(E2E)\" (\"repeat write updates in place; exactly one row (PI1), no error page\") and the covering test T14 is kind: \"client\" (Playwright E2E under client/tests/e2e/). The observable outcome 'no error page shown' requires browser observation, not API-layer inspection. AC3's layer field must be changed to \"E2E\" to align with the architecture assignment and T14's mechanism."
       },
       "gate": {
@@ -35,13 +40,14 @@
         "branch": "experiment-s1-file-stock-exp1",
         "parent": "feature-f1-stock-visibility",
         "n": 1,
-        "status": "active",
+        "status": "merged",
         "cut_at": "2026-09-17T04:02:20.236Z",
-        "design_fingerprint": "9aeb65538f6a25a2"
+        "design_fingerprint": "9aeb65538f6a25a2",
+        "closed_at": "2026-09-17T04:44:39.569Z"
       }
     },
     "S2-stock-by-location-table": {
-      "status": "ready",
+      "status": "building",
       "acceptance": {
         "decision": "revise",
         "history": [
@@ -86,8 +92,7 @@
     }
   },
   "build_queue": [
-    "S2-stock-by-location-table",
     "S3-sku-detail-view"
   ],
-  "build_active": "S1-file-stock"
+  "build_active": "S2-stock-by-location-table"
 }
