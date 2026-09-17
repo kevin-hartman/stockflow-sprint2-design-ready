@@ -10,7 +10,7 @@ export function AboutPage() {
       <div className="page__header">
         <h1 className="page__title">
           <img className="page__title-icon" src="/favicon.svg" alt="" />
-          <span>About stockflow-3-94</span>
+          <span>About stockflow-sprint2-design-ready</span>
         </h1>
       </div>
       <div className="card">

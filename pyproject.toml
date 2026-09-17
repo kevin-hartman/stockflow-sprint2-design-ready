@@ -1,5 +1,5 @@
 [project]
-name = "stockflow-3-94"
+name = "stockflow-sprint2-design-ready"
 version = "0.1.0"
 description = "FastAPI + SQLAlchemy + Lakebase database branches"
 requires-python = ">=3.10"

@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.routes.stock import router as stock_router
 
-app = FastAPI(title="stockflow-3-94", version="0.1.0")
+app = FastAPI(title="stockflow-sprint2-design-ready", version="0.1.0")
 
 
 @app.get("/health")

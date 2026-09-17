@@ -1,4 +1,4 @@
-# stockflow-3-94 client
+# stockflow-sprint2-design-ready client
 
 A React + TypeScript single-page app (Vite) that talks to the backend JSON API
 over relative `/api` (and `/health`) paths. In development, Vite proxies those

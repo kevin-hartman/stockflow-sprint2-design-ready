@@ -16,7 +16,7 @@ export function App() {
       <nav className="navbar">
         <span className="navbar__brand">
           <img className="navbar__icon" src="/favicon.svg" alt="" />
-          stockflow-3-94
+          stockflow-sprint2-design-ready
         </span>
         <span className="navbar__links">
           <NavLink

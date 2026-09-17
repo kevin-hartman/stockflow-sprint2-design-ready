@@ -718,7 +718,7 @@ wheels = [
 ]
 
 [[package]]
-name = "stockflow-3-94"
+name = "stockflow-sprint2-design-ready"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

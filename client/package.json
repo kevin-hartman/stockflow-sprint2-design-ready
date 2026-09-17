@@ -1,9 +1,9 @@
 {
-  "name": "stockflow-3-94-client",
+  "name": "stockflow-sprint2-design-ready-client",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "React + TypeScript SPA (Vite) for stockflow-3-94, talking to the JSON API over /api",
+  "description": "React + TypeScript SPA (Vite) for stockflow-sprint2-design-ready, talking to the JSON API over /api",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

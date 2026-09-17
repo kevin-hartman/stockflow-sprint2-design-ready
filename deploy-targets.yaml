@@ -52,7 +52,7 @@ targets:
   prod:
     type: databricks-app
     workspace_profile: your-profile-name
-    workspace_path: /Workspace/Users/you@databricks.com/stockflow-3-94
-    app_name: stockflow-3-94
-    lakebase_project: stockflow-3-94
+    workspace_path: /Workspace/Users/you@databricks.com/stockflow-sprint2-design-ready
+    app_name: stockflow-sprint2-design-ready
+    lakebase_project: stockflow-sprint2-design-ready
     lakebase_branch: production
