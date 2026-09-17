@@ -1,0 +1,33 @@
+# Test list: F1-stock-visibility
+Ordered for: design-momentum
+
+- [x] T1: after a single-step downgrade then upgrade the stock_records table is recreated with all its columns and constraints present (@pytest.mark.migration, schema-recreation semantics, not data-preservation)  (AC1-file-stock-record)
+- [x] T2: inserting a stock_records row with sku NULL raises an IntegrityError directly from the database  (AC1-file-stock-record)
+- [x] T3: inserting a stock_records row with location NULL raises an IntegrityError directly from the database  (AC1-file-stock-record)
+- [x] T4: inserting a stock_records row with quantity NULL raises an IntegrityError directly from the database  (AC1-file-stock-record)
+- [x] T5: inserting a stock_records row with inventory_code NULL raises an IntegrityError directly from the database  (AC1-file-stock-record)
+- [x] T6: inserting a second row with the same (sku, location) as an existing row raises an IntegrityError at the database level (verifies PI1 unique constraint realized by the migration)  (AC3-collision-resolved-at-write)
+- [x] T7: inserting a stock_records row with quantity = -1 raises an IntegrityError from the ck_stock_records_quantity_non_negative CHECK constraint directly at the database level  (AC1-file-stock-record)
+- [x] T8: calling the stock-filing service with a negative quantity is rejected before the repository write is reached (repository write is patched and assert_not_called; service called with its injected session)  (AC1-file-stock-record)
+- [x] T9: filing a stock record for a (sku, location) pair that already exists stores exactly one row in stock_records and surfaces no error to the caller (upsert path; verified with per-run-unique key against real branch DB)  (AC3-collision-resolved-at-write)
+- [x] T10: filing a stock record and retrieving by (sku, location) returns the exact quantity and inventory_code that were filed (happy-path read-back through the API boundary)  (AC2-retrieve-stock-record)
+- [x] T11: filing the same SKU at two different locations yields two independently retrievable records each returning their own quantity and inventory_code (distinct keys coexist)  (AC2-retrieve-stock-record)
+- [x] T12: filing the same (sku, location) pair a second time with a different quantity: the subsequent retrieval of that pair returns the new quantity (the refile updated the record in place)  (AC2-retrieve-stock-record)
+- [x] T13: navigating to /adjust and submitting the file-stock form with valid sku, location, quantity, and inventory_code creates a stock record and the browser renders the created-record confirmation from the live API response (real Playwright e2e, no mocks)  (AC1-file-stock-record)
+- [x] T14: submitting the file-stock form a second time for the same sku and location updates the record in place and the browser renders the confirmation without showing an error page (real Playwright e2e against live DB, no mocks)  (AC3-collision-resolved-at-write)
+- [x] T15: filing a stock record with a negative quantity returns a 4xx response naming 'quantity' as the offending field  (AC2-retrieve-stock-record)
+- [x] T16: filing a stock record with the 'sku' field omitted returns a 4xx response naming 'sku' as the offending field  (AC2-retrieve-stock-record)
+- [x] T17: filing a stock record with the 'location' field omitted returns a 4xx response naming 'location' as the offending field  (AC2-retrieve-stock-record)
+- [x] T18: filing a stock record with the 'inventory_code' field omitted returns a 4xx response naming 'inventory_code' as the offending field  (AC2-retrieve-stock-record)
+- [x] T19: filing a stock record with the 'quantity' field omitted returns a 4xx response naming 'quantity' as the offending field  (AC2-retrieve-stock-record)
+- [x] T20: submitting the file-stock form with a required field omitted renders a field__error element inline that names the offending field (design-guide seam: .field__error carries the field name per NFR-validation-messages-name-field)  (AC1-file-stock-record)
+- [ ] T21: navigating to the home route ('/') in a live browser against the real API renders a flat stock table listing one row per (sku, location, quantity) record for every record returned by the global unfiltered stock-list endpoint (real Playwright e2e, no mocks)  (AC1-table-lists-stock-by-location)
+- [ ] T22: navigating to the home route ('/') in a live browser against the real API with rows present confirms each quantity cell carries the design-guide class 'stock-table__num' (which sets right-alignment, font-mono, and tabular-nums) (real Playwright e2e, no mocks)  (AC2-quantity-right-aligned)
+- [ ] T23: navigating to the home route ('/') in a live browser when the live API returns zero records for the GLOBAL stock list (the one unfiltered endpoint — not a per-location query; S2 has no per-location filter) renders the design-guide empty-state element carrying class 'empty-state' with the text 'No stock at this location' instead of a blank page or bare empty table body (real Playwright e2e, no mocks)  (AC3-empty-location-state)
+- [ ] T24: navigating to the SKU detail route for a SKU with stock at multiple locations renders one stock-table row per location with location and quantity visible (real Playwright e2e against live paired-branch DB, no mocks)  (AC1-lists-stock-across-locations)
+- [ ] T25: navigating to the SKU detail route for a SKU whose stock record carries an inventory_code shows the tracking code in the stock-table row alongside location and quantity (real Playwright e2e against live paired-branch DB, no mocks)  (AC2-shows-tracking-code)
+- [ ] T26: navigating to the SKU detail route for a SKU with no par level shows an element carrying the empty-state class with 'not tracked' text, never a blank region, raw null, or error (real Playwright e2e against live paired-branch DB, no mocks)  (AC3-par-level-not-tracked)
+- [ ] T27: navigating to the SKU detail route for a SKU that holds no stock at any location renders an element carrying the empty-state class indicating no stock, never a blank page or an error (real Playwright e2e against live paired-branch DB, no mocks)  (AC4-sku-with-no-stock-empty-state)
+
+## Deferred / skipped
+- (none)

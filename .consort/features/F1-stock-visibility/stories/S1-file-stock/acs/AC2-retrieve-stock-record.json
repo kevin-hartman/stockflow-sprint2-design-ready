@@ -3,7 +3,7 @@
   "given": "a stock record has been filed for a SKU at a location",
   "when": "the operator retrieves the stock for that (sku, location) pair",
   "then": "the previously filed quantity and inventory_code are returned unchanged",
-  "status": "draft",
+  "status": "passing",
   "layer": "API",
   "independence": {
     "distinct_from_prior": true,

@@ -3,7 +3,7 @@
   "given": "a stock record already exists for a SKU at a location",
   "when": "a stock level is filed again for that same (sku, location) pair",
   "then": "the existing record is updated in place so exactly one record exists for that pair, with no duplicate stored and no error page shown",
-  "status": "draft",
+  "status": "passing",
   "layer": "E2E",
   "independence": {
     "distinct_from_prior": true,

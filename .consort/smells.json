@@ -1,3 +1,53 @@
 {
-  "detected": []
+  "detected": [
+    {
+      "smell": "reflect-spec-defect",
+      "cycle_ids": [],
+      "detail": "reflection gate: AC3-collision-resolved-at-write declares layer: \"API\" but architecture.md test strategy explicitly assigns it \"(E2E)\" (\"repeat write updates in place; exactly one row (PI1), no error page\") and the covering test T14 is kind: \"client\" (Playwright E2E under client/tests/e2e/). The observable outcome 'no error page shown' requires browser observation, not API-layer inspection. AC3's layer field must be changed to \"E2E\" to align with the architecture assignment and T14's mechanism.",
+      "story_id": "S1-file-stock",
+      "detected_at": "2026-09-17T03:12:31.510Z",
+      "resolution": "revised by human-proxy: full design re-run (spec gate)",
+      "resolution_kind": "revised",
+      "revised_artifact_sha": "af5a0416e1449cf8b2e7a76385e0f37b33f93861"
+    },
+    {
+      "smell": "reflect-testlist-defect",
+      "cycle_ids": [],
+      "detail": "reflection gate: AC3's 'then' states 'the existing record is updated in place so exactly one record exists for that pair.' T13 proves a raw-INSERT duplicate raises a UNIQUE violation (it tests the error path, not the upsert path), and T14 only asserts the SPA renders data-testid=\"file-stock-success\" rather than data-testid=\"error-page\" (no-error, not value-updated). An ON CONFLICT DO NOTHING upsert would satisfy both T13 and T14 while silently ignoring the new values. No test verifies that after a second filing a subsequent read returns the newly-filed quantity/inventory_code, leaving the 'updated in place' clause of AC3 uncovered. A behavior test (or an additional assertion in T14) must verify the read-back reflects the second write's values.",
+      "story_id": "S1-file-stock",
+      "detected_at": "2026-09-17T03:12:31.510Z",
+      "resolution": "revised by human-proxy: full design re-run (spec gate)",
+      "resolution_kind": "revised",
+      "revised_artifact_sha": "af5a0416e1449cf8b2e7a76385e0f37b33f93861"
+    },
+    {
+      "smell": "reflect-spec-defect",
+      "cycle_ids": [],
+      "detail": "reflection gate: AC3 says 'given a location has no stock records, when the operator views that location on the home screen' — implying the home screen has per-location navigation or filtering. But AC1 describes the home screen as a flat global table of all stock records, with no location filter declared. 'Views that location' introduces an undescribed UI affordance (location selector / route param). T23 compounds the ambiguity by saying 'the live API returns no records for a location' (location-scoped query) rather than 'returns no records at all' (empty table). As written, AC3 either (a) contradicts AC1 by requiring a per-location view that AC1 doesn't expose, or (b) means 'the table is entirely empty' — but if (b), the AC wording and test precondition must say so. The Driver cannot determine which behavior to build without clarification.",
+      "story_id": "S2-stock-by-location-table",
+      "detected_at": "2026-09-17T03:35:03.904Z",
+      "resolution": "revised by human-proxy: full design re-run (spec gate)",
+      "resolution_kind": "revised",
+      "revised_artifact_sha": "8dcd651c2a031fa69889c07bcedcf472d7e45f27"
+    },
+    {
+      "smell": "reflect-testlist-defect",
+      "cycle_ids": [],
+      "detail": "reflection gate: T22 asserts 'right-aligned' for quantity cells — a CSS layout property governed by design tokens — but neither AC2 nor T22 names a design-guide seam (data-testid or component class) for the quantity cell. A Playwright e2e without such a seam must fall back to to_have_css('text-align', 'right') (computed-style inspection), which is the ui-style-implementation-test smell: it hard-codes the CSS property the design-lane refactor will migrate to a token-driven class, blocking that refactor. The test item must name the rendered seam (e.g. data-testid='quantity-cell' carrying the design-guide class that implies right-alignment) so the assertion targets the class/testid, not the raw CSS property.; NFR-R1-migration-data-survival is tier:product with an atomic fitness_functions[] array, but has zero nfr_id-tagged fitness tests anywhere in the feature test-list (T1–T23). Both clauses are un-buildable in F1: clause 1 ('additive migration on stock_records preserves rows') requires an additive migration that does not exist in F1; clause 2 ('inventory adjustment timestamp/actor immutable') requires an inventory_adjustments table not defined in F1's schema. The NFR is anchored to the wrong feature scope and will cause checkFitnessClauseCoverage to fail at the test-list gate. Defer NFR-R1 (or its clauses) to the feature/story that introduces the additive migration and the inventory_adjustments entity, and remove it from F1's NFR list until then.",
+      "story_id": "S2-stock-by-location-table",
+      "detected_at": "2026-09-17T03:35:03.904Z",
+      "resolution": "revised by human-proxy: full design re-run (spec gate)",
+      "resolution_kind": "revised",
+      "revised_artifact_sha": "8dcd651c2a031fa69889c07bcedcf472d7e45f27"
+    },
+    {
+      "smell": "ux-adherence",
+      "cycle_ids": [],
+      "detail": "unreachable pages: FileStockForm; brand app icon not applied: index.html favicon does not reference the brand icon \"warehouse.png\" (still the scaffold placeholder); the app shell (App.tsx) does not reference the brand icon \"warehouse.png\" (navbar/title still the placeholder)",
+      "story_id": "S1-file-stock",
+      "detected_at": "2026-09-17T04:17:53.425Z",
+      "resolution": "refactored story: S1-file-stock",
+      "resolution_kind": "accepted"
+    }
+  ]
 }
