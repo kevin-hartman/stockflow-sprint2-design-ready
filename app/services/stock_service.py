@@ -19,14 +19,24 @@ def file_stock(
     db: Session, sku: str, location: str, quantity: int, inventory_code: str
 ) -> StockRecord:
     """File a stock record. Rejects a negative quantity BEFORE any repository
-    write (R2 no-negative). Owns the transaction boundary (flush via repository;
-    caller/route commits)."""
+    write (R2 no-negative). Owns the transaction boundary: commits on success,
+    rolls back on failure. The boundary never touches the session."""
     if quantity is None or quantity < 0:
         raise StockValidationError("quantity", "quantity must be zero or greater")
 
-    return stock_repository.add_or_update_stock(
-        db, sku=sku, location=location, quantity=quantity, inventory_code=inventory_code
-    )
+    try:
+        record = stock_repository.add_or_update_stock(
+            db,
+            sku=sku,
+            location=location,
+            quantity=quantity,
+            inventory_code=inventory_code,
+        )
+        db.commit()
+        return record
+    except Exception:
+        db.rollback()
+        raise
 
 
 def get_stock(db: Session, sku: str, location: str) -> StockRecord | None:
@@ -35,6 +45,8 @@ def get_stock(db: Session, sku: str, location: str) -> StockRecord | None:
 
 
 def delete_stock(db: Session, sku: str, location: str) -> bool:
-    """Delete the stock record for a (sku, location) pair. Returns True when a
-    row was removed."""
-    return stock_repository.delete_by_sku_location(db, sku, location)
+    """Delete the stock record for a (sku, location) pair. Owns the transaction
+    boundary: commits the removal. Returns True when a row was removed."""
+    removed = stock_repository.delete_by_sku_location(db, sku, location)
+    db.commit()
+    return removed

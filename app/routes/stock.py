@@ -27,12 +27,16 @@ class StockRecordResponse(BaseModel):
     inventory_code: str
 
 
+def _field_error(status: int, field: str, message: str) -> HTTPException:
+    """Build the boundary's field-named error response (R5)."""
+    return HTTPException(
+        status_code=status, detail={"field": field, "message": message}
+    )
+
+
 def _require(field: str, value) -> None:
     if value is None or (isinstance(value, str) and value.strip() == ""):
-        raise HTTPException(
-            status_code=422,
-            detail={"field": field, "message": f"{field} is required"},
-        )
+        raise _field_error(422, field, f"{field} is required")
 
 
 @router.post("", response_model=StockRecordResponse)
@@ -50,12 +54,8 @@ def file_stock(payload: FileStockRequest, db: Session = Depends(get_db)):
             quantity=payload.quantity,
             inventory_code=payload.inventory_code,
         )
-        db.commit()
     except StockValidationError as exc:
-        db.rollback()
-        raise HTTPException(
-            status_code=422, detail={"field": exc.field, "message": exc.message}
-        )
+        raise _field_error(422, exc.field, exc.message)
 
     return StockRecordResponse(
         id=record.id,
@@ -74,10 +74,7 @@ def get_stock(
 ):
     record = stock_service.get_stock(db, sku=sku, location=location)
     if record is None:
-        raise HTTPException(
-            status_code=404,
-            detail={"field": "sku", "message": "stock record not found"},
-        )
+        raise _field_error(404, "sku", "stock record not found")
     return StockRecordResponse(
         id=record.id,
         sku=record.sku,
@@ -94,5 +91,4 @@ def delete_stock(
     db: Session = Depends(get_db),
 ):
     stock_service.delete_stock(db, sku=sku, location=location)
-    db.commit()
     return Response(status_code=204)
