@@ -5,11 +5,15 @@ from sqlalchemy.orm import Session
 from app.models.stock_record import StockRecord
 
 
-def list_stock(db: Session, location: str | None = None) -> list[StockRecord]:
-    """Return every stock record, optionally scoped to a single location."""
+def list_stock(
+    db: Session, location: str | None = None, sku: str | None = None
+) -> list[StockRecord]:
+    """Return every stock record, optionally scoped to a single location and/or SKU."""
     query = db.query(StockRecord)
     if location is not None:
         query = query.filter(StockRecord.location == location)
+    if sku is not None:
+        query = query.filter(StockRecord.sku == sku)
     return query.order_by(StockRecord.sku, StockRecord.location).all()
 
 

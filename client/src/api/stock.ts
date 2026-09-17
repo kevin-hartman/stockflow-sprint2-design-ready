@@ -26,3 +26,8 @@ export function listStock(location?: string): Promise<StockRecord[]> {
   const query = location ? `?location=${encodeURIComponent(location)}` : "";
   return getJson<StockRecord[]>(`/api/stock/list${query}`);
 }
+
+/** List every stock record for one SKU, across all locations. */
+export function listStockBySku(sku: string): Promise<StockRecord[]> {
+  return getJson<StockRecord[]>(`/api/stock/list?sku=${encodeURIComponent(sku)}`);
+}

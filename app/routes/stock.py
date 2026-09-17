@@ -74,9 +74,10 @@ def file_stock(payload: FileStockRequest, db: Session = Depends(get_db)):
 @router.get("/list", response_model=list[StockRecordResponse])
 def list_stock(
     location: str | None = Query(default=None),
+    sku: str | None = Query(default=None),
     db: Session = Depends(get_db),
 ):
-    records = stock_service.list_stock(db, location=location)
+    records = stock_service.list_stock(db, location=location, sku=sku)
     return [_to_response(r) for r in records]
 
 

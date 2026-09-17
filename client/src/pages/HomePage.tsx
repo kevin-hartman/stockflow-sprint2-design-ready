@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useStockList } from "../hooks/useStockList";
 
 // The home page lists stock by location as a flat table, one row per
@@ -52,7 +52,9 @@ export function HomePage() {
             <tbody>
               {stock.records.map((r) => (
                 <tr key={`${r.sku}::${r.location}`} data-testid={`stock-row-${r.sku}`}>
-                  <td>{r.sku}</td>
+                  <td>
+                    <Link to={`/sku/${encodeURIComponent(r.sku)}`}>{r.sku}</Link>
+                  </td>
                   <td>{r.location}</td>
                   <td>{r.inventory_code}</td>
                   <td className="stock-table__num" data-testid="stock-cell-quantity">

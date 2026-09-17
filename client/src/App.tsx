@@ -2,6 +2,7 @@ import { NavLink, Routes, Route } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
 import { AboutPage } from "./pages/AboutPage";
 import { FileStockPage } from "./pages/FileStockPage";
+import { SkuDetailPage } from "./pages/SkuDetailPage";
 
 // Route-level composition lives here. Pages compose components and use hooks
 // for data; components and hooks never wire routes themselves. EVERY feature
@@ -42,6 +43,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/adjust" element={<FileStockPage />} />
+        <Route path="/sku/:sku" element={<SkuDetailPage />} />
         <Route path="/about" element={<AboutPage />} />
       </Routes>
     </>

@@ -33,9 +33,11 @@ def file_stock(
     )
 
 
-def list_stock(db: Session, location: str | None = None) -> list[StockRecord]:
-    """List stock records, optionally scoped to a single location."""
-    return stock_repository.list_stock(db, location=location)
+def list_stock(
+    db: Session, location: str | None = None, sku: str | None = None
+) -> list[StockRecord]:
+    """List stock records, optionally scoped to a single location and/or SKU."""
+    return stock_repository.list_stock(db, location=location, sku=sku)
 
 
 def get_stock(db: Session, sku: str, location: str) -> StockRecord | None:
