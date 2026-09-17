@@ -1,0 +1,29 @@
+"""Business rules for filing stock: validate, then create-or-update-in-place."""
+
+from sqlalchemy.orm import Session
+
+from app.models.stock_record import StockRecord
+from app.repositories import stock_repository
+
+
+class StockValidationError(ValueError):
+    """A business-rule violation; carries the offending field name."""
+
+    def __init__(self, field: str, message: str):
+        self.field = field
+        self.message = message
+        super().__init__(message)
+
+
+def file_stock(
+    db: Session, sku: str, location: str, quantity: int, inventory_code: str
+) -> StockRecord:
+    """File a stock record. Rejects a negative quantity BEFORE any repository
+    write (R2 no-negative). Owns the transaction boundary (flush via repository;
+    caller/route commits)."""
+    if quantity is None or quantity < 0:
+        raise StockValidationError("quantity", "quantity must be zero or greater")
+
+    return stock_repository.add_or_update_stock(
+        db, sku=sku, location=location, quantity=quantity, inventory_code=inventory_code
+    )

@@ -1,0 +1,1099 @@
+- generic [ref=e5]:
+  - banner [ref=e6]:
+    - generic [ref=e7]:
+      - link "Fishbowl is celebrating 25 years of inventory innovation" [ref=e8] [cursor=pointer]:
+        - /url: /company
+        - generic [aria-hidden] [ref=e10]: →
+      - generic [ref=e11]:
+        - link "MyFishbowl" [ref=e12] [cursor=pointer]:
+          - /url: https://www.fishbowlinventory.com/myfishbowl/
+        - link "Login" [ref=e13] [cursor=pointer]:
+          - /url: /login
+        - button "United States ▾" [ref=e15] [cursor=pointer]:
+          - generic [ref=e21]: United States
+          - generic [ref=e22]: ▾
+    - generic [ref=e23]:
+      - generic [ref=e24]:
+        - link "Home" [ref=e25] [cursor=pointer]:
+          - /url: /
+        - navigation [ref=e32]:
+          - generic [ref=e33] [cursor=pointer]: Products
+          - generic [ref=e35] [cursor=pointer]: Features
+          - generic [ref=e37] [cursor=pointer]: Industries
+          - generic [ref=e39] [cursor=pointer]: Resources
+          - generic [ref=e41] [cursor=pointer]: Company
+          - generic [ref=e43] [cursor=pointer]: Pricing
+      - generic [ref=e46] [cursor=pointer]:
+        - img "woman smiling happy" [ref=e47]
+        - generic [ref=e48]: Book a demo
+  - generic [ref=e50]:
+    - generic [ref=e56]:
+      - img "ai driven control for inventory" [ref=e58]
+      - generic [ref=e59]:
+        - 'heading "The #1 Inventory and Manufacturing Software for QuickBooks and Xero" [level=1] [ref=e60]'
+        - heading "AI-Driven Control for Inventory Manufacturing Warehouse Ecommerce Without the ERP Complexity" [level=2] [ref=e63]:
+          - generic [ref=e64]: AI-Driven Control for
+          - generic [ref=e65]:
+            - generic [ref=e66]: Inventory
+            - generic [ref=e67]: Manufacturing
+            - generic [ref=e68]: Warehouse
+            - generic [ref=e69]: Ecommerce
+          - generic [ref=e70]: Without the ERP Complexity
+        - paragraph [ref=e74]: Fishbowl empowers small to midsize businesses to succeed by delivering AI-centric inventory and manufacturing solutions that help teams operate smarter, respond quicker, and unlock more reliable operations.
+        - generic [ref=e75]: Book a demo
+    - generic [ref=e82]:
+      - generic [ref=e85]:
+        - heading "Trusted by over 6,000 Businesses for Inventory Management" [level=2] [ref=e86]
+        - generic [ref=e87]:
+          - generic [ref=e89]:
+            - generic [ref=e90]: 11M
+            - generic [ref=e94]: inventory cost saved
+            - generic [ref=e95]: Using Fishbowl’s inventory management software for real-time visibility
+            - img "Extract Logo" [ref=e96]
+            - link "Read more →" [ref=e97] [cursor=pointer]:
+              - /url: /casestudies/extract-production
+              - text: Read more
+              - generic [ref=e98]: →
+          - generic [ref=e100]:
+            - generic [ref=e101]: 50 hours
+            - generic [ref=e105]: per week saved
+            - generic [ref=e106]: Using Fishbowl’s inventory management system automation
+            - img "Mack and Rex Logo" [ref=e107]
+            - link "Read more →" [ref=e108] [cursor=pointer]:
+              - /url: /casestudies/mack-rex
+              - text: Read more
+              - generic [ref=e109]: →
+          - generic [ref=e111]:
+            - generic [ref=e112]: 35%
+            - generic [ref=e116]: on-time delivery
+            - generic [ref=e117]: Using new pick/pack/scheduling workflows
+            - img "Zoox Logo" [ref=e118]
+          - generic [ref=e120]:
+            - generic [ref=e121]: 18%
+            - generic [ref=e125]: inventory costs
+            - generic [ref=e126]: Using Fishbowl's AI replenishment
+            - img "Cascadia Motion Logo" [ref=e127]
+            - link "Read more →" [ref=e128] [cursor=pointer]:
+              - /url: /casestudies/cascadia-motion
+              - text: Read more
+              - generic [ref=e129]: →
+          - generic [ref=e131]:
+            - generic [ref=e132]: 120%
+            - generic [ref=e136]: sales
+            - generic [ref=e137]: Using faster fulfillment + AI Insights
+            - img "Chungs Logo" [ref=e138]
+            - link "Read more →" [ref=e139] [cursor=pointer]:
+              - /url: /casestudies/chungs
+              - text: Read more
+              - generic [ref=e140]: →
+      - generic [ref=e141]: See More Success Stories From Our Customers >
+    - generic [ref=e151]:
+      - generic [ref=e157]:
+        - img "The Wonderful Company Logo blue" [ref=e176]
+        - img "Titos Logo blue" [ref=e181]
+        - img "NASA Logo blue" [ref=e186]
+        - img "Pepsi Logo blue" [ref=e191]
+        - img "BRCC logo blue" [ref=e196]
+        - img "dots logo blue" [ref=e201]
+        - img "teton logo blue" [ref=e206]
+      - generic [ref=e209]:
+        - 'heading "Meet Fishbowl AI: The Inventory Management System That Runs Itself" [level=2] [ref=e211]'
+        - paragraph [ref=e215]: Fishbowl AI plans your day, fills capacity gaps, executes POs, MOs, and WOs, and identifies risks and opportunities. Inventory stays optimized, products flow, margins grow, and promise dates stick.
+      - img "meet fishbowl ai" [ref=e219]
+      - generic [ref=e222]:
+        - generic [ref=e224]:
+          - generic [ref=e225]:
+            - heading "Finds Issues Early, Prescribes the Fix" [level=2] [ref=e233]
+            - paragraph [ref=e235]: "ROI: Eliminate stockouts/overstock, protect margins, higher on-time delivery."
+          - generic [ref=e237]:
+            - paragraph [ref=e238]: Flags looming shortages, capacity gaps, late WOs, margin leaks, low margin SKUs, mis-posts, and tariff hits; then proposes the corrective action before dates slip.
+            - list
+          - generic [ref=e239] [cursor=pointer]
+        - generic [ref=e245]:
+          - generic [ref=e246]:
+            - heading "Prioritizes Profit, Protects Dates" [level=2] [ref=e256]
+            - paragraph [ref=e258]: "ROI: 35%+ increase in on-time deliveries, fewer expedites."
+          - generic [ref=e260]:
+            - paragraph [ref=e261]: "Ranks revenue-critical and at-risk orders, optimizing for: lead times, labor capacity, routings, vendor cost; and focuses the team on work that moves the needle."
+            - list
+          - generic [ref=e262] [cursor=pointer]
+        - generic [ref=e268]:
+          - generic [ref=e269]:
+            - heading "Handles the Busy Work for You" [level=2] [ref=e280]
+            - paragraph [ref=e282]: "ROI: Thousands of hours saved/year by auto-creating POs, MOs, WOs. Less admin, cleaner books, steadier schedules."
+          - generic [ref=e284]:
+            - paragraph [ref=e285]: Executes POs, MOs, WOs; creates BOMs from specs; creates items in bulk; add, cycle, remove inventory instantly; analyzes BOMs, SOs WOs, and more to update promise dates and fix posting maps.
+            - list
+          - generic [ref=e286] [cursor=pointer]
+      - generic [ref=e291]: See How Fishbowl AI Works
+    - generic [ref=e437]:
+      - generic [ref=e440]:
+        - heading "Recognized by Industry Leaders for Excellence in Inventory Management" [level=2] [ref=e441]
+        - generic [ref=e442]:
+          - generic [ref=e443]:
+            - img "Star ratings from GetApp, Software Advice, G2, and Capterra"
+          - generic [ref=e444]:
+            - img "Award badges from Software Advice, Capterra, and G2"
+      - generic [ref=e457]:
+        - generic [ref=e459]:
+          - generic:
+            - generic: "\"We've seen an 18% decrease in overall inventory costs since starting to use Fishbowl.\""
+            - generic: Cascadia Motion
+        - generic [ref=e463]:
+          - generic:
+            - generic: "\"With Fishbowl, we're able to stay on top of inventory management and data, which allows us to stay ahead of our supply chain challenges.\""
+            - generic [ref=e464]:
+              - generic [ref=e465]: Josiah
+              - generic [ref=e466]: Supply Chain Coordinator, Automotive Industry
+        - generic [ref=e468]:
+          - generic:
+            - generic: "\"8% increase in sales driven by AI-powered demand forecasting.\""
+            - generic [ref=e469]:
+              - generic [ref=e470]: Koken USA
+              - generic [ref=e471]: Manufacturing
+        - generic [ref=e473]:
+          - generic:
+            - generic: "\"The product catalog grew from 3,000 to 5,500 items—something that would've been impossible without Fishbowl.\""
+            - generic [ref=e474]:
+              - generic [ref=e475]: Sajani Cups and Cones
+              - generic [ref=e476]: Ice Cream and Gelato
+        - generic [ref=e478]:
+          - generic:
+            - generic: "\"10% increase in margins with proactive pricing strategies from AI-driven insights and recommendations.\""
+            - generic [ref=e479]:
+              - generic [ref=e480]: TSI Supercool
+              - generic [ref=e481]: Industrial and Automotive
+        - generic [ref=e483]:
+          - generic:
+            - generic: "\"Ensuring customers always found products on shelves.\""
+            - generic [ref=e484]:
+              - generic [ref=e485]: Hodo Foods
+              - generic [ref=e486]: Plant-Based Food Production
+        - generic [ref=e488]:
+          - generic:
+            - generic: "\"Automated cascading BOM updates eliminated hours of data entry per vehicle, improving production speed and reducing scheduling errors.\""
+            - generic [ref=e489]:
+              - generic [ref=e490]: Velocity Restorations
+              - generic [ref=e491]: Custom Automotive Restoration
+        - generic [ref=e493]:
+          - generic:
+            - generic: "\"The company reached a 99% on-time delivery rate, thanks to improved efficiency and tracking.\""
+            - generic [ref=e494]:
+              - generic [ref=e495]: Grill Works Inc.
+              - generic [ref=e496]: Manufacturing
+    - generic [ref=e499]:
+      - generic [ref=e502]:
+        - heading "Power Operations Intelligently" [level=5] [ref=e503]
+        - heading "From Inventory, Production, and Fulfillment Inefficiencies to Operational Flow" [level=2] [ref=e506]
+      - generic [ref=e509]:
+        - generic [ref=e510]:
+          - generic [ref=e511]:
+            - radio "Keep Production Moving" [checked] [ref=e512] [cursor=pointer]
+            - generic [ref=e513] [cursor=pointer]: Keep Production Moving
+          - generic [ref=e515]:
+            - radio "Close Books Faster" [ref=e516] [cursor=pointer]
+            - generic [ref=e517] [cursor=pointer]: Close Books Faster
+          - generic [ref=e519]:
+            - radio "Ship Quicker" [ref=e520] [cursor=pointer]
+            - generic [ref=e521] [cursor=pointer]: Ship Quicker
+          - generic [ref=e523]:
+            - radio "Stop Stockouts" [ref=e524] [cursor=pointer]
+            - generic [ref=e525] [cursor=pointer]: Stop Stockouts
+        - generic [ref=e527]:
+          - generic [ref=e528]:
+            - generic [ref=e529]:
+              - heading "Complete Inventory Management Software for Production, Fulfillment, and Finance" [level=2] [ref=e531]
+              - generic [ref=e534]:
+                - paragraph [ref=e535]: Fishbowl’s manufacturing inventory management software tracks MOs, BOMs, and material requirements in real time. AI rebalances work centers, reroutes jobs, and updates promise dates so schedules hold and production doesn’t stall.
+                - list [ref=e536]:
+                  - listitem [ref=e537]: "Velocity Restorations: –50% scheduling time"
+                  - listitem [ref=e538]: "Grill Works: 99% on-time delivery"
+                  - listitem [ref=e539]: "Grill Works: order cycle time down → 3.9 days"
+                - paragraph
+            - generic [ref=e540]:
+              - generic [ref=e541]: Features
+              - generic [ref=e542]: Edit BOMs/WOs mid-build
+              - generic [ref=e548]: AI-built POs, MOs, WOs
+              - generic [ref=e554]: AI replenishment
+              - generic [ref=e560]: Constraint-aware rescheduling
+              - generic [ref=e566]: Auto-create items in bulk
+              - generic [ref=e572]: Mobile work travelers and labor capture
+            - generic [ref=e578]: Schedule A Free ROI Analysis >
+          - generic:
+            - generic:
+              - img "keep production moving hit promise dates"
+    - generic [ref=e588]:
+      - generic [ref=e589]:
+        - heading "Inventory Management Software with Agentic AI Built In. Find risks early, prioritize profit, execute the fix." [level=2] [ref=e591]
+        - paragraph [ref=e594]: The inventory management system for growing businesses. Save 10+ hours/week per employee, boost throughput 20%+, and close 2–3 days faster.
+      - generic [ref=e596]:
+        - generic [ref=e610]:
+          - heading "Real-Time Inventory Tracking Across Every Location" [level=4] [ref=e611]
+          - paragraph [ref=e612]: Inventory management software that updates stock levels the moment a transaction occurs. See committed, available, and on-order quantities across every warehouse in real time.
+        - generic [ref=e619]:
+          - heading "Get Instant Answers From Your AI Data Assistant" [level=4] [ref=e620]
+          - paragraph [ref=e621]: Ask your AI assistant any inventory management question. “What’s going to stock out next week?” Get answers without digging through spreadsheets or reports.
+        - generic [ref=e629]:
+          - heading "Multi-Warehouse Management With Landed Cost Accounting" [level=4] [ref=e630]
+          - paragraph [ref=e631]: Track inventory by SKU, location, and shipment with full landed-cost accounting and precise QB/Xero posts. AI prevents margin leaks before close.
+        - generic [ref=e639]:
+          - heading "Inventory Traceability You Can Prove, Easily and Quickly" [level=4] [ref=e640]
+          - paragraph [ref=e641]: Track lots, serials, expiry, landed costs, and tariffs with one-click recall reports. Inventory management software built for audits in minutes, not days.
+        - generic [ref=e659]:
+          - heading "Barcode Scanning With the Industry’s Best Mobile App for Inventory Management" [level=4] [ref=e660]
+          - paragraph [ref=e661]: Scan barcodes to receive, pick, pack, and ship with Fishbowl GO. Zero guesswork, faster shipping, and inventory that updates instantly on every scan.
+        - generic [ref=e671]:
+          - heading "Automated Reorder Points and AI Forecasting" [level=4] [ref=e672]
+          - paragraph [ref=e673]: Set reorder rules and let Fishbowl’s inventory management system automate purchase orders. Forecast demand, generate vendor-aware POs, and surface anomalies before they escalate.
+        - generic [ref=e681]:
+          - heading "QuickBooks & Xero Inventory Integration" [level=4] [ref=e682]
+          - paragraph [ref=e683]: Best inventory management software with accounting-first sync for QuickBooks Desktop, QuickBooks Online, and Xero. Clean COGS, landed-cost allocation, fast close. Finance and ops, finally aligned.
+        - generic [ref=e692]:
+          - heading "Simple Pricing for Inventory Management Software" [level=4] [ref=e693]
+          - paragraph [ref=e694]: Unlimited locations, orders, volume, and 3PLs — unlike our competitors, at no extra cost. No gotchas, no GMV tax on your growth. Inventory management software that scales with you.
+    - generic [ref=e840]:
+      - heading "Integration with your systems and workflows" [level=2] [ref=e842]
+      - generic [ref=e845]:
+        - generic [ref=e846]:
+          - heading "Featured integrations include" [level=6] [ref=e847]
+          - heading [level=6]
+        - generic [ref=e848]:
+          - generic:
+            - img "quickbooks logo"
+          - generic:
+            - img "salesforce logo full"
+          - generic:
+            - img "xero logo full"
+        - generic [ref=e850]:
+          - paragraph
+          - paragraph [ref=e851]: "Fishbowl Manufacturing connects directly with major systems, ensuring seamless data flow:"
+          - list [ref=e852]:
+            - listitem [ref=e853]:
+              - strong [ref=e854]: QuickBooks Online, QuickBooks Desktop, Xero
+              - text: – All production and inventory movements sync automatically with your accounting.
+            - listitem [ref=e855]:
+              - strong [ref=e856]: 3PL, ecommerce, shipping, CRM, CAD integrations
+              - text: – Build a tech stack tailored to your operations. Import SolidWorks BOMs directly, automate shipping, streamline sales order flows, and more.
+          - paragraph
+      - generic [ref=e857]: Explore all integrations
+    - generic [ref=e867]:
+      - generic [ref=e870]:
+        - generic [ref=e906]:
+          - generic [ref=e907]:
+            - generic:
+              - img "adobe logo"
+          - generic [ref=e908]:
+            - generic [ref=e909]: Adobe Commerce
+            - generic [ref=e910]: ecommerce
+        - generic [ref=e912]:
+          - generic [ref=e913]:
+            - generic:
+              - img "amazon logo"
+          - generic [ref=e914]:
+            - generic [ref=e915]: Amazon
+            - generic [ref=e916]: ecommerce
+            - link "Learn More" [ref=e917] [cursor=pointer]:
+              - /url: integrations/amazon
+        - generic [ref=e919]:
+          - generic [ref=e920]:
+            - generic:
+              - img "android logo"
+          - generic [ref=e921]:
+            - generic [ref=e922]: Android
+            - generic [ref=e923]: Mobile Operating
+            - link "Learn More" [ref=e924] [cursor=pointer]:
+              - /url: integrations/android
+        - generic [ref=e926]:
+          - generic [ref=e927]:
+            - generic:
+              - img "apple logo"
+          - generic [ref=e928]:
+            - generic [ref=e929]: Apple
+            - generic [ref=e930]: Technology
+            - link "Learn More" [ref=e931] [cursor=pointer]:
+              - /url: integrations/apple
+        - generic [ref=e933]:
+          - generic [ref=e934]:
+            - generic:
+              - img "authorize net logo"
+          - generic [ref=e935]:
+            - generic [ref=e936]: Authorize.Net
+            - generic [ref=e937]: Merchant Services
+            - link "Learn More" [ref=e938] [cursor=pointer]:
+              - /url: integrations/authorize-net
+        - generic [ref=e940]:
+          - generic [ref=e941]:
+            - generic:
+              - img "avalara logo"
+          - generic [ref=e942]:
+            - generic [ref=e943]: Avalara
+            - generic [ref=e944]: Accounting
+            - link "Learn More" [ref=e945] [cursor=pointer]:
+              - /url: integrations/avalara
+        - generic [ref=e947]:
+          - generic [ref=e948]:
+            - generic:
+              - img "bigcommerce logo gray"
+          - generic [ref=e949]:
+            - generic [ref=e950]: BigCommerce
+            - generic [ref=e951]: ecommerce
+            - link "Learn More" [ref=e952] [cursor=pointer]:
+              - /url: integrations/bigcommerce
+        - generic [ref=e954]:
+          - generic [ref=e955]:
+            - generic:
+              - img "conversight logo"
+          - generic [ref=e956]:
+            - generic [ref=e957]: ConverSight
+            - generic [ref=e958]: Business Intelligence
+            - link "Learn More" [ref=e959] [cursor=pointer]:
+              - /url: integrations/conversight
+        - generic [ref=e961]:
+          - generic [ref=e962]:
+            - generic:
+              - img "dhl logo"
+          - generic [ref=e963]:
+            - generic [ref=e964]: DHL
+            - generic [ref=e965]: Shipping
+            - link "Learn More" [ref=e966] [cursor=pointer]:
+              - /url: integrations/dhl
+        - generic [ref=e968]:
+          - generic [ref=e969]:
+            - generic:
+              - img "ebay logo"
+          - generic [ref=e970]:
+            - generic [ref=e971]: Ebay
+            - generic [ref=e972]: ecommerce
+            - link "Learn More" [ref=e973] [cursor=pointer]:
+              - /url: integrations/ebay
+        - generic [ref=e975]:
+          - generic [ref=e976]:
+            - generic:
+              - img "endicia logo"
+          - generic [ref=e977]:
+            - generic [ref=e978]: Endicia
+            - generic [ref=e979]: Shipping
+            - link "Learn More" [ref=e980] [cursor=pointer]:
+              - /url: integrations/endicia
+        - generic [ref=e982]:
+          - generic [ref=e983]:
+            - generic:
+              - img "ezcom logo"
+          - generic [ref=e984]:
+            - generic [ref=e985]: eZCom
+            - generic [ref=e986]: EDI
+            - link "Learn More" [ref=e987] [cursor=pointer]:
+              - /url: integrations/endicia
+        - generic [ref=e989]:
+          - generic [ref=e990]:
+            - generic:
+              - img "fedex logo"
+          - generic [ref=e991]:
+            - generic [ref=e992]: FedEx
+            - generic [ref=e993]: Shipping
+            - link "Learn More" [ref=e994] [cursor=pointer]:
+              - /url: integrations/fedex
+        - generic [ref=e996]:
+          - generic [ref=e997]:
+            - generic:
+              - img "hubspot logo"
+          - generic [ref=e998]:
+            - generic [ref=e999]: HubSpot
+            - generic [ref=e1000]: CRM
+            - link "Learn More" [ref=e1001] [cursor=pointer]:
+              - /url: /integrations/hubspot
+        - generic [ref=e1003]:
+          - generic [ref=e1004]:
+            - generic:
+              - img "Infocon Systems Logo"
+          - generic [ref=e1005]:
+            - generic [ref=e1006]: Infocon Systems
+            - generic [ref=e1007]: EDI
+            - link "Learn More" [ref=e1008] [cursor=pointer]:
+              - /url: integrations/infocon-systems-edi
+        - generic [ref=e1010]:
+          - generic [ref=e1011]:
+            - generic:
+              - img "kinein logo"
+          - generic [ref=e1012]:
+            - generic [ref=e1013]: Kinein
+            - generic [ref=e1014]: ecommerce
+            - link "Learn More" [ref=e1015] [cursor=pointer]:
+              - /url: integrations/kinein
+        - generic [ref=e1017]:
+          - generic [ref=e1018]:
+            - generic:
+              - img "lilypad logo"
+          - generic [ref=e1019]:
+            - generic [ref=e1020]: LilyPad
+            - generic [ref=e1021]: ecommerce
+            - link "Learn More" [ref=e1022] [cursor=pointer]:
+              - /url: integrations/lilypad-vortex
+      - generic [ref=e1025]:
+        - generic [ref=e1061]:
+          - generic [ref=e1062]:
+            - generic:
+              - img "linux logo"
+          - generic [ref=e1063]:
+            - generic [ref=e1064]: Linux
+            - generic [ref=e1065]: Platform Integration
+            - link "Learn More" [ref=e1066] [cursor=pointer]:
+              - /url: integrations/linux
+        - generic [ref=e1068]:
+          - generic [ref=e1069]:
+            - generic:
+              - img "magento logo"
+          - generic [ref=e1070]:
+            - generic [ref=e1071]: Magento
+            - generic [ref=e1072]: ecommerce
+        - generic [ref=e1074]:
+          - generic [ref=e1075]:
+            - generic:
+              - img "microsoft surface logo"
+          - generic [ref=e1076]:
+            - generic [ref=e1077]: Microsoft Surface
+            - generic [ref=e1078]: Mobile Hardware
+            - link "Learn More" [ref=e1079] [cursor=pointer]:
+              - /url: integrations/microsoft-surface
+        - generic [ref=e1081]:
+          - generic [ref=e1082]:
+            - generic:
+              - img "metrc logo"
+          - generic [ref=e1083]:
+            - generic [ref=e1084]: Metrc
+            - generic [ref=e1085]: Cannabis Compliance
+            - link "Learn More" [ref=e1086] [cursor=pointer]:
+              - /url: integrations/metrc
+        - generic [ref=e1088]:
+          - generic [ref=e1089]:
+            - generic:
+              - img "quick books logo"
+          - generic [ref=e1090]:
+            - generic [ref=e1091]: QuickBooks Online
+            - generic [ref=e1092]: Accounting
+            - link "Learn More" [ref=e1093] [cursor=pointer]:
+              - /url: integrations/quickbooks-online
+        - generic [ref=e1095]:
+          - generic [ref=e1096]:
+            - generic:
+              - img "motorola logo"
+          - generic [ref=e1097]:
+            - generic [ref=e1098]: Motorola
+            - generic [ref=e1099]: Mobile Hardware
+            - link "Learn More" [ref=e1100] [cursor=pointer]:
+              - /url: integrations/motorola
+        - generic [ref=e1102]:
+          - generic [ref=e1103]:
+            - generic:
+              - img "netstock logo"
+          - generic [ref=e1104]:
+            - generic [ref=e1105]: Netstock
+            - generic [ref=e1106]: Shipping
+            - link "Learn More" [ref=e1107] [cursor=pointer]:
+              - /url: integrations/netstock
+        - generic [ref=e1109]:
+          - generic [ref=e1110]:
+            - generic:
+              - img "ontrack logo"
+          - generic [ref=e1111]:
+            - generic [ref=e1112]: OnTrac
+            - generic [ref=e1113]: Shipping
+            - link "Learn More" [ref=e1114] [cursor=pointer]:
+              - /url: integrations/ontrac
+        - generic [ref=e1116]:
+          - generic [ref=e1117]:
+            - generic:
+              - img "pepperi logo"
+          - generic [ref=e1118]:
+            - generic [ref=e1119]: Pepperi
+            - generic [ref=e1120]: ecommerce
+        - generic [ref=e1122]:
+          - generic [ref=e1123]:
+            - generic:
+              - img "quick books logo"
+          - generic [ref=e1124]:
+            - generic [ref=e1125]: QuickBooks Canada
+            - generic [ref=e1126]: Accounting
+            - link "Learn More" [ref=e1127] [cursor=pointer]:
+              - /url: integrations/quickbooks-canada
+        - generic [ref=e1129]:
+          - generic [ref=e1130]:
+            - generic:
+              - img "reckon logo"
+          - generic [ref=e1131]:
+            - generic [ref=e1132]: Reckon
+            - generic [ref=e1133]: Accounting
+            - link "Learn More" [ref=e1134] [cursor=pointer]:
+              - /url: integrations/reckon
+        - generic [ref=e1136]:
+          - generic [ref=e1137]:
+            - generic:
+              - img "salesforce logo"
+          - generic [ref=e1138]:
+            - generic [ref=e1139]: Salesforce
+            - generic [ref=e1140]: CRM
+            - link "Learn More" [ref=e1141] [cursor=pointer]:
+              - /url: integrations/salesforce
+        - generic [ref=e1143]:
+          - generic [ref=e1144]:
+            - generic:
+              - img "salesin logo"
+          - generic [ref=e1145]:
+            - generic [ref=e1146]: SalesIn
+            - generic [ref=e1147]: ecommerce
+            - link "Learn More" [ref=e1148] [cursor=pointer]:
+              - /url: integrations/salesin
+        - generic [ref=e1150]:
+          - generic [ref=e1151]:
+            - generic:
+              - img "quick books logo"
+          - generic [ref=e1152]:
+            - generic [ref=e1153]: QuickBooks Payments
+            - generic [ref=e1154]: Accounting
+            - link "Learn More" [ref=e1155] [cursor=pointer]:
+              - /url: integrations/quickbooks-payments
+        - generic [ref=e1157]:
+          - generic [ref=e1158]:
+            - generic:
+              - img "shiprush logo"
+          - generic [ref=e1159]:
+            - generic [ref=e1160]: ShipRush
+            - generic [ref=e1161]: Shipping
+            - link "Learn More" [ref=e1162] [cursor=pointer]:
+              - /url: integrations/shiprush
+        - generic [ref=e1164]:
+          - generic [ref=e1165]:
+            - generic:
+              - img "quick books logo"
+          - generic [ref=e1166]:
+            - generic [ref=e1167]: QuickBooks
+            - generic [ref=e1168]: Accounting
+            - link "Learn More" [ref=e1169] [cursor=pointer]:
+              - /url: integrations/quickbooks
+        - generic [ref=e1171]:
+          - generic [ref=e1172]:
+            - generic:
+              - img "shift4shop logo"
+          - generic [ref=e1173]:
+            - generic [ref=e1174]: Shift4Shop
+            - generic [ref=e1175]: ecommerce
+      - generic [ref=e1178]:
+        - generic [ref=e1214]:
+          - generic [ref=e1215]:
+            - generic:
+              - img "ship station logo"
+          - generic [ref=e1216]:
+            - generic [ref=e1217]: ShipStation
+            - generic [ref=e1218]: Shipping
+            - link "Learn More" [ref=e1219] [cursor=pointer]:
+              - /url: integrations/shipstation
+        - generic [ref=e1221]:
+          - generic [ref=e1222]:
+            - generic:
+              - img "shipworks logo"
+          - generic [ref=e1223]:
+            - generic [ref=e1224]: ShipWorks
+            - generic [ref=e1225]: Shipping
+            - link "Learn More" [ref=e1226] [cursor=pointer]:
+              - /url: integrations/shipworks
+        - generic [ref=e1228]:
+          - generic [ref=e1229]:
+            - generic:
+              - img "shopify logo"
+          - generic [ref=e1230]:
+            - generic [ref=e1231]: Shopify
+            - generic [ref=e1232]: ecommerce
+            - link "Learn More" [ref=e1233] [cursor=pointer]:
+              - /url: integrations/shopify
+        - generic [ref=e1235]:
+          - generic [ref=e1236]:
+            - generic:
+              - img "sps commerce logo"
+          - generic [ref=e1237]:
+            - generic [ref=e1238]: SPS Commerce
+            - generic [ref=e1239]: EDI
+            - link "Learn More" [ref=e1240] [cursor=pointer]:
+              - /url: integrations/sps-commerce
+        - generic [ref=e1242]:
+          - generic [ref=e1243]:
+            - generic:
+              - img "starship logo"
+          - generic [ref=e1244]:
+            - generic [ref=e1245]: Starship
+            - generic [ref=e1246]: Shipping
+            - link "Learn More" [ref=e1247] [cursor=pointer]:
+              - /url: integrations/starship-shipping
+        - generic [ref=e1249]:
+          - generic [ref=e1250]:
+            - generic:
+              - img "usps logo"
+          - generic [ref=e1251]:
+            - generic [ref=e1252]: USPS
+            - generic [ref=e1253]: Shipping
+            - link "Learn More" [ref=e1254] [cursor=pointer]:
+              - /url: integrations/usps
+        - generic [ref=e1256]:
+          - generic [ref=e1257]:
+            - generic:
+              - img "ups ready logo"
+          - generic [ref=e1258]:
+            - generic [ref=e1259]: UPS Ready
+            - generic [ref=e1260]: Shipping
+            - link "Learn More" [ref=e1261] [cursor=pointer]:
+              - /url: integrations/ups
+        - generic [ref=e1263]:
+          - generic [ref=e1264]:
+            - generic:
+              - img "volusion logo"
+          - generic [ref=e1265]:
+            - generic [ref=e1266]: Volusion
+            - generic [ref=e1267]: ecommerce
+            - link "Learn More" [ref=e1268] [cursor=pointer]:
+              - /url: integrations/volusion
+        - generic [ref=e1270]:
+          - generic [ref=e1271]:
+            - generic:
+              - img "walmart logo"
+          - generic [ref=e1272]:
+            - generic [ref=e1273]: Walmart
+            - generic [ref=e1274]: ecommerce
+            - link "Learn More" [ref=e1275] [cursor=pointer]:
+              - /url: integrations/walmart
+        - generic [ref=e1277]:
+          - generic [ref=e1278]:
+            - generic:
+              - img "wasp barcode logo"
+          - generic [ref=e1279]:
+            - generic [ref=e1280]: Wasp Barcode
+            - generic [ref=e1281]: Mobile Hardware
+            - link "Learn More" [ref=e1282] [cursor=pointer]:
+              - /url: integrations/wasp-barcode
+        - generic [ref=e1284]:
+          - generic [ref=e1285]:
+            - generic:
+              - img "webshop logo"
+          - generic [ref=e1286]:
+            - generic [ref=e1287]: Webshop Manager
+            - generic [ref=e1288]: ecommerce
+            - link "Learn More" [ref=e1289] [cursor=pointer]:
+              - /url: integrations/web-shop-manager
+        - generic [ref=e1291]:
+          - generic [ref=e1292]:
+            - generic:
+              - img "woocommerce logo"
+          - generic [ref=e1293]:
+            - generic [ref=e1294]: WooCommerce
+            - generic [ref=e1295]: ecommerce
+            - link "Learn More" [ref=e1296] [cursor=pointer]:
+              - /url: integrations/woocommerce
+        - generic [ref=e1298]:
+          - generic [ref=e1299]:
+            - generic:
+              - img "windows logo"
+          - generic [ref=e1300]:
+            - generic [ref=e1301]: Windows
+            - generic [ref=e1302]: Platform
+            - link "Learn More" [ref=e1303] [cursor=pointer]:
+              - /url: integrations/windows
+        - generic [ref=e1305]:
+          - generic [ref=e1306]:
+            - generic:
+              - img "xero logo"
+          - generic [ref=e1307]:
+            - generic [ref=e1308]: Xero
+            - generic [ref=e1309]: Accounting
+            - link "Learn More" [ref=e1310] [cursor=pointer]:
+              - /url: integrations/xero
+        - generic [ref=e1312]:
+          - generic [ref=e1313]:
+            - generic:
+              - img "zebra logo"
+          - generic [ref=e1314]:
+            - generic [ref=e1315]: Zebra
+            - generic [ref=e1316]: Mobile Hardware
+        - generic [ref=e1318]:
+          - generic [ref=e1319]:
+            - generic:
+              - img "zencart logo"
+          - generic [ref=e1320]:
+            - generic [ref=e1321]: Zen Cart
+            - generic [ref=e1322]: ecommerce
+            - link "Learn More" [ref=e1323] [cursor=pointer]:
+              - /url: integrations/zen-cart
+        - generic [ref=e1325]:
+          - generic [ref=e1326]:
+            - generic:
+              - img "zoho logo"
+          - generic [ref=e1327]:
+            - generic [ref=e1328]: Zoho
+            - generic [ref=e1329]: CRM
+            - link "Learn More" [ref=e1330] [cursor=pointer]:
+              - /url: integrations/zoho
+    - generic [ref=e1340]:
+      - generic [ref=e1341]: Deliver transparency and drive efficiency at every step
+      - generic [ref=e1349]:
+        - generic [ref=e1352]:
+          - generic: +$10M revenue
+          - generic: after unifying inventory, production, and fulfillment in Fishbowl.
+          - generic:
+            - text: "\"Fishbowl has completely changed how we handle inventory and job costing. We used to chase down numbers across systems, but now everything is synced.\""
+            - generic: — Ryan Doty, Accountant at Fierce Firearms
+          - link "Read the Story >" [ref=e1353] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/casestudies/fierce-firearms
+        - generic [ref=e1356]:
+          - generic: –50% scheduling time
+          - generic: with finite-capacity planning and editable WOs/BOMs.
+          - generic:
+            - text: "\"“We used to dump 16 reports into five different spreadsheets just to get the data that Fishbowl now does in one click.”\""
+            - generic: — Jonathon Rhynd, Supply Chain Systems Manager at Velocity Restorations
+          - link "Read the Story >" [ref=e1357] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/casestudies/velocity-restorations
+        - generic [ref=e1360]:
+          - generic: +10% in margins
+          - generic: with AI-driven insights and recommendations that helped boost profitability.
+          - generic: "\"Fishbowl AI gives us the confidence to react faster and smarter to market changes. It’s like having a crystal ball for our business.\""
+          - link "Read the Story >" [ref=e1361] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/casestudies/tsi-supercool
+        - generic [ref=e1364]:
+          - generic: –28% inventory costs
+          - generic: via AI-guided replenishment and vendor-aware POs.
+          - generic: "\"“We saw 28% lower inventory costs freeing up capital for growth and innovation.”\""
+          - link "Read the Story >" [ref=e1365] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/casestudies/hodo-foods
+        - generic [ref=e1368]:
+          - generic: +$10M revenue
+          - generic: after unifying inventory, production, and fulfillment in Fishbowl.
+          - generic:
+            - text: "\"Fishbowl has completely changed how we handle inventory and job costing. We used to chase down numbers across systems, but now everything is synced.\""
+            - generic: — Ryan Doty, Accountant at Fierce Firearms
+          - link "Read the Story >" [ref=e1369] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/casestudies/fierce-firearms
+        - generic [ref=e1372]:
+          - generic: –50% scheduling time
+          - generic: with finite-capacity planning and editable WOs/BOMs.
+          - generic:
+            - text: "\"“We used to dump 16 reports into five different spreadsheets just to get the data that Fishbowl now does in one click.”\""
+            - generic: — Jonathon Rhynd, Supply Chain Systems Manager at Velocity Restorations
+          - link "Read the Story >" [ref=e1373] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/casestudies/velocity-restorations
+        - generic [ref=e1376]:
+          - generic: +10% in margins
+          - generic: with AI-driven insights and recommendations that helped boost profitability.
+          - generic: "\"Fishbowl AI gives us the confidence to react faster and smarter to market changes. It’s like having a crystal ball for our business.\""
+          - link "Read the Story >" [ref=e1377] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/casestudies/tsi-supercool
+        - generic [ref=e1380]:
+          - generic: –28% inventory costs
+          - generic: via AI-guided replenishment and vendor-aware POs.
+          - generic: "\"“We saw 28% lower inventory costs freeing up capital for growth and innovation.”\""
+          - link "Read the Story >" [ref=e1381] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/casestudies/hodo-foods
+    - generic [ref=e1526]:
+      - heading "In-House Implementation. Expert Support. Fair Pricing." [level=2] [ref=e1531]
+      - generic [ref=e1534]:
+        - generic [ref=e1535]:
+          - generic [ref=e1550]: Expert Implementation, AI Guided Data Migration
+          - generic [ref=e1551]: Go live with your inventory management software in 2 to 6 weeks. In-house experts, not outsourced consultants.
+        - generic [ref=e1552]:
+          - generic [ref=e1567]: Inventory Support From People Who Actually Answer
+          - generic [ref=e1568]: Fast phone support, plus live chat and email. Zero outsourcing. Experts who know inventory management, not script-readers.
+        - generic [ref=e1569]:
+          - generic [ref=e1576]: Pricing That Doesn’t Tax Your Success
+          - generic [ref=e1577]: Straightforward per-user pricing. No surprise extras.
+      - generic [ref=e1578]: See Pricing
+    - generic [ref=e1588]:
+      - generic:
+        - generic:
+          - generic:
+            - img "woman of color wearing orange hardhat writing on clipboard while looking at inventory in machinery warehouse"
+      - generic [ref=e1591]:
+        - heading "Fishbowl makes it easy to bring it all together. We’ll show you how." [level=2] [ref=e1593]
+        - generic [ref=e1594]: Book a demo
+    - generic [ref=e1604]:
+      - heading "Frequently Asked Questions" [level=2] [ref=e1605]
+      - generic [ref=e1612]:
+        - generic [ref=e1613]:
+          - heading "What is an inventory management system?" [level=3] [ref=e1621]
+          - paragraph [ref=e1629]: An inventory management system is software that tracks stock levels, orders, sales, and deliveries across warehouses and sales channels in real time. Fishbowl's inventory management system adds multi-location tracking, barcode scanning, manufacturing support, and two-way QuickBooks and Xero integration.
+        - generic [ref=e1630]:
+          - heading "What is the best inventory management software for small businesses?" [level=3] [ref=e1638]
+          - paragraph [ref=e1646]: The best inventory management software for small businesses depends on your workflows, but the top options for growing SMBs with QuickBooks or Xero are Fishbowl, Cin7, and Zoho Inventory. Fishbowl is purpose-built for manufacturers, distributors, and product businesses that need multi-warehouse management, barcode scanning, and deep accounting integration.
+        - generic [ref=e1647]:
+          - heading "How much does inventory management software cost?" [level=3] [ref=e1655]
+          - paragraph [ref=e1663]: Inventory management software typically costs between $100 and $500 per month for small and mid-size businesses, with enterprise plans running higher. Fishbowl offers flexible pricing based on your warehouse count and user needs.
+        - generic [ref=e1664]:
+          - heading "How can Fishbowl benefit small businesses?" [level=3] [ref=e1672]
+          - paragraph [ref=e1680]: Inventory control software like Fishbowl helps to automate processes, reduce human error, and manage the flow of company inventory. Fishbowl’s comprehensive solution empowers you to manage inventory across multiple locations and fulfill orders across multiple sales channels. When there’s low stock and it’s time to reorder, Fishbowl can generate a report to show you exactly what’s needed. And it can automatically generate purchase orders containing the appropriate vendors, part quantities, and shipping address to speed up the procurement process.
+        - generic [ref=e1681]:
+          - heading "How does Fishbowl integrate with QuickBooks?" [level=3] [ref=e1689]
+          - paragraph [ref=e1697]: Fishbowl seamlessly connects with both QuickBooks Desktop and QuickBooks Online, allowing you to manage inventory and manufacturing in Fishbowl while maintaining your financial records in QuickBooks. This powerful integration eliminates double entry, reduces errors, and gives you a complete view of your business operations.
+        - generic [ref=e1698]:
+          - heading "Does Fishbowl support multiple warehouse locations?" [level=3] [ref=e1706]
+          - paragraph [ref=e1714]: Absolutely. Fishbowl is built to handle the complexity of multi-location operations, giving you complete visibility and control across all your warehouses and distribution centers. Whether you're managing two locations or twenty, Fishbowl provides the tools you need to operate efficiently at scale.
+        - generic [ref=e1715]:
+          - heading "Can Fishbowl handle manufacturing workflows?" [level=3] [ref=e1723]
+          - paragraph [ref=e1731]: Yes, and it excels at it. Fishbowl provides comprehensive manufacturing capabilities designed to streamline your entire production process, from initial planning through final assembly. Whether you're running a small fabrication shop or managing complex multi-stage production, Fishbowl gives you the control and visibility you need to manufacture efficiently.
+        - generic [ref=e1732]:
+          - heading "How long does it take to implement inventory management software?" [level=3] [ref=e1740]
+          - paragraph [ref=e1748]: Everything you need to go live with confidence in 2-6 weeks. Fishbowl implementation is a comprehensive, expert-led process designed to set your business up for success from day one. Unlike competitors who hand you off to third-party consultants or leave you to figure things out on your own, Fishbowl provides dedicated, in-house support from experienced professionals who guide you through every step—from initial database creation to integration testing and beyond.
+    - generic [ref=e1754]:
+      - generic [ref=e1755]:
+        - generic [ref=e1756]:
+          - heading "Fishbowl Resources" [level=5] [ref=e1757]
+          - heading "Read about our latest industry insights" [level=2] [ref=e1761]
+        - generic [ref=e1762]: Browse Fishbowl’s Blog
+      - generic [ref=e1767]:
+        - generic [ref=e1770]:
+          - link [ref=e1771] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/blog/reorder-point-calculator
+          - generic [ref=e1773]:
+            - generic [ref=e1774]: Jonny Parker · September 30, 2023
+            - link [ref=e1776] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/reorder-point-calculator
+              - heading "Reorder Point (ROP) Calculator and Formula" [level=5] [ref=e1777]
+            - generic [ref=e1778]: Reorder point or ROP is the inventory level at which a company should replenish stock to avoid shortages and stockouts.
+            - link "Read More" [ref=e1779] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/reorder-point-calculator
+        - generic [ref=e1782]:
+          - link [ref=e1783] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/blog/small-business-barcode-inventory-system
+          - generic [ref=e1785]:
+            - generic [ref=e1786]: Kent Gigger · October 10, 2023
+            - link [ref=e1788] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/small-business-barcode-inventory-system
+              - 'heading "Barcode Inventory System for Small Businesses: 5 Key Features" [level=5] [ref=e1789]'
+            - generic [ref=e1790]: A barcode inventory system can help increase the efficiency of businesses of all sizes. Here's a quick guide to choosing the best software.
+            - link "Read More" [ref=e1791] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/small-business-barcode-inventory-system
+        - generic [ref=e1794]:
+          - link [ref=e1795] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/inventory-control
+          - generic [ref=e1797]:
+            - generic [ref=e1798]: June 23, 2024
+            - link [ref=e1800] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/inventory-control
+              - heading "What is Inventory Control?" [level=5] [ref=e1801]
+            - generic [ref=e1802]: Inventory control primarily refers to the process of reducing the number of slow-moving stock and increasing the number of fast-moving items.
+            - link "Read More" [ref=e1803] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/inventory-control
+        - generic [ref=e1806]:
+          - link [ref=e1807] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/inventory-tracking-system
+          - generic [ref=e1809]:
+            - generic [ref=e1810]: June 22, 2024
+            - link [ref=e1812] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/inventory-tracking-system
+              - heading "Methods and tips for inventory tracking" [level=5] [ref=e1813]
+            - generic [ref=e1814]: Methods and tips for inventory tracking isn't low tech or outdated. Rather, it's accessible and clear to all who have a connection to inventory.
+            - link "Read More" [ref=e1815] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/inventory-tracking-system
+        - generic [ref=e1818]:
+          - link [ref=e1819] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/blog/6-essential-types-of-manufacturing-processes
+          - generic [ref=e1821]:
+            - generic [ref=e1822]: Jonny Parker · April 15, 2024
+            - link [ref=e1824] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/6-essential-types-of-manufacturing-processes
+              - heading "6 Essential Types of Manufacturing Processes" [level=5] [ref=e1825]
+            - generic [ref=e1826]: Manufacturing is the heart of your product. Here are the various types of manufacturing processes to help you choose the best approach for your needs.
+            - link "Read More" [ref=e1827] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/6-essential-types-of-manufacturing-processes
+        - generic [ref=e1830]:
+          - link [ref=e1831] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/blog/e-commerce-inventory-management-techniques-and-software
+          - generic [ref=e1833]:
+            - generic [ref=e1834]: Jonny Parker · January 26, 2024
+            - link [ref=e1836] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/e-commerce-inventory-management-techniques-and-software
+              - 'heading "Ecommerce Inventory Management: Techniques and Software" [level=5] [ref=e1837]'
+            - generic [ref=e1838]: How can ecommerce retailers address an issue that can’t be solved by visibility alone? The problem boils down to consolidation.
+            - link "Read More" [ref=e1839] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/e-commerce-inventory-management-techniques-and-software
+        - generic [ref=e1842]:
+          - link [ref=e1843] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/blog/quickbooks-desktop-is-being-discontinued-what-do-i-do-next
+          - generic [ref=e1845]:
+            - generic [ref=e1846]: Jonny Parker · April 22, 2024
+            - link [ref=e1848] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/quickbooks-desktop-is-being-discontinued-what-do-i-do-next
+              - 'heading "QuickBooks Desktop Is Being Discontinued: What Do I Do Next?" [level=5] [ref=e1849]'
+            - generic [ref=e1850]: Stay informed about the upcoming discontinuation of QuickBooks Desktop. Find out how it will affect your access to payroll, technical support, and more.
+            - link "Read More" [ref=e1851] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/quickbooks-desktop-is-being-discontinued-what-do-i-do-next
+        - generic [ref=e1854]:
+          - link [ref=e1855] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/blog/quickbooks-vs-erp-which-is-best-for-your-business
+          - generic [ref=e1857]:
+            - generic [ref=e1858]: Jonny Parker · March 29, 2023
+            - link [ref=e1860] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/quickbooks-vs-erp-which-is-best-for-your-business
+              - heading "QuickBooks vs. ERP" [level=5] [ref=e1861]
+            - generic [ref=e1862]: Discover the key differences between QuickBooks and ERP systems. Learn how ERP fills in the gaps that QuickBooks can't manage for growing businesses.
+            - link "Read More" [ref=e1863] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/quickbooks-vs-erp-which-is-best-for-your-business
+        - generic [ref=e1866]:
+          - link [ref=e1867] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/blog/advanced-inventory-for-quickbooks-benefits-features
+          - generic [ref=e1869]:
+            - generic [ref=e1870]: Jonny Parker · April 12, 2024
+            - link [ref=e1872] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/advanced-inventory-for-quickbooks-benefits-features
+              - 'heading "Advanced Inventory for QuickBooks: Benefits & Features" [level=5] [ref=e1873]'
+            - generic [ref=e1874]: Learn how Fishbowl’s inventory management software increases these capabilities without forcing businesses to leave the QuickBooks accounting solution they know and trust.
+            - link "Read More" [ref=e1875] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/blog/advanced-inventory-for-quickbooks-benefits-features
+        - generic [ref=e1878]:
+          - link [ref=e1879] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/solutions/asset-inventory-tracking
+          - generic [ref=e1881]:
+            - generic [ref=e1882]: January 7, 2025
+            - link [ref=e1884] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/solutions/asset-inventory-tracking
+              - heading "Keep costs under control with seamless asset inventory tracking" [level=5] [ref=e1885]
+            - generic [ref=e1886]: Asset inventory tracking is key to streamlining inventory management and keeping equipment in good condition.
+            - link "Read More" [ref=e1887] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/solutions/asset-inventory-tracking
+        - generic [ref=e1890]:
+          - link [ref=e1891] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/solutions/barcode-scanning-solution
+          - generic [ref=e1893]:
+            - generic [ref=e1894]: January 14, 2025
+            - link [ref=e1896] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/solutions/barcode-scanning-solution
+              - heading "Barcode Scanning Solution for Efficient Inventory Management" [level=5] [ref=e1897]
+            - generic [ref=e1898]: Streamlining inventory management is easier when you pair Fishbowl’s inventory software with a strong barcode scanning solution.
+            - link "Read More" [ref=e1899] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/solutions/barcode-scanning-solution
+        - generic [ref=e1902]:
+          - link [ref=e1903] [cursor=pointer]:
+            - /url: https://www.fishbowlinventory.com/solutions/automate-inventory-reporting
+          - generic [ref=e1905]:
+            - generic [ref=e1906]: January 24, 2025
+            - link [ref=e1908] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/solutions/automate-inventory-reporting
+              - heading "Automate inventory reporting" [level=5] [ref=e1909]
+            - generic [ref=e1910]: Automate inventory reporting with Fishbowl for real-time insights, reduced errors, and streamlined processes. Boost efficiency and profitability.
+            - link "Read More" [ref=e1911] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/solutions/automate-inventory-reporting
+  - contentinfo [ref=e1912]:
+    - generic [ref=e1913]:
+      - generic [ref=e1914]:
+        - link [ref=e1915] [cursor=pointer]:
+          - /url: /
+        - heading "You run the business, we automate the details" [level=2] [ref=e1922]
+        - generic [ref=e1923] [cursor=pointer]:
+          - img "woman smiling happy" [ref=e1924]
+          - generic [ref=e1925]: Book a demo
+        - generic [ref=e1927]: Fishbowl1220 South 630 East, Suite 200American Fork, Utah 84003
+      - generic [ref=e1928]:
+        - generic [ref=e1929]:
+          - generic [ref=e1930]:
+            - heading "Products" [level=4] [ref=e1931]
+            - generic [ref=e1932] [cursor=pointer]: Fishbowl Manufacturing
+            - generic [ref=e1933] [cursor=pointer]: Fishbowl Inventory
+            - generic [ref=e1934] [cursor=pointer]: Fishbowl Payments
+            - generic [ref=e1935] [cursor=pointer]: Fishbowl AI Insights
+            - generic [ref=e1936] [cursor=pointer]: Fishbowl Commerce Suite
+            - generic [ref=e1937] [cursor=pointer]: Fishbowl Warehouse
+            - generic [ref=e1938] [cursor=pointer]: Fishbowl Time
+          - generic [ref=e1939]:
+            - heading "Integrations" [level=4] [ref=e1940]
+            - generic [ref=e1941] [cursor=pointer]: QuickBooks
+            - generic [ref=e1942] [cursor=pointer]: QuickBooks Online
+            - generic [ref=e1943] [cursor=pointer]: Xero
+            - generic [ref=e1944] [cursor=pointer]: Magento
+            - generic [ref=e1945] [cursor=pointer]: ShipStation
+            - generic [ref=e1946] [cursor=pointer]: More Integrations
+          - generic [ref=e1947]:
+            - heading "QuickBooks" [level=4] [ref=e1948]
+            - generic [ref=e1949] [cursor=pointer]: QuickBooks Integrations
+            - generic [ref=e1950] [cursor=pointer]: QuickBooks ERP
+            - generic [ref=e1951] [cursor=pointer]: QuickBooks Inventory Management
+            - generic [ref=e1952] [cursor=pointer]: QuickBooks Online
+            - generic [ref=e1953] [cursor=pointer]: QuickBooks Canada
+            - generic [ref=e1954] [cursor=pointer]: QuickBooks Payments
+            - link "Shop QuickBooks Products" [ref=e1955] [cursor=pointer]:
+              - /url: https://shop.fishbowlinventory.com/
+          - generic [ref=e1956]:
+            - img "QuickBooks Solution Provider" [ref=e1958]
+            - img "QuickBooks Certified ProAdvisor" [ref=e1960]
+            - img "QuickBooks Payroll" [ref=e1962]
+            - img "QuickBooks Online" [ref=e1964]
+        - generic [ref=e1965]:
+          - generic [ref=e1966]:
+            - heading "About" [level=4] [ref=e1967]
+            - generic [ref=e1968] [cursor=pointer]: Company
+            - generic [ref=e1969] [cursor=pointer]: Features
+            - generic [ref=e1970] [cursor=pointer]: Pricing
+            - generic [ref=e1971] [cursor=pointer]: Integrations
+            - generic [ref=e1972] [cursor=pointer]: Your Privacy Choices
+          - generic [ref=e1973]:
+            - heading "Resources" [level=4] [ref=e1974]
+            - generic [ref=e1975] [cursor=pointer]: Fishbowl Blog
+            - generic [ref=e1976] [cursor=pointer]: Fishbowl Case Studies
+            - link "IMS for Managing Pharma & Health Inventory" [ref=e1977] [cursor=pointer]:
+              - /url: https://try.fishbowlinventory.com/guide-ims-health-and-pharmaceuticals/
+            - link "Ultimate Guide to Manufacturing" [ref=e1978] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/try/the-ultimate-manufacturing-guide
+            - link "Inventory Template" [ref=e1979] [cursor=pointer]:
+              - /url: https://try.fishbowlinventory.com/excel-inventory-template/
+            - link "Bill of Materials Template" [ref=e1980] [cursor=pointer]:
+              - /url: https://try.fishbowlinventory.com/bill-of-materials-template/
+            - link "Careers" [ref=e1981] [cursor=pointer]:
+              - /url: https://www.linkedin.com/jobs/fishbowl-jobs-worldwide?f_C=63440&trk=top-card_top-card-primary-button-top-card-primary-cta&position=1&pageNum=0
+          - generic [ref=e1982]:
+            - heading "Explore" [level=4] [ref=e1983]
+            - generic [ref=e1984] [cursor=pointer]: Sales
+            - generic [ref=e1985] [cursor=pointer]: Industries
+            - generic [ref=e1986] [cursor=pointer]: Manufacturing
+        - generic [ref=e1987]:
+          - generic [ref=e1988]:
+            - heading "Community" [level=4] [ref=e1989]
+            - generic [ref=e1990] [cursor=pointer]: Case Studies
+            - generic [ref=e1991] [cursor=pointer]: Press
+            - generic [ref=e1992] [cursor=pointer]: Partners
+          - generic [ref=e1993]:
+            - heading "Support" [level=4] [ref=e1994]
+            - link "MyFishbowl" [ref=e1995] [cursor=pointer]:
+              - /url: https://www.fishbowlinventory.com/myfishbowl/
+            - 'link "North America: 800-774-7085" [ref=e1996] [cursor=pointer]':
+              - /url: tel:8007747085
+            - 'link "Australia: 1300 785 755" [ref=e1997] [cursor=pointer]':
+              - /url: tel:1300785755
+            - 'link "New Zealand: 0800 785 755" [ref=e1998] [cursor=pointer]':
+              - /url: tel:0800785755
+          - generic [ref=e1999]:
+            - heading "Sales" [level=4] [ref=e2000]
+            - 'link "North America: 800-774-7085 ext. 1" [ref=e2001] [cursor=pointer]':
+              - /url: tel:8007747085
+            - 'link "Australia: 1300 785 755" [ref=e2002] [cursor=pointer]':
+              - /url: tel:1300785755
+            - 'link "New Zealand: 0800 785 755" [ref=e2003] [cursor=pointer]':
+              - /url: tel:0800785755
+            - 'link "United Kingdom: 0161 564 5606" [ref=e2004] [cursor=pointer]':
+              - /url: tel:01615645606
+            - link "fishbowlsales@fbinv.com" [ref=e2005] [cursor=pointer]:
+              - /url: mailto:fishbowlsales@fbinv.com
+          - generic [ref=e2006]:
+            - link "Visit Fishbowl on facebook" [ref=e2007] [cursor=pointer]:
+              - /url: https://www.facebook.com/fishbowl.inventory
+            - link "Visit Fishbowl on twitter" [ref=e2010] [cursor=pointer]:
+              - /url: https://twitter.com/fishbowl
+            - link "Visit Fishbowl on linkedin" [ref=e2013] [cursor=pointer]:
+              - /url: https://www.linkedin.com/company/fishbowl/mycompany/
+            - link "Visit Fishbowl on youtube" [ref=e2016] [cursor=pointer]:
+              - /url: https://www.youtube.com/user/fishbowl4qb
+    - generic [ref=e2019]:
+      - generic [ref=e2020]:
+        - link "Status" [ref=e2021] [cursor=pointer]:
+          - /url: https://fishbowlsolutions.statuspage.io/
+        - generic [ref=e2022] [cursor=pointer]: Privacy
+        - generic [ref=e2023] [cursor=pointer]: Terms
+        - generic [ref=e2024] [cursor=pointer]: Log in
+        - generic [ref=e2025] [cursor=pointer]: Security
+        - button "Cookie Settings" [ref=e2026] [cursor=pointer]
+        - generic [ref=e2027] [cursor=pointer]: Your Privacy Choices
+      - button "United States ▾" [ref=e2029] [cursor=pointer]:
+        - generic [ref=e2035]: United States
+        - generic [ref=e2036]: ▾
+      - generic [ref=e2037]: © Fishbowl 2001 - 2026 | The industry's most flexible inventory management software. All rights reserved.
