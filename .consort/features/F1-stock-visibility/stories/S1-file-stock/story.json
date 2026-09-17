@@ -1,0 +1,6 @@
+{
+  "id": "S1-file-stock",
+  "asA": "warehouse operator",
+  "iWantTo": "file a stock level for a SKU at a location and retrieve it later",
+  "soThat": "I have a reliable record of what is on each shelf"
+}

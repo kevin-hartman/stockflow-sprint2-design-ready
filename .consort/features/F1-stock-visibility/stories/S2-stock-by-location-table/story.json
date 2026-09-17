@@ -1,0 +1,10 @@
+{
+  "id": "S2-stock-by-location-table",
+  "asA": "warehouse operator",
+  "iWantTo": "see a scannable table of stock by location on the home screen",
+  "soThat": "I can quickly survey what is on each shelf",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "S1 delivers the write+read API and form submit; S2 delivers the home-screen table view — a distinct read surface with layout, right-aligned quantities, and an explicit empty-location state. Building S1 fully leaves the home-screen table entirely unbuilt."
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "AC2-shows-tracking-code",
+  "status": "draft",
+  "given": "a SKU's stock record carries its combined tracking code (inventory_code)",
+  "when": "the operator views that SKU's detail view",
+  "then": "the record's tracking code is shown alongside its location and quantity",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1 asserts the per-location rows and their location/quantity exist; AC2 adds the distinct outcome that each record's combined tracking code is displayed, which can break (code omitted) while the location/quantity rows still render correctly."
+  },
+  "layer": "E2E",
+  "architectural_notes": "E2E: outcome is the SPA displaying each record's combined inventory_code alongside its location and quantity, derived from the real detail response. Boundary app/routes/ returns the code as JSON (repository reads the NOT NULL inventory_code column, PI2); the client renders it. Client-server contract verified end-to-end against the paired branch so the actual wire shape carrying the tracking code is exercised, not a stubbed prop. No new persistence invariant."
+}

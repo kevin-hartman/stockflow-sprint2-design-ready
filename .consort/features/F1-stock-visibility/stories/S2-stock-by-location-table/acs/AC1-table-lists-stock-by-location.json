@@ -1,0 +1,9 @@
+{
+  "id": "AC1-table-lists-stock-by-location",
+  "status": "draft",
+  "given": "stock records exist for one or more (sku, location) pairs",
+  "when": "the operator opens the home screen",
+  "then": "a single flat table lists one row per stock record showing that record's SKU, location, and quantity (all records, with no per-location navigation or filter)",
+  "layer": "E2E",
+  "architectural_notes": "E2E: the home-screen table renders rows derived from a REAL server JSON response — the boundary (app/routes) exposes ONE unfiltered stock-list endpoint (no location route param / no per-location filter in S2), produced by app/services reading via app/repositories from the app/models stock_records entity. The React SPA renders a single FLAT global table, one row per (sku, location, quantity) across all records. Only a Playwright e2e against the live API verifies the SPA parses the actual response envelope and lists every record. No new persistence; reads the S1-established stock_records table."
+}

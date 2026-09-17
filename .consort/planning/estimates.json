@@ -1,0 +1,14 @@
+{
+  "estimates": [
+    {
+      "feature_id": "F1-stock-visibility",
+      "size": "M",
+      "rationale": "Greenfield foundation: stock schema + unique (sku,location) constraint, full boundary/service/repository layering, plus home table, empty-state, and SKU detail UI with a filing round-trip."
+    },
+    {
+      "feature_id": "F2-stock-adjustment",
+      "size": "S",
+      "rationale": "Builds on F1's records: one write path (value/delta), never-below-zero + immutable timestamp/actor invariants, and a validation-first form with optimistic in-place row update."
+    }
+  ]
+}

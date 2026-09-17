@@ -1,0 +1,31 @@
+{
+  "feature_id": "F1-stock-visibility",
+  "story_id": "S2-stock-by-location-table",
+  "ordered_for": "design-momentum",
+  "items": [
+    {
+      "id": "T21",
+      "description": "navigating to the home route ('/') in a live browser against the real API renders a flat stock table listing one row per (sku, location, quantity) record for every record returned by the global unfiltered stock-list endpoint (real Playwright e2e, no mocks)",
+      "ac_id": "AC1-table-lists-stock-by-location",
+      "status": "pending",
+      "kind": "client",
+      "scenario_file": "client/tests/e2e/S2-stock-by-location-table/AC1-table-lists-stock-by-location.spec.ts"
+    },
+    {
+      "id": "T22",
+      "description": "navigating to the home route ('/') in a live browser against the real API with rows present confirms each quantity cell carries the design-guide class 'stock-table__num' (which sets right-alignment, font-mono, and tabular-nums) (real Playwright e2e, no mocks)",
+      "ac_id": "AC2-quantity-right-aligned",
+      "status": "pending",
+      "kind": "client",
+      "scenario_file": "client/tests/e2e/S2-stock-by-location-table/AC2-quantity-right-aligned.spec.ts"
+    },
+    {
+      "id": "T23",
+      "description": "navigating to the home route ('/') in a live browser when the live API returns zero records for the GLOBAL stock list (the one unfiltered endpoint — not a per-location query; S2 has no per-location filter) renders the design-guide empty-state element carrying class 'empty-state' with the text 'No stock at this location' instead of a blank page or bare empty table body (real Playwright e2e, no mocks)",
+      "ac_id": "AC3-empty-location-state",
+      "status": "pending",
+      "kind": "client",
+      "scenario_file": "client/tests/e2e/S2-stock-by-location-table/AC3-empty-location-state.spec.ts"
+    }
+  ]
+}

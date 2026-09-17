@@ -1,0 +1,13 @@
+{
+  "id": "AC3-empty-location-state",
+  "status": "draft",
+  "given": "no stock records exist, so the home-screen stock-by-location table has no rows to display",
+  "when": "the operator opens the home screen",
+  "then": "the table area shows an explicit \"No stock at this location\" empty state instead of a blank page or a bare empty table body",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1 and AC2 cover the populated global table and its quantity presentation; AC3 covers the distinct no-records outcome. The home screen renders a single flat table of all stock records (no per-location navigation or filter, per AC1), so 'empty' means the record set is empty; the empty state can break (blank page / bare empty table) while a populated table still renders fine."
+  },
+  "layer": "E2E",
+  "architectural_notes": "E2E, resolving the AC1/AC3 scoping ambiguity: S2 builds NO per-location route or filter (AC1 fixes the home screen as a single flat global table), so AC3's empty state is the EMPTY-TABLE state — it fires when the one unfiltered stock-list endpoint returns ZERO records. The React SPA renders the explicit 'No stock at this location' message in place of the empty table (not a blank page), derived from that real empty JSON response. Testable precondition for the strategist/Driver: the live API returns no records at all (global stock list empty), NOT a location-scoped query. Verified by a Playwright e2e against the live API returning an empty set; a mocked stub would not exercise the wire-to-render contract. A per-location drill-down/filter view is a separate future story, not this one."
+}

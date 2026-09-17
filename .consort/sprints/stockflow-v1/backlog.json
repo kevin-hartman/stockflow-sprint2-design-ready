@@ -1,0 +1,9 @@
+{
+  "sprint": "stockflow-v1",
+  "features": [
+    {
+      "id": "F1-stock-visibility",
+      "size": "M"
+    }
+  ]
+}

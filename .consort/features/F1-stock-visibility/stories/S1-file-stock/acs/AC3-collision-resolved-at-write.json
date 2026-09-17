@@ -1,0 +1,13 @@
+{
+  "id": "AC3-collision-resolved-at-write",
+  "given": "a stock record already exists for a SKU at a location",
+  "when": "a stock level is filed again for that same (sku, location) pair",
+  "then": "the existing record is updated in place so exactly one record exists for that pair, with no duplicate stored and no error page shown",
+  "status": "draft",
+  "layer": "E2E",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1/AC2 cover first-write and read-back of a new pair; AC3 covers the write-collision path on an existing pair. A build can create and read a fresh record correctly yet still store a duplicate or error on a repeat write, so the collision resolution is independently breakable."
+  },
+  "architectural_notes": "Write-collision on an existing (sku, location) pair: the observable outcome is that a repeat submit updates the record in place with no duplicate and NO error page shown, which requires browser observation of the rendered result off a live API response, so it is a client/server contract verified E2E (Playwright) rather than at the API layer. Realized by an upsert in the service layer (app/services) enforced physically by the PI1 unique constraint on stock_records(sku, location) in app/repositories. Cross-cutting: transactional atomicity owned by the service layer; uniqueness owned by the DB schema."
+}

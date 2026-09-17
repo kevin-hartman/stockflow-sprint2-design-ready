@@ -1,0 +1,150 @@
+{
+  "feature_id": "F1-stock-visibility",
+  "service_backed": true,
+  "layers": [
+    {
+      "name": "api",
+      "role": "boundary",
+      "module": "app/routes/",
+      "may_import": ["service"],
+      "renders_via": "react"
+    },
+    {
+      "name": "services",
+      "role": "service",
+      "module": "app/services/",
+      "may_import": ["repository", "models"]
+    },
+    {
+      "name": "repositories",
+      "role": "repository",
+      "module": "app/repositories/",
+      "may_import": ["models"]
+    },
+    {
+      "name": "models",
+      "role": "models",
+      "module": "app/models/",
+      "may_import": []
+    }
+  ],
+  "persistence_invariants": [
+    {
+      "id": "PI1-unique-sku-location",
+      "type": "unique",
+      "table": "stock_records",
+      "brief": "UNIQUE constraint on (sku, location); no two rows share the pair, so a repeat write updates in place rather than storing a duplicate (realizes R3, AC3)."
+    },
+    {
+      "id": "PI2-required-fields-not-null",
+      "type": "not_null",
+      "table": "stock_records",
+      "brief": "sku, location, quantity and inventory_code are NOT NULL; a filed stock record always carries the full pair, quantity and combined code (AC1)."
+    },
+    {
+      "id": "PI3-quantity-non-negative",
+      "type": "check",
+      "table": "stock_records",
+      "brief": "CHECK (quantity >= 0); a stored stock level is never negative (realizes the non-negative half of R2 at the schema level)."
+    },
+    {
+      "id": "PI4-migration-reversible",
+      "type": "migration_reversible",
+      "table": "stock_records",
+      "brief": "Initial create_table: after a single-step downgrade-then-upgrade the stock_records table with its columns and constraints is recreated (schema recreation semantics; there are no pre-existing rows to preserve on an initial migration)."
+    }
+  ],
+  "open_decisions": [
+    {
+      "id": "OD1-sku-catalog-authority",
+      "question": "Is stock_records the authority on whether a SKU/location is 'known', or does a later story need a separate SKU/location catalog with a foreign key? First filing establishes the pair here.",
+      "decision_status": "open"
+    },
+    {
+      "id": "OD2-inventory-code-composition",
+      "question": "What composes the 'combined' inventory_code (e.g. sku+location+batch)? Stored as an opaque string for S1; a later story may need to decompose or derive it.",
+      "decision_status": "deferred"
+    }
+  ],
+  "nfrs": [
+    {
+      "id": "NFR-R1-migration-data-survival",
+      "brief_ref": "R1",
+      "applies_to": "F1-stock-visibility",
+      "category": "data-integrity",
+      "tier": "product",
+      "hil_status": "proposed",
+      "fitness_function": "an additive migration on the pre-existing stock_records table preserves every row created before it, and an inventory adjustment's timestamp and actor stay immutable once written.",
+      "fitness_functions": [
+        "an additive migration on the pre-existing stock_records table preserves every row created before it (row survival applies only to additive migrations on an existing table, not the initial create_table)",
+        "an inventory adjustment record's timestamp and actor are immutable once written (no update path mutates them)"
+      ]
+    },
+    {
+      "id": "NFR-R2-no-negative-no-overcommit",
+      "brief_ref": "R2",
+      "applies_to": "F1-stock-visibility",
+      "category": "data-integrity",
+      "tier": "product",
+      "hil_status": "proposed",
+      "fitness_function": "a write that would store a negative quantity or overcommit beyond available quantity is rejected at write time; never a stored negative, never a silently-allowed double-allocation.",
+      "fitness_functions": [
+        "a write that would store a negative stock quantity is rejected at write time (never a stored negative)",
+        "a pick that would overcommit beyond available quantity is rejected at write time (never a silently-allowed double-allocation)"
+      ]
+    },
+    {
+      "id": "NFR-R3-unique-sku-location",
+      "brief_ref": "R3",
+      "applies_to": "S1-file-stock",
+      "category": "data-integrity",
+      "tier": "product",
+      "hil_status": "proposed",
+      "fitness_function": "every (sku, location) pair is uniquely addressable; a repeat write for an existing pair updates in place so exactly one row exists, with no duplicate stored and no error surfaced (PI1)."
+    },
+    {
+      "id": "NFR-R4-real-branch-integration-tests",
+      "brief_ref": "R4",
+      "applies_to": "F1-stock-visibility",
+      "category": "operability",
+      "tier": "platform",
+      "hil_status": "proposed",
+      "fitness_function": "the integration suite runs against the paired Lakebase branch via DATABASE_URL, not a mock or in-memory substitute; CI refuses to merge a PR whose integration tests do not run against a real branch."
+    },
+    {
+      "id": "NFR-R5-spa-json-api-boundary",
+      "brief_ref": "R5",
+      "applies_to": "F1-stock-visibility",
+      "category": "architecture-posture",
+      "tier": "platform",
+      "hil_status": "proposed",
+      "fitness_function": "the boundary layer returns JSON, not server-rendered HTML; the UI is a single-page React + TypeScript app under client/ that navigates client-side with no full-page reload."
+    },
+    {
+      "id": "NFR-layering-inward-dependencies",
+      "applies_to": "F1-stock-visibility",
+      "category": "layering",
+      "tier": "platform",
+      "hil_status": "proposed",
+      "defended_by_gate": "consort-layering-clean",
+      "fitness_function": "imports point inward only (boundary -> service -> repository -> models) and the ORM session is confined to the repository; enforced deterministically by the consort-layering-clean gate (checkImportLayering + checkOrmContainment)."
+    },
+    {
+      "id": "NFR-config-in-env",
+      "applies_to": "F1-stock-visibility",
+      "category": "config-in-env",
+      "tier": "platform",
+      "hil_status": "proposed",
+      "defended_by_gate": "config-in-env",
+      "fitness_function": "the DB connection is read from DATABASE_URL in the environment (no hard-coded connection string, database name untouched); enforced by the config-in-env gate."
+    },
+    {
+      "id": "NFR-validation-messages-name-field",
+      "applies_to": "S1-file-stock",
+      "category": "usability",
+      "tier": "product",
+      "hil_status": "proposed",
+      "fitness_function": "a rejected write returns a clear validation message naming the offending field (not a bare 'bad request'), rendered inline in the SPA."
+    }
+  ]
+}

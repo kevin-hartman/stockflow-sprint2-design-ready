@@ -1,0 +1,13 @@
+{
+  "id": "AC2-retrieve-stock-record",
+  "given": "a stock record has been filed for a SKU at a location",
+  "when": "the operator retrieves the stock for that (sku, location) pair",
+  "then": "the previously filed quantity and inventory_code are returned unchanged",
+  "status": "draft",
+  "layer": "API",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1 asserts the write creates the record; AC2 asserts a later read returns the persisted values. A write could succeed while the read path returns stale or wrong data, so read-back is independently breakable from create."
+  },
+  "architectural_notes": "Read-back is a data-returning API contract exercised at the HTTP boundary (app/routes) delegating to app/services which reads through app/repositories; the observable outcome is the JSON response body, not a browser-rendered state, so it is verified at the API layer against the real branch DB. Cross-cutting: none beyond boundary serialization; no write transaction. Owner module: app/repositories stock repository for the read, surfaced by app/services."
+}

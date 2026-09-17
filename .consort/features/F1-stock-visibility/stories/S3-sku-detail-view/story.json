@@ -1,0 +1,10 @@
+{
+  "id": "S3-sku-detail-view",
+  "asA": "warehouse operator",
+  "iWantTo": "view a SKU detail page showing its stock across all locations including the tracking code",
+  "soThat": "I can see the full picture for a SKU in one place",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "S2 delivers the home-screen location table; S3 delivers a separate per-SKU detail view with cross-location stock, tracking codes, and a par-level 'not tracked' state. Building S2 fully leaves the SKU detail view entirely unbuilt."
+  }
+}
