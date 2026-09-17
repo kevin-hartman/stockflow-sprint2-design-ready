@@ -1,0 +1,6 @@
+{
+  "reviewed_at": "2026-09-17T04:52:39.155Z",
+  "refactor_requested": true,
+  "refactor_notes": "consort-layering-clean FAILED: app/services/stock_service.py lines 35 and 56 call db.commit() directly — ORM commit must move into the repository layer (architecture.md §ORM-containment); only the repository may touch the session. Additionally, a duplicated 6-line block in app/routes/stock.py should be extracted to a shared helper (DRY). Move commit calls into stock_repository and delegate from the service; consolidate the duplicated route helper.",
+  "refactored_at": "2026-09-17T04:57:32.023Z"
+}

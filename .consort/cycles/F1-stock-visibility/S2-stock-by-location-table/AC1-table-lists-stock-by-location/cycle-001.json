@@ -1,0 +1,20 @@
+{
+  "cycle_id": "cycle-001",
+  "feature_id": "F1-stock-visibility",
+  "story_id": "S2-stock-by-location-table",
+  "ac_id": "AC1-table-lists-stock-by-location",
+  "test_id": "T21",
+  "test_description": "navigating to the home route ('/') in a live browser against the real API renders a flat stock table listing one row per (sku, location, quantity) record for every record returned by the global unfiltered stock-list endpoint (real Playwright e2e, no mocks)",
+  "experiment_slug": "exp1",
+  "branch_id": "experiment-s2-stock-by-location-table-exp1",
+  "red_at": "2026-09-17T04:46:45.960Z",
+  "layer": "E2E",
+  "test_ids": [
+    "T21",
+    "T22",
+    "T23"
+  ],
+  "chunk": "E2E-1",
+  "green_at": "2026-09-17T04:51:58.698Z",
+  "navigator_verdict": "passed"
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "feature_id": "F1-stock-visibility",
+  "target": "local",
+  "url": "http://127.0.0.1:8000/health",
+  "reachable": true,
+  "verify": {
+    "passed": true,
+    "command": "./scripts/run-tests.sh",
+    "summary": "feature-verify passed against the running app"
+  },
+  "lakebase_branch": "feature-f1-stock-visibility",
+  "deployed_at": "2026-09-17T05:32:57.908Z"
+}

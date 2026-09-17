@@ -1,0 +1,25 @@
+{
+  "ordinal": 7,
+  "step": 0,
+  "label": "test-strategist",
+  "kind": "invoke-role",
+  "role": "test-strategist",
+  "story": "S1-file-stock",
+  "action": {
+    "kind": "invoke-role",
+    "role": "test-strategist",
+    "story": "S1-file-stock"
+  },
+  "produced": [
+    ".consort/features/F1-stock-visibility/stories/S1-file-stock/test-list-per-story.json",
+    ".consort/features/F1-stock-visibility/test-list.json"
+  ],
+  "deleted": [],
+  "snapshotted": false,
+  "transcript": {
+    "role": "test-strategist",
+    "model": "sonnet",
+    "toolCount": 66,
+    "finalTextChars": 76
+  }
+}

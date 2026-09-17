@@ -1,0 +1,27 @@
+{
+  "ordinal": 41,
+  "step": 0,
+  "label": "navigator",
+  "kind": "invoke-role",
+  "role": "navigator",
+  "story": "S2-stock-by-location-table",
+  "action": {
+    "kind": "invoke-role",
+    "role": "navigator",
+    "story": "S2-stock-by-location-table"
+  },
+  "produced": [
+    ".consort/cycles/F1-stock-visibility/S2-stock-by-location-table/AC1-table-lists-stock-by-location/superseded-tests.json",
+    "client/tests/e2e/S2-stock-by-location-table/AC1-table-lists-stock-by-location.spec.ts",
+    "client/tests/e2e/S2-stock-by-location-table/AC2-quantity-right-aligned.spec.ts",
+    "client/tests/e2e/S2-stock-by-location-table/AC3-empty-location-state.spec.ts"
+  ],
+  "deleted": [],
+  "snapshotted": false,
+  "transcript": {
+    "role": "navigator",
+    "model": "sonnet",
+    "toolCount": 12,
+    "finalTextChars": 109
+  }
+}

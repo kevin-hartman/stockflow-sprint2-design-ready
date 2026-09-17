@@ -1,0 +1,54 @@
+{
+  "feature_id": "F1-stock-visibility",
+  "schema_version": 1,
+  "gates": {
+    "spec": {
+      "status": "open",
+      "history": []
+    },
+    "plan": {
+      "status": "open",
+      "history": []
+    },
+    "test_list": {
+      "status": "open",
+      "history": []
+    },
+    "promote": {
+      "status": "approved",
+      "approver": "Kevin Hartman",
+      "approved_at": "2026-09-17T06:05:33.634Z",
+      "artifact_hashes": {
+        "promote_ref": "c6ea6966bc4a492e7c324989d9bac150e83c0c0fee867eb3eed741030fbed949"
+      },
+      "history": [
+        {
+          "action": "approved",
+          "at": "2026-09-17T06:05:33.634Z",
+          "approver": "Kevin Hartman",
+          "artifact_hashes": {
+            "promote_ref": "c6ea6966bc4a492e7c324989d9bac150e83c0c0fee867eb3eed741030fbed949"
+          }
+        }
+      ]
+    },
+    "deploy": {
+      "status": "approved",
+      "approver": "Kevin Hartman",
+      "approved_at": "2026-09-17T05:58:40.652Z",
+      "artifact_hashes": {
+        "deploy-evidence.json": "28e396d1da1856829a5af4566f1ad831118a358bc34d2d4eb267e03e773a3c27"
+      },
+      "history": [
+        {
+          "action": "approved",
+          "at": "2026-09-17T05:58:40.652Z",
+          "approver": "Kevin Hartman",
+          "artifact_hashes": {
+            "deploy-evidence.json": "28e396d1da1856829a5af4566f1ad831118a358bc34d2d4eb267e03e773a3c27"
+          }
+        }
+      ]
+    }
+  }
+}
