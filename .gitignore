@@ -5,13 +5,23 @@ application-local.properties
 *.log
 .DS_Store
 
-# NOTE: the Consort per-run observability paths (.consort/agent-log.jsonl,
-# run-config.json, drive-live.log, diagnostics/, next.json, cycles/,
-# experiments/, pipeline.json, .recorder-state.json, routing-decisions.jsonl,
-# turns/) were intentionally UN-ignored on request so the F1 run's audit trail
-# stays tracked. Caveat: these churn every run, so a future /design or /build
-# may see a dirty tree and block the experiment/feature-branch fork's clean-tree
-# check. Re-add these patterns if that happens.
+# Consort per-run observability (churns every run; ignored so a run's dirty tree
+# never blocks the experiment/feature-branch fork's clean-tree check). To keep an
+# audit trail, `git add -f` these at the END of a cycle. The committed corpus
+# (features/, planning/, sprints/, workflow-state.json, product-overview.md,
+# nfrs.md, design/) and the per-feature gates.json / deploy-evidence.json are
+# tracked normally and unaffected.
+.consort/agent-log.jsonl
+.consort/run-config.json
+.consort/drive-live.log
+.consort/diagnostics/
+.consort/next.json
+.consort/cycles/
+.consort/experiments/
+.consort/pipeline.json
+.consort/.recorder-state.json
+.consort/routing-decisions.jsonl
+.consort/turns/
 .sftdd/agent-log.jsonl
 .sftdd/run-config.json
 .tdd/agent-log.jsonl
