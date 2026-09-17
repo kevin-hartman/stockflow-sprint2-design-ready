@@ -5,43 +5,13 @@ application-local.properties
 *.log
 .DS_Store
 
-# Consort per-run observability (NOT planning corpus): the agent event log + the
-# resolved run-config snapshot are local to a single run/feature drive and are
-# re-initialized each run, so they must never enter git history (a stray
-# `git add -A` from a build commit would otherwise carry one feature's log onto
-# the next branch). The committed .consort corpus (features/, planning/, sprints/,
-# workflow-state.json, product-overview.md, nfrs.md, design/) is unaffected. The
-# legacy roots (.sftdd/.tdd) are kept for projects created before the rename.
-.consort/agent-log.jsonl
-.consort/run-config.json
-.consort/drive-live.log
-.consort/diagnostics/
-# next.json is the drive's stop-state pointer, rewritten on EVERY stop. Committing it dirties the
-# tree on the next stop and re-blocks the experiment cut's clean-tree check , it is per-run state,
-# not corpus, so it never enters history.
-.consort/next.json
-# The build lane's TRANSIENT run-state: per-cycle records (cycles/), per-experiment scratch
-# (experiments/), and the live build-pipeline pointer (pipeline.json). These churn every cycle and
-# describe the mechanics of a single run, not the design corpus, so they are gitignored the same way
-# next.json is , otherwise their per-cycle churn re-dirties the tree and re-blocks the next
-# experiment cut. The DESIGN corpus (features/, planning/, sprints/, workflow-state.json,
-# product-overview.md, nfrs.md, design/, architecture/) is committed, not ignored (Consort persists
-# it on the feature branch at each cut so the spec history survives for later stories).
-.consort/cycles/
-.consort/experiments/
-.consort/pipeline.json
-# The turn recorder's per-run observability: its internal file-hash map
-# (.recorder-state.json, used for delta computation), the routing-decision
-# diagnostic stream (routing-decisions.jsonl), and the per-turn record dirs
-# (turns/). All three are re-created every run and describe a single run's
-# mechanics, not the design corpus (the curated replay corpus lives in the kit
-# repo, never in a scaffolded project). The recorder already treats them as
-# internal; ignore them here so a corpus commit never sweeps them into history
-# and an untracked one never blocks the experiment / feature-branch fork's
-# clean-tree check.
-.consort/.recorder-state.json
-.consort/routing-decisions.jsonl
-.consort/turns/
+# NOTE: the Consort per-run observability paths (.consort/agent-log.jsonl,
+# run-config.json, drive-live.log, diagnostics/, next.json, cycles/,
+# experiments/, pipeline.json, .recorder-state.json, routing-decisions.jsonl,
+# turns/) were intentionally UN-ignored on request so the F1 run's audit trail
+# stays tracked. Caveat: these churn every run, so a future /design or /build
+# may see a dirty tree and block the experiment/feature-branch fork's clean-tree
+# check. Re-add these patterns if that happens.
 .sftdd/agent-log.jsonl
 .sftdd/run-config.json
 .tdd/agent-log.jsonl
