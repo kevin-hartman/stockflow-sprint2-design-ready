@@ -1,0 +1,7 @@
+{
+  "tests": [
+    "client/tests/e2e/home.spec.ts"
+  ],
+  "reason": "T21 replaces the placeholder home route with a real stock table E2E; the starter home.spec.ts asserts the removed status-badge placeholder",
+  "refactored": true
+}

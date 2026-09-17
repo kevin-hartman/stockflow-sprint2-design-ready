@@ -1,0 +1,25 @@
+{
+  "cycle_id": "cycle-001",
+  "feature_id": "F1-stock-visibility",
+  "story_id": "S1-file-stock",
+  "ac_id": "AC2-retrieve-stock-record",
+  "test_id": "T10",
+  "test_description": "filing a stock record and retrieving by (sku, location) returns the exact quantity and inventory_code that were filed (happy-path read-back through the API boundary)",
+  "experiment_slug": "exp1",
+  "branch_id": "experiment-s1-file-stock-exp1",
+  "red_at": "2026-09-17T04:14:03.774Z",
+  "layer": "API",
+  "test_ids": [
+    "T10",
+    "T11",
+    "T12",
+    "T15",
+    "T16",
+    "T17",
+    "T18",
+    "T19"
+  ],
+  "chunk": "API-1",
+  "green_at": "2026-09-17T04:17:24.875Z",
+  "navigator_verdict": "passed"
+}

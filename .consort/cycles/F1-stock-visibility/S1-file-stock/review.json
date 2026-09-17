@@ -1,0 +1,6 @@
+{
+  "reviewed_at": "2026-09-17T04:17:53.406Z",
+  "refactor_requested": true,
+  "refactor_notes": "consort-layering-clean flags two violations in app/routes/stock.py: (1) db.commit() called at lines 53 and 97 in the boundary layer — commit ownership must move into the service (stock_service.file_stock / delete_stock should accept and commit the transaction) or be delegated via the repository layer; the route must never call the ORM session directly (architecture.md §boundary + ORM-containment rule). (2) DRY: the _require() helper body is flagged as a duplicated 6-line block — consolidate. Neither change alters the outer-boundary test assertions.",
+  "refactored_at": "2026-09-17T04:22:25.408Z"
+}

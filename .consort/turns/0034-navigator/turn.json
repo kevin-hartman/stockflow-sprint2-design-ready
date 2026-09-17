@@ -1,0 +1,35 @@
+{
+  "ordinal": 34,
+  "step": 0,
+  "label": "navigator",
+  "kind": "invoke-role",
+  "role": "navigator",
+  "story": "S1-file-stock",
+  "action": {
+    "kind": "invoke-role",
+    "role": "navigator",
+    "story": "S1-file-stock"
+  },
+  "produced": [
+    ".consort/cycles/F1-stock-visibility/S1-file-stock/AC1-file-stock-record/cycle-001.json",
+    ".consort/experiments/F1-stock-visibility/S1-file-stock/exp1/outcomes.json",
+    ".consort/features/F1-stock-visibility/stories/S1-file-stock/acs/AC1-file-stock-record.json",
+    ".consort/features/F1-stock-visibility/stories/S1-file-stock/acs/AC3-collision-resolved-at-write.json",
+    ".consort/features/F1-stock-visibility/stories/S1-file-stock/test-list-per-story.json",
+    ".consort/features/F1-stock-visibility/test-list.json",
+    ".consort/features/F1-stock-visibility/test-list.md",
+    ".tmp/schema-diff.md",
+    "client/test-results/.last-run.json",
+    "tests/features/S1-file-stock.feature",
+    "tests/step_defs/__init__.py",
+    "tests/step_defs/test_S1_file_stock.py"
+  ],
+  "deleted": [],
+  "snapshotted": false,
+  "transcript": {
+    "role": "navigator",
+    "model": "sonnet",
+    "toolCount": 13,
+    "finalTextChars": 107
+  }
+}
