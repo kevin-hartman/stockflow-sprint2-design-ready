@@ -1,0 +1,10 @@
+{
+  "id": "S2-contract-schema",
+  "asA": "warehouse operator",
+  "iWantTo": "have inventory_code dropped from the stock table, with a proven reversible down migration that reconstructs it",
+  "soThat": "the schema contract is complete and no combined opaque code remains",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "S1 ends with inventory_code still present and batch/serial added alongside it; S2 is the separate contract step that physically removes inventory_code — S1 can be fully built and deployed while inventory_code still exists, leaving S2 genuinely unbuilt"
+  }
+}

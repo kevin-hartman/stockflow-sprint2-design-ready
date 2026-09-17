@@ -1,0 +1,27 @@
+{
+  "ordinal": 65,
+  "step": 0,
+  "label": "navigator-reflect",
+  "kind": "invoke-role",
+  "role": "navigator",
+  "mode": "reflect",
+  "story": "S1-expand-schema",
+  "action": {
+    "kind": "invoke-role",
+    "role": "navigator",
+    "story": "S1-expand-schema",
+    "buildMode": "reflect"
+  },
+  "produced": [
+    ".consort/features/F6-split-tracking-code/stories/S1-expand-schema/reflect-verdict.json",
+    ".consort/features/F6-split-tracking-code/stories/S1-expand-schema/test-list-per-story.json"
+  ],
+  "deleted": [],
+  "snapshotted": false,
+  "transcript": {
+    "role": "navigator",
+    "model": "sonnet",
+    "toolCount": 13,
+    "finalTextChars": 67
+  }
+}

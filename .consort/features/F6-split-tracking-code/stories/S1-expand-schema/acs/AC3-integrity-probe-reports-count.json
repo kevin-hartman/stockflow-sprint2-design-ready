@@ -1,0 +1,13 @@
+{
+  "id": "AC3-integrity-probe-reports-count",
+  "given": "a stock table containing both conforming and nonconforming inventory_code rows after backfill",
+  "when": "the integrity probe is run over the migrated table",
+  "then": "the probe surfaces the count of nonconforming rows (those left with NULL batch_number and serial_number) for review before the change is accepted",
+  "status": "draft",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1 and AC2 assert the per-row backfill outcomes; AC3 asserts the distinct observable outcome that a probe reports an aggregate nonconforming count — the backfill could be correct while no probe/count is surfaced, and vice versa"
+  },
+  "layer": "Infra",
+  "architectural_notes": "Infra: the integrity probe is a read-only query in app/repositories/ (the only layer touching the ORM/session) surfaced by a thin reporting function in app/services/; no raw SQL leaks into the boundary or domain. It aggregates the count of nonconforming rows (NULL batch_number+serial_number) over the migrated table for pre-acceptance review (gates OD2-nonconforming-remediation). Read-only, so it runs against the shared post-migration verify branch alongside AC1/AC2/AC4."
+}

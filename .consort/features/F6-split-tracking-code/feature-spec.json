@@ -1,0 +1,11 @@
+{
+  "id": "F6-split-tracking-code",
+  "name": "Split combined tracking code into batch and serial columns",
+  "status": "draft",
+  "tdd_mode": "N=1",
+  "stories": [
+    "S1-expand-schema",
+    "S2-contract-schema",
+    "S3-split-fields-ui"
+  ]
+}

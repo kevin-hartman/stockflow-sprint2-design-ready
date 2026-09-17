@@ -683,6 +683,137 @@
       "dir": "0059-done",
       "producedCount": 11,
       "deletedCount": 90
+    },
+    {
+      "ordinal": 60,
+      "step": 0,
+      "label": "spec-author-breakdown",
+      "kind": "invoke-role",
+      "role": "spec-author",
+      "mode": "breakdown",
+      "dir": "0060-spec-author-breakdown",
+      "producedCount": 116,
+      "deletedCount": 3,
+      "hasTranscript": true
+    },
+    {
+      "ordinal": 61,
+      "step": 0,
+      "label": "spec-author",
+      "kind": "invoke-role",
+      "role": "spec-author",
+      "story": "S1-expand-schema",
+      "dir": "0061-spec-author",
+      "producedCount": 6,
+      "deletedCount": 0,
+      "hasTranscript": true
+    },
+    {
+      "ordinal": 62,
+      "step": 0,
+      "label": "architect-reviewer",
+      "kind": "invoke-role",
+      "role": "architect-reviewer",
+      "story": "S1-expand-schema",
+      "dir": "0062-architect-reviewer",
+      "producedCount": 6,
+      "deletedCount": 0,
+      "hasTranscript": true
+    },
+    {
+      "ordinal": 63,
+      "step": 0,
+      "label": "dba",
+      "kind": "invoke-role",
+      "role": "dba",
+      "story": "S1-expand-schema",
+      "dir": "0063-dba",
+      "producedCount": 2,
+      "deletedCount": 0,
+      "hasTranscript": true
+    },
+    {
+      "ordinal": 64,
+      "step": 0,
+      "label": "test-strategist",
+      "kind": "invoke-role",
+      "role": "test-strategist",
+      "story": "S1-expand-schema",
+      "dir": "0064-test-strategist",
+      "producedCount": 2,
+      "deletedCount": 0,
+      "hasTranscript": true
+    },
+    {
+      "ordinal": 65,
+      "step": 0,
+      "label": "navigator-reflect",
+      "kind": "invoke-role",
+      "role": "navigator",
+      "mode": "reflect",
+      "story": "S1-expand-schema",
+      "dir": "0065-navigator-reflect",
+      "producedCount": 2,
+      "deletedCount": 0,
+      "hasTranscript": true
+    },
+    {
+      "ordinal": 66,
+      "step": 0,
+      "label": "revise-route",
+      "kind": "revise-route",
+      "role": "test-strategist",
+      "story": "S1-expand-schema",
+      "dir": "0066-revise-route",
+      "producedCount": 9,
+      "deletedCount": 2
+    },
+    {
+      "ordinal": 67,
+      "step": 0,
+      "label": "architect-reviewer",
+      "kind": "invoke-role",
+      "role": "architect-reviewer",
+      "story": "S1-expand-schema",
+      "dir": "0067-architect-reviewer",
+      "producedCount": 6,
+      "deletedCount": 1,
+      "hasTranscript": true
+    },
+    {
+      "ordinal": 68,
+      "step": 0,
+      "label": "test-strategist",
+      "kind": "invoke-role",
+      "role": "test-strategist",
+      "story": "S1-expand-schema",
+      "dir": "0068-test-strategist",
+      "producedCount": 2,
+      "deletedCount": 1,
+      "hasTranscript": true
+    },
+    {
+      "ordinal": 69,
+      "step": 0,
+      "label": "navigator-reflect",
+      "kind": "invoke-role",
+      "role": "navigator",
+      "mode": "reflect",
+      "story": "S1-expand-schema",
+      "dir": "0069-navigator-reflect",
+      "producedCount": 2,
+      "deletedCount": 0,
+      "hasTranscript": true
+    },
+    {
+      "ordinal": 70,
+      "step": 0,
+      "label": "gate-surface",
+      "kind": "surface-gate",
+      "story": "S1-expand-schema",
+      "dir": "0070-gate-surface",
+      "producedCount": 1,
+      "deletedCount": 0
     }
   ]
 }

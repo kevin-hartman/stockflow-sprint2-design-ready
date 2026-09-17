@@ -1,7 +1,12 @@
 {
   "$schema": "./scm-workflow-state.schema.json",
   "version": 1,
-  "state": "scaffold-complete",
+  "state": "feature-claimed",
   "tier_topology": 2,
-  "project_id": "stockflow-sprint2-design-ready"
+  "project_id": "stockflow-sprint2-design-ready",
+  "feature_id": "F6-split-tracking-code",
+  "branch": "feature-f6-split-tracking-code",
+  "parent_branch": "staging",
+  "lakebase_branch_uid": "br-gentle-cake-d2ua8sjv",
+  "claimed_at": "2026-09-17T08:29:46.155Z"
 }

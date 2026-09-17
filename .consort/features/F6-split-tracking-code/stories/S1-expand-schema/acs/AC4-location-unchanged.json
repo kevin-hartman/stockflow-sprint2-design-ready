@@ -1,0 +1,13 @@
+{
+  "id": "AC4-location-unchanged",
+  "given": "a stock row whose inventory_code leading segment differs from its canonical location column",
+  "when": "the expand migration backfills batch_number and serial_number",
+  "then": "the row's location column is left canonical and unchanged (the code's leading segment is not treated as authoritative for location)",
+  "status": "draft",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1-AC3 concern the batch/serial backfill and probe; AC4 asserts the distinct outcome that the pre-existing canonical location is untouched — a migration could correctly split batch/serial yet wrongly overwrite location from the leading segment"
+  },
+  "layer": "Infra",
+  "architectural_notes": "Infra: same expand migration. Asserts the canonical location column (part of UNIQUE(sku,location) established by F1) is left untouched — the code's leading segment is NOT treated as authoritative for location (resolves OD1). Preserves R3. Verified against the shared post-migration paired Lakebase branch."
+}

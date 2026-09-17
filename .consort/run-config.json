@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "started_at": "2026-09-17T06:05:41.463Z",
-  "bound": "full",
+  "started_at": "2026-09-17T08:03:55.102Z",
+  "bound": "design",
   "gates": "interactive",
   "ui_track": true,
   "build_session_scope": "story",

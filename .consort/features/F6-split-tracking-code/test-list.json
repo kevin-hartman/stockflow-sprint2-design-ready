@@ -1,0 +1,103 @@
+{
+  "feature_id": "F6-split-tracking-code",
+  "ordered_for": "design-momentum",
+  "items": [
+    {
+      "id": "T1",
+      "description": "after the expand migration runs, a stock row seeded with inventory_code 'A12-B7-S001' (per-run-unique sku via uuid.uuid4()) has batch_number='B7' and serial_number='S001'",
+      "ac_id": "AC1-backfill-conforming-code",
+      "status": "pending",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-expand-schema.feature"
+    },
+    {
+      "id": "T2",
+      "description": "on an isolated ephemeral migration branch (@pytest.mark.migration), a single-step alembic downgrade -1 removes only batch_number and serial_number from stock_records and leaves all other columns intact; a subsequent re-upgrade re-adds both columns — confirming the additive round-trip schema shape is correct (PI1-expand-migration-reversible)",
+      "ac_id": "AC1-backfill-conforming-code",
+      "status": "pending",
+      "kind": "fitness",
+      "nfr_id": "NFR-R1-migration-data-survival",
+      "invariant_id": "PI1-expand-migration-reversible"
+    },
+    {
+      "id": "T3",
+      "description": "on an isolated ephemeral migration branch (@pytest.mark.migration), rows seeded before the downgrade (including nonconforming rows whose batch_number and serial_number would be NULL) survive the single-step downgrade with all pre-existing columns (id, sku, location, quantity, inventory_code) intact and no row dropped; after re-upgrade the added columns reappear",
+      "ac_id": "AC2-nonconforming-code-left-null",
+      "status": "pending",
+      "kind": "fitness",
+      "invariant_id": "PI1-expand-migration-reversible"
+    },
+    {
+      "id": "T4",
+      "description": "verified directly against the real branch database: after the expand migration commits, every pre-existing stock_records row is present (none dropped), batch_number and serial_number columns exist, and all conforming rows have been backfilled — confirming the add-columns-and-backfill executed atomically as a single committed transaction with no partial state (PI2-expand-migration-atomic)",
+      "ac_id": "AC1-backfill-conforming-code",
+      "status": "pending",
+      "kind": "fitness",
+      "invariant_id": "PI2-expand-migration-atomic"
+    },
+    {
+      "id": "T5",
+      "description": "after the F6 expand migration is applied to the real branch database, an attempt to INSERT a stock_records row with a negative quantity is rejected by the database with a CHECK constraint violation, confirming CHECK(quantity >= 0) was not weakened by the migration",
+      "ac_id": "AC1-backfill-conforming-code",
+      "status": "pending",
+      "kind": "fitness",
+      "nfr_id": "NFR-R2-preserve-non-negative"
+    },
+    {
+      "id": "T6",
+      "description": "after the expand migration runs, a stock row seeded with a two-segment inventory_code 'X-1' (per-run-unique sku via uuid.uuid4()) has batch_number=NULL and serial_number=NULL",
+      "ac_id": "AC2-nonconforming-code-left-null",
+      "status": "pending",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-expand-schema.feature"
+    },
+    {
+      "id": "T7",
+      "description": "after the expand migration runs, a stock row seeded with a bare single-segment inventory_code 'c' (per-run-unique sku via uuid.uuid4()) has batch_number=NULL and serial_number=NULL",
+      "ac_id": "AC2-nonconforming-code-left-null",
+      "status": "pending",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-expand-schema.feature"
+    },
+    {
+      "id": "T8",
+      "description": "after the expand migration runs, the nonconforming row seeded with inventory_code 'X-1' (per-run-unique sku) still exists in stock_records with all original column values intact (no row dropped or corrupted)",
+      "ac_id": "AC2-nonconforming-code-left-null",
+      "status": "pending",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-expand-schema.feature"
+    },
+    {
+      "id": "T9",
+      "description": "after the F6 expand migration is applied, the delta row count for the test's own seeded stock_records rows is identical to the pre-migration count (no seeded row dropped or corrupted), verified directly against the real branch database",
+      "ac_id": "AC2-nonconforming-code-left-null",
+      "status": "pending",
+      "kind": "fitness",
+      "nfr_id": "NFR-R1-migration-data-survival"
+    },
+    {
+      "id": "T10",
+      "description": "when the integrity probe is called over a post-migration table containing one conforming and two nonconforming rows (seeded with per-run-unique skus via uuid.uuid4()), it returns a nonconforming count delta of exactly 2",
+      "ac_id": "AC3-integrity-probe-reports-count",
+      "status": "pending",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-expand-schema.feature"
+    },
+    {
+      "id": "T11",
+      "description": "after the expand migration runs, a stock row whose inventory_code leading segment differs from its pre-seeded canonical location column still has the original location value unchanged (per-run-unique sku via uuid.uuid4())",
+      "ac_id": "AC4-location-unchanged",
+      "status": "pending",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-expand-schema.feature"
+    },
+    {
+      "id": "T12",
+      "description": "after the F6 expand migration and backfill are applied to the real branch database, an attempt to INSERT a stock_records row with a (sku, location) pair that duplicates an existing row is rejected with a unique-constraint violation, confirming UNIQUE(sku, location) was not weakened by adding batch_number and serial_number",
+      "ac_id": "AC4-location-unchanged",
+      "status": "pending",
+      "kind": "fitness",
+      "nfr_id": "NFR-R3-preserve-unique-sku-location"
+    }
+  ]
+}

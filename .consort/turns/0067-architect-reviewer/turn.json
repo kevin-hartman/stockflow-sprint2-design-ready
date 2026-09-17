@@ -1,0 +1,31 @@
+{
+  "ordinal": 67,
+  "step": 0,
+  "label": "architect-reviewer",
+  "kind": "invoke-role",
+  "role": "architect-reviewer",
+  "story": "S1-expand-schema",
+  "action": {
+    "kind": "invoke-role",
+    "role": "architect-reviewer",
+    "story": "S1-expand-schema"
+  },
+  "produced": [
+    ".consort/features/F6-split-tracking-code/architecture.json",
+    ".consort/features/F6-split-tracking-code/architecture.md",
+    ".consort/features/F6-split-tracking-code/stories/S1-expand-schema/acs/AC1-backfill-conforming-code.json",
+    ".consort/features/F6-split-tracking-code/stories/S1-expand-schema/acs/AC2-nonconforming-code-left-null.json",
+    ".consort/features/F6-split-tracking-code/stories/S1-expand-schema/acs/AC3-integrity-probe-reports-count.json",
+    ".consort/features/F6-split-tracking-code/stories/S1-expand-schema/acs/AC4-location-unchanged.json"
+  ],
+  "deleted": [
+    ".consort/features/F6-split-tracking-code/.handback/architect-reviewer.S1-expand-schema.md"
+  ],
+  "snapshotted": false,
+  "transcript": {
+    "role": "architect-reviewer",
+    "model": "opus",
+    "toolCount": 17,
+    "finalTextChars": 227
+  }
+}

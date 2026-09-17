@@ -1,0 +1,119 @@
+{
+  "feature_id": "F6-split-tracking-code",
+  "service_backed": true,
+  "layers": [
+    {
+      "name": "api",
+      "role": "boundary",
+      "module": "app/routes/",
+      "may_import": ["service"],
+      "renders_via": "react"
+    },
+    {
+      "name": "services",
+      "role": "service",
+      "module": "app/services/",
+      "may_import": ["repository", "models"]
+    },
+    {
+      "name": "repositories",
+      "role": "repository",
+      "module": "app/repositories/",
+      "may_import": ["models"]
+    },
+    {
+      "name": "models",
+      "role": "models",
+      "module": "app/models/",
+      "may_import": []
+    }
+  ],
+  "persistence_invariants": [
+    {
+      "id": "PI1-expand-migration-reversible",
+      "type": "migration_reversible",
+      "table": "stock_records",
+      "brief": "Additive migration on the pre-existing stock_records table: it adds nullable batch_number + serial_number. A single-step downgrade drops ONLY those two columns while every pre-existing row persists, and a re-upgrade re-adds them (additive round-trip with row preservation, since the table pre-exists from F1). ISOLATION REQUIREMENT: this round-trip verification MUTATES the schema (alembic downgrade -1, then re-upgrade) and MUST be exercised on its OWN isolated ephemeral migration branch (a schema-mutating / @pytest.mark.migration test), NOT against the shared post-migration verify database. A downgrade run on the shared branch would drop batch_number/serial_number and corrupt the post-migration schema that every other F6 test (AC1 backfill, AC2 NULL-survival, AC3 probe, AC4 location) depends on — those would then fail with 'column batch_number does not exist' on an otherwise-correct migration."
+    },
+    {
+      "id": "PI2-expand-migration-atomic",
+      "type": "transactional",
+      "table": "stock_records",
+      "brief": "The expand migration adds the two columns and backfills them from inventory_code within one transaction: either every pre-existing row is present with columns added and conforming rows backfilled, or the migration does not commit — no torn/partial state and no dropped row (realizes R1 at the migration boundary)."
+    }
+  ],
+  "open_decisions": [
+    {
+      "id": "OD1-inventory-code-composition",
+      "question": "What composes the combined inventory_code, and is its leading segment authoritative for location? (F1 deferred this as OD2-inventory-code-composition.)",
+      "decision_status": "resolved",
+      "resolved_by_story": "S1-expand-schema",
+      "resolution": "inventory_code is a hyphen-delimited location-batch-serial string of VARIABLE width (split on '-': segment 2 = batch_number, segment 3 = serial_number; codes like 'X-1' or a bare 'c' have no batch/serial segment). The leading segment is NOT authoritative for location — the canonical location column (part of UNIQUE(sku,location) from F1) stays unchanged (AC4). Consistent with F1, which already stores location as its own column; no contradiction with any gated F1 AC."
+    },
+    {
+      "id": "OD2-nonconforming-remediation",
+      "question": "Rows whose inventory_code does not parse are left with NULL batch_number/serial_number (AC2). Do these rows require a remediation/backfill-correction path BEFORE the S2 contract story drops inventory_code (which permanently discards the original code, the only source of the unparsed batch/serial), or is a NULL-forever state acceptable? The integrity-probe count (AC3) exists precisely to gate that decision.",
+      "decision_status": "deferred"
+    }
+  ],
+  "nfrs": [
+    {
+      "id": "NFR-R1-migration-data-survival",
+      "brief_ref": "R1",
+      "applies_to": "F6-split-tracking-code",
+      "category": "data-integrity",
+      "tier": "product",
+      "hil_status": "proposed",
+      "fitness_function": "the F6 expand migration preserves every pre-existing stock_records row (no loss/corruption) and is reversible as a round-trip; verified against the paired Lakebase branch.",
+      "fitness_functions": [
+        "the F6 expand migration (adding batch_number + serial_number and backfilling from inventory_code) preserves every pre-existing stock_records row: post-migration the row count is unchanged and no row is dropped or corrupted (R1, AC2).",
+        "the expand migration is reversible as a round-trip: a single-step downgrade drops only the two added columns while every pre-existing row persists, and a re-upgrade re-adds them (PI1). This clause MUTATES schema and MUST be verified on its own isolated ephemeral migration branch (schema-mutating / @pytest.mark.migration), never against the shared post-migration verify DB that the other F6 tests depend on."
+      ]
+    },
+    {
+      "id": "NFR-R2-preserve-non-negative",
+      "brief_ref": "R2",
+      "applies_to": "F6-split-tracking-code",
+      "category": "data-integrity",
+      "tier": "product",
+      "hil_status": "proposed",
+      "fitness_function": "the F6 expand migration weakens no existing write-time guarantee: after migrating, the CHECK(quantity >= 0) on stock_records still rejects a negative quantity and the no-overcommit rule is untouched (F6 adds no write/pick path; it must only preserve R2, not re-implement it)."
+    },
+    {
+      "id": "NFR-R3-preserve-unique-sku-location",
+      "brief_ref": "R3",
+      "applies_to": "F6-split-tracking-code",
+      "category": "data-integrity",
+      "tier": "product",
+      "hil_status": "proposed",
+      "fitness_function": "the F6 migration preserves UNIQUE(sku, location): after adding batch_number/serial_number and backfilling, no two rows share (sku, location) and a duplicate write is still rejected. Batch and serial become separately addressable WITHOUT altering the canonical (sku, location) identity (AC4)."
+    },
+    {
+      "id": "NFR-R4-real-branch-integration-tests",
+      "brief_ref": "R4",
+      "applies_to": "F6-split-tracking-code",
+      "category": "operability",
+      "tier": "platform",
+      "hil_status": "proposed",
+      "fitness_function": "the F6 migration + integrity-probe suite runs against the paired Lakebase branch via DATABASE_URL (Alembic applied to the branch first), not a mock or in-memory substitute; CI refuses to merge a PR whose integration tests do not run against a real branch."
+    },
+    {
+      "id": "NFR-R5-spa-json-api-boundary",
+      "brief_ref": "R5",
+      "applies_to": "S3-split-fields-ui",
+      "category": "architecture-posture",
+      "tier": "platform",
+      "hil_status": "proposed",
+      "fitness_function": "the split batch_number and serial_number are exposed as distinct JSON fields by the boundary (not server-rendered HTML) and rendered as separately addressable fields in the single-page React + TypeScript client wherever the combined code was shown before."
+    },
+    {
+      "id": "NFR-config-in-env",
+      "applies_to": "F6-split-tracking-code",
+      "category": "config-in-env",
+      "tier": "platform",
+      "hil_status": "proposed",
+      "defended_by_gate": "config-in-env",
+      "fitness_function": "the migration and probe read the DB connection from DATABASE_URL in the environment (no hard-coded connection string; the substrate-provisioned databricks_postgres name is left untouched); enforced by the config-in-env gate."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "S3-split-fields-ui",
+  "asA": "warehouse operator",
+  "iWantTo": "see batch_number and serial_number as distinct labeled fields in the stock UI (stock table and SKU detail view) in place of the combined inventory_code",
+  "soThat": "each tracking dimension is individually readable without parsing a hyphen-delimited string",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "S2 completes the schema migration entirely at the DB layer; S3 is a UI/API surface change — the stock table and SKU detail view still render inventory_code until S3 ships, so the user-facing split-field display is genuinely unbuilt after S2"
+  }
+}

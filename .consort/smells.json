@@ -66,6 +66,16 @@
       "detected_at": "2026-09-17T05:14:06.211Z",
       "resolution": "refactored story: S3-sku-detail-view",
       "resolution_kind": "accepted"
+    },
+    {
+      "smell": "reflect-testlist-defect",
+      "cycle_ids": [],
+      "detail": "reflection gate: T2 performs `alembic downgrade -1` (its description says 'after a single-step downgrade of the F6 expand migration') but unlike T1 it does NOT specify `@pytest.mark.migration`. A test that mutates schema via a downgrade must run on its own isolated ephemeral branch, not the shared verify database. Without the marker, the Driver will author T2 to downgrade the shared experiment branch, corrupting the post-migration schema state that T3, T4, T5, T6, T7, and T8 all depend on — those tests will fail with 'column batch_number does not exist' on an otherwise-correct app. Add `@pytest.mark.migration` to T2's description (matching T1) so it is isolated to its own ephemeral branch.",
+      "story_id": "S1-expand-schema",
+      "detected_at": "2026-09-17T08:17:29.549Z",
+      "resolution": "revised by human-proxy: full design re-run (test_list gate)",
+      "resolution_kind": "revised",
+      "revised_artifact_sha": "ceb3dd2679689711c6012f7a1b338fe90c04225c"
     }
   ]
 }

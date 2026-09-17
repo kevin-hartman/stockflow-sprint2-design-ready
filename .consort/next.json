@@ -1,28 +1,51 @@
 {
   "scope": "feature",
-  "feature": "F1-stock-visibility",
+  "feature": "F6-split-tracking-code",
   "state": {
-    "coarse_phase": "done",
-    "derived_phase": null,
-    "stories": {},
-    "open_gates": [],
+    "coarse_phase": "feature",
+    "derived_phase": "design",
+    "stories": {
+      "S1-expand-schema": "awaiting-gate",
+      "S2-contract-schema": "designing",
+      "S3-split-fields-ui": "designing"
+    },
+    "open_gates": [
+      "spec"
+    ],
     "blockers": []
   },
   "primary_action": {
-    "kind": "done",
-    "describe": "orchestrator END workflow (complete)"
+    "kind": "approve-gate",
+    "describe": "GATE spec APPROVED"
   },
   "options": [
     {
-      "id": "done",
-      "title": "Nothing to do (workflow complete)",
-      "hil_prompt": "This feature is fully shipped. Start a new feature or sprint?",
+      "id": "spec.approve",
+      "title": "Approve story S1-expand-schema's spec",
+      "hil_prompt": "Approve story S1-expand-schema's spec so its build can start? (To send it back, edit the spec and re-run the design lane.)",
+      "kind": "gate",
+      "enact": {
+        "bin": "consort-approve-gate",
+        "args": [
+          "--feature",
+          "F6-split-tracking-code",
+          "--story",
+          "S1-expand-schema",
+          "--approver",
+          "<you>"
+        ]
+      }
+    },
+    {
+      "id": "hold",
+      "title": "Stop here (checkpoint)",
+      "hil_prompt": "Checkpoint and resume later?",
       "kind": "noop",
       "enact": null
     }
   ],
-  "awaiting_human": false,
-  "summary": "feature F1-stock-visibility is complete: every story was built, accepted, and deployed per story, and the feature is merged. Nothing left to do.",
+  "awaiting_human": true,
+  "summary": "feature F6-split-tracking-code is at the spec gate, awaiting a human decision. See options for the choices and how to enact each.",
   "authoritative_playbook_version": "0.3.94",
-  "generated_at": "2026-09-17T06:07:25.759Z"
+  "generated_at": "2026-09-17T08:26:05.552Z"
 }

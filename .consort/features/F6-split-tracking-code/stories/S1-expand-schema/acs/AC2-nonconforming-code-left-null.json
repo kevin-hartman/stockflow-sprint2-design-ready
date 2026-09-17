@@ -1,0 +1,13 @@
+{
+  "id": "AC2-nonconforming-code-left-null",
+  "given": "a stock row whose inventory_code has no batch or serial segment (for example \"X-1\" or a bare \"c\")",
+  "when": "the expand migration backfills batch_number and serial_number",
+  "then": "that row's batch_number and serial_number are left NULL rather than guessed, and the row itself survives the migration unchanged with no data loss",
+  "status": "draft",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1 asserts values are populated from a conforming code; AC2 asserts the distinct outcome that a non-conforming code yields NULLs and preserves the row — a backfill could satisfy one while failing the other (e.g. guessing values for short codes)"
+  },
+  "layer": "Infra",
+  "architectural_notes": "Infra: same expand migration's backfill DML. Asserts an inventory_code with no batch/serial segment leaves both columns NULL (never guessed) and the row survives unchanged with no data loss (realizes R1). Nullable columns on app/models/ make NULL a valid persisted state; no imputation logic in the migration. Verified against the shared post-migration paired Lakebase branch."
+}

@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "feature_id": "F6-split-tracking-code",
+  "stories": {
+    "S1-expand-schema": {
+      "status": "awaiting-gate",
+      "acceptance": {
+        "decision": "revise",
+        "history": [
+          {
+            "decision": "revise",
+            "at": "2026-09-17T08:17:29.800Z",
+            "approver": "human-proxy",
+            "reason": "blocking smell \"reflect-testlist-defect\": reflection gate: T2 performs `alembic downgrade -1` (its description says 'after a single-step downgrade of the F6 expand migration') but unlike T1 it does NOT specify `@pytest.mark.migration`. A test that mutates schema via a downgrade must run on its own isolated ephemeral branch, not the shared verify database. Without the marker, the Driver will author T2 to downgrade the shared experiment branch, corrupting the post-migration schema state that T3, T4, T5, T6, T7, and T8 all depend on — those tests will fail with 'column batch_number does not exist' on an otherwise-correct app. Add `@pytest.mark.migration` to T2's description (matching T1) so it is isolated to its own ephemeral branch."
+          }
+        ],
+        "approver": "human-proxy",
+        "at": "2026-09-17T08:17:29.800Z",
+        "reason": "blocking smell \"reflect-testlist-defect\": reflection gate: T2 performs `alembic downgrade -1` (its description says 'after a single-step downgrade of the F6 expand migration') but unlike T1 it does NOT specify `@pytest.mark.migration`. A test that mutates schema via a downgrade must run on its own isolated ephemeral branch, not the shared verify database. Without the marker, the Driver will author T2 to downgrade the shared experiment branch, corrupting the post-migration schema state that T3, T4, T5, T6, T7, and T8 all depend on — those tests will fail with 'column batch_number does not exist' on an otherwise-correct app. Add `@pytest.mark.migration` to T2's description (matching T1) so it is isolated to its own ephemeral branch."
+      },
+      "gate": {
+        "status": "open",
+        "history": []
+      }
+    },
+    "S2-contract-schema": {
+      "status": "designing"
+    },
+    "S3-split-fields-ui": {
+      "status": "designing"
+    }
+  },
+  "build_queue": [],
+  "build_active": null
+}

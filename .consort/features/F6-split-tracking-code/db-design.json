@@ -1,0 +1,80 @@
+{
+  "feature_id": "F6-split-tracking-code",
+  "tables": [
+    {
+      "name": "stock_records",
+      "columns": [
+        {
+          "name": "id",
+          "type": "integer",
+          "nullable": false,
+          "description": "Surrogate primary key (autoincrement). Pre-existing from F1; unchanged by F6."
+        },
+        {
+          "name": "sku",
+          "type": "text",
+          "nullable": false,
+          "description": "Stock keeping unit; part of the canonical UNIQUE(sku, location) pair. Pre-existing from F1; unchanged by F6 (AC4/NFR-R3)."
+        },
+        {
+          "name": "location",
+          "type": "text",
+          "nullable": false,
+          "description": "Canonical location column, part of UNIQUE(sku, location). NOT derived from the inventory_code leading segment; left untouched by the F6 backfill (AC4, NFR-R3)."
+        },
+        {
+          "name": "quantity",
+          "type": "integer",
+          "nullable": false,
+          "description": "On-hand stock level; CHECK(quantity >= 0) preserved through F6 (NFR-R2). Pre-existing from F1."
+        },
+        {
+          "name": "inventory_code",
+          "type": "text",
+          "nullable": false,
+          "description": "Combined hyphen-delimited location-batch-serial code. Retained in F6 as the backfill source; the S2 contract story drops it later. Pre-existing from F1 (OD1)."
+        },
+        {
+          "name": "batch_number",
+          "type": "text",
+          "nullable": true,
+          "description": "Second hyphen-delimited segment of inventory_code (e.g. 'B7' from 'A12-B7-S001'). Added nullable by F6 so a nonconforming code with no batch segment is a valid NULL state (AC1, AC2). Backfilled from inventory_code within the expand migration."
+        },
+        {
+          "name": "serial_number",
+          "type": "text",
+          "nullable": true,
+          "description": "Third hyphen-delimited segment of inventory_code (e.g. 'S001' from 'A12-B7-S001'). Added nullable by F6; NULL when the code has no serial segment (AC1, AC2). Backfilled from inventory_code within the expand migration."
+        }
+      ],
+      "primary_key": ["id"],
+      "unique_constraints": [["sku", "location"]],
+      "checks": [
+        {
+          "name": "ck_stock_records_quantity_nonneg",
+          "expression": "quantity >= 0"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "uq_stock_records_sku_location",
+          "columns": ["sku", "location"],
+          "unique": true
+        }
+      ]
+    }
+  ],
+  "schema_changes": [
+    {
+      "story_id": "S1-expand-schema",
+      "kind": "add_column",
+      "table": "stock_records",
+      "detail": "Expand the pre-existing stock_records table (from F1): ADD COLUMN batch_number text NULL and ADD COLUMN serial_number text NULL, then backfill both from inventory_code within the SAME transaction — split inventory_code on '-'; a conforming code sets batch_number = segment 2 and serial_number = segment 3 (AC1); a variable-width code lacking those segments (e.g. 'X-1', bare 'c') leaves both NULL and never guesses (AC2). The canonical location column is NOT rewritten from the leading segment (AC4). No CHECK/UNIQUE weakened: CHECK(quantity >= 0) and UNIQUE(sku, location) stay intact (NFR-R2, NFR-R3).",
+      "migration_note": "Expand step of an expand/contract split; additive and reversible. upgrade(): add the two nullable columns + backfill, all inside one transaction so either every pre-existing row is present with columns added and conforming rows backfilled, or nothing commits (PI2-expand-migration-atomic, R1). downgrade(): DROP COLUMN serial_number and DROP COLUMN batch_number ONLY — no other column touched, every pre-existing row preserved, and a re-upgrade re-adds them (additive round-trip, PI1-expand-migration-reversible). inventory_code is retained here (dropped only later by the S2 contract story) so the backfill source survives. An integrity probe (read-only aggregate count of rows with NULL batch_number AND NULL serial_number) is surfaced for review before acceptance (AC3); it reads via the repository layer and mutates nothing."
+    }
+  ],
+  "realizes_invariants": [
+    "PI1-expand-migration-reversible",
+    "PI2-expand-migration-atomic"
+  ]
+}

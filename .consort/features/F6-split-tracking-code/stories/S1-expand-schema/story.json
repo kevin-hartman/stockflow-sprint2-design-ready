@@ -1,0 +1,6 @@
+{
+  "id": "S1-expand-schema",
+  "asA": "warehouse operator",
+  "iWantTo": "have batch_number and serial_number added as first-class columns and backfilled from inventory_code, with an integrity probe surfacing nonconforming rows",
+  "soThat": "each tracking dimension is individually queryable and data correctness is confirmed before the combined code is removed"
+}

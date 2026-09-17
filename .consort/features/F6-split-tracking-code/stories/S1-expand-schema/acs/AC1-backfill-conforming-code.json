@@ -1,0 +1,9 @@
+{
+  "id": "AC1-backfill-conforming-code",
+  "given": "a stock row whose inventory_code is a conforming location-batch-serial code (for example \"A12-B7-S001\")",
+  "when": "the expand migration adds batch_number and serial_number and backfills them by splitting the code on \"-\"",
+  "then": "that row's batch_number equals the second segment (\"B7\") and serial_number equals the third segment (\"S001\")",
+  "status": "draft",
+  "layer": "Infra",
+  "architectural_notes": "Infra: the expand Alembic migration (migrations/versions/) adds nullable batch_number+serial_number to the pre-existing stock_records table and backfills them by splitting inventory_code on '-' (segment 2->batch, segment 3->serial). Nullable columns declared on the stock model in app/models/; verified as a real-branch integration test against the paired Lakebase branch. This backfill assertion runs against the shared post-migration verify DB (non-schema-mutating), distinct from the reversibility round-trip (PI1) which mutates schema and runs isolated on its own ephemeral migration-marked branch."
+}
