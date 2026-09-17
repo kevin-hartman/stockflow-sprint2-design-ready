@@ -1,6 +1,6 @@
 {
   "id": "AC3-empty-location-state",
-  "status": "draft",
+  "status": "passing",
   "given": "no stock records exist, so the home-screen stock-by-location table has no rows to display",
   "when": "the operator opens the home screen",
   "then": "the table area shows an explicit \"No stock at this location\" empty state instead of a blank page or a bare empty table body",

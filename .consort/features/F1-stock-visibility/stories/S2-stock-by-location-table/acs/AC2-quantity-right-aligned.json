@@ -1,6 +1,6 @@
 {
   "id": "AC2-quantity-right-aligned",
-  "status": "draft",
+  "status": "passing",
   "given": "the home-screen stock table is displaying one or more rows",
   "when": "the operator scans the table",
   "then": "the quantity values are right-aligned in their column so they read as a scannable numeric list",

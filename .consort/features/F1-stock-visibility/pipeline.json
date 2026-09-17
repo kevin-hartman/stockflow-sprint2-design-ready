@@ -47,7 +47,7 @@
       }
     },
     "S2-stock-by-location-table": {
-      "status": "building",
+      "status": "awaiting-acceptance",
       "acceptance": {
         "decision": "revise",
         "history": [
@@ -73,6 +73,15 @@
         ],
         "approver": "Kevin Hartman",
         "approved_at": "2026-09-17T03:43:11.209Z"
+      },
+      "experiment": {
+        "slug": "exp1",
+        "branch": "experiment-s2-stock-by-location-table-exp1",
+        "parent": "feature-f1-stock-visibility",
+        "n": 1,
+        "status": "active",
+        "cut_at": "2026-09-17T04:45:19.702Z",
+        "design_fingerprint": "b003aba2c2098018"
       }
     },
     "S3-sku-detail-view": {

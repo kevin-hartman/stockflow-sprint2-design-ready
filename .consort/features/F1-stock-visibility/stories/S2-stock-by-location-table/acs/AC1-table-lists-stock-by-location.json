@@ -1,6 +1,6 @@
 {
   "id": "AC1-table-lists-stock-by-location",
-  "status": "draft",
+  "status": "passing",
   "given": "stock records exist for one or more (sku, location) pairs",
   "when": "the operator opens the home screen",
   "then": "a single flat table lists one row per stock record showing that record's SKU, location, and quantity (all records, with no per-location navigation or filter)",

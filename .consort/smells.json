@@ -48,6 +48,15 @@
       "detected_at": "2026-09-17T04:17:53.425Z",
       "resolution": "refactored story: S1-file-stock",
       "resolution_kind": "accepted"
+    },
+    {
+      "smell": "ux-adherence",
+      "cycle_ids": [],
+      "detail": "unreachable pages: FileStockForm; brand app icon not applied: index.html favicon does not reference the brand icon \"warehouse.png\" (still the scaffold placeholder); the app shell (App.tsx) does not reference the brand icon \"warehouse.png\" (navbar/title still the placeholder)",
+      "story_id": "S2-stock-by-location-table",
+      "detected_at": "2026-09-17T04:52:39.177Z",
+      "resolution": "refactored story: S2-stock-by-location-table",
+      "resolution_kind": "accepted"
     }
   ]
 }
