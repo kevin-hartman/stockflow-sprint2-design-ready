@@ -1,7 +1,7 @@
 """Stock JSON boundary. Validates input (field-named messages), delegates to the
 service, returns JSON (R5). Never touches the ORM session directly."""
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -64,3 +64,35 @@ def file_stock(payload: FileStockRequest, db: Session = Depends(get_db)):
         quantity=record.quantity,
         inventory_code=record.inventory_code,
     )
+
+
+@router.get("", response_model=StockRecordResponse)
+def get_stock(
+    sku: str = Query(...),
+    location: str = Query(...),
+    db: Session = Depends(get_db),
+):
+    record = stock_service.get_stock(db, sku=sku, location=location)
+    if record is None:
+        raise HTTPException(
+            status_code=404,
+            detail={"field": "sku", "message": "stock record not found"},
+        )
+    return StockRecordResponse(
+        id=record.id,
+        sku=record.sku,
+        location=record.location,
+        quantity=record.quantity,
+        inventory_code=record.inventory_code,
+    )
+
+
+@router.delete("", status_code=204)
+def delete_stock(
+    sku: str = Query(...),
+    location: str = Query(...),
+    db: Session = Depends(get_db),
+):
+    stock_service.delete_stock(db, sku=sku, location=location)
+    db.commit()
+    return Response(status_code=204)

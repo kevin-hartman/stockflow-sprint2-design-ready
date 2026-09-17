@@ -13,6 +13,17 @@ def get_by_sku_location(db: Session, sku: str, location: str) -> StockRecord | N
     )
 
 
+def delete_by_sku_location(db: Session, sku: str, location: str) -> bool:
+    """Delete the row for (sku, location) if present. Returns True when a row was
+    removed. Flushes; the caller (service) owns the commit."""
+    record = get_by_sku_location(db, sku, location)
+    if record is None:
+        return False
+    db.delete(record)
+    db.flush()
+    return True
+
+
 def add_or_update_stock(
     db: Session, sku: str, location: str, quantity: int, inventory_code: str
 ) -> StockRecord:

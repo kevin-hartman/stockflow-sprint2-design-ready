@@ -27,3 +27,14 @@ def file_stock(
     return stock_repository.add_or_update_stock(
         db, sku=sku, location=location, quantity=quantity, inventory_code=inventory_code
     )
+
+
+def get_stock(db: Session, sku: str, location: str) -> StockRecord | None:
+    """Read the stock record for a (sku, location) pair, or None if absent."""
+    return stock_repository.get_by_sku_location(db, sku, location)
+
+
+def delete_stock(db: Session, sku: str, location: str) -> bool:
+    """Delete the stock record for a (sku, location) pair. Returns True when a
+    row was removed."""
+    return stock_repository.delete_by_sku_location(db, sku, location)
