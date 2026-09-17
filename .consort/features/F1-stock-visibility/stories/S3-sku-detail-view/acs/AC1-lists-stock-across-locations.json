@@ -1,0 +1,9 @@
+{
+  "id": "AC1-lists-stock-across-locations",
+  "status": "passing",
+  "given": "a SKU has stock records at more than one location",
+  "when": "the operator opens that SKU's detail view",
+  "then": "the view lists one row per location for that SKU showing the location and its quantity, covering every location where the SKU holds stock",
+  "layer": "E2E",
+  "architectural_notes": "E2E: the observable outcome is the React SPA rendering one row per location (location + quantity) fetched from a live GET on the boundary (app/routes/) that delegates to app/services aggregating stock_records rows via app/repositories/ keyed by sku. Verified as a real client-server round-trip against the paired branch (Playwright + real API), not a mocked component render, because it asserts the client parses the actual multi-row response envelope. No new persistence invariant; reads PI1's (sku,location) rows."
+}

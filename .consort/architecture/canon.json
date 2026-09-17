@@ -1,0 +1,27 @@
+{
+  "established_by": "F1-stock-visibility",
+  "established_at": "2026-09-17T03:03:25.500Z",
+  "ac_layers": [
+    "E2E",
+    "API"
+  ],
+  "nfr_posture": [],
+  "invariant_patterns": [
+    {
+      "type": "unique",
+      "brief": "UNIQUE constraint on (sku, location); no two rows share the pair, so a repeat write updates in place rather than storing a duplicate (realizes R3, AC3)."
+    },
+    {
+      "type": "not_null",
+      "brief": "sku, location, quantity and inventory_code are NOT NULL; a filed stock record always carries the full pair, quantity and combined code (AC1)."
+    },
+    {
+      "type": "check",
+      "brief": "CHECK (quantity >= 0); a stored stock level is never negative (realizes the non-negative half of R2 at the schema level)."
+    },
+    {
+      "type": "migration_reversible",
+      "brief": "Initial create_table: after a single-step downgrade-then-upgrade the stock_records table with its columns and constraints is recreated (schema recreation semantics; there are no pre-existing rows to preserve on an initial migration)."
+    }
+  ]
+}

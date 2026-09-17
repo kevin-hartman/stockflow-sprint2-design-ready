@@ -1,0 +1,24 @@
+{
+  "sprint": "stockflow-v1",
+  "schema_version": 1,
+  "gates": {
+    "plan": {
+      "status": "approved",
+      "approver": "Kevin Hartman",
+      "approved_at": "2026-09-17T02:55:50.365Z",
+      "artifact_hashes": {
+        "feature-proposals.md": "6c2d932fbe35e864e651f70dddad6deb49e4b9913121aeb299bdd86ecd2011d4"
+      },
+      "history": [
+        {
+          "action": "approved",
+          "at": "2026-09-17T02:55:50.365Z",
+          "approver": "Kevin Hartman",
+          "artifact_hashes": {
+            "feature-proposals.md": "6c2d932fbe35e864e651f70dddad6deb49e4b9913121aeb299bdd86ecd2011d4"
+          }
+        }
+      ]
+    }
+  }
+}

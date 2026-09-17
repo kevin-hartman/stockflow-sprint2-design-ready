@@ -1,0 +1,9 @@
+{
+  "id": "AC1-file-stock-record",
+  "given": "no stock record exists for a given SKU at a given location",
+  "when": "the operator files a stock level for that SKU at that location, providing the quantity and the inventory_code",
+  "then": "a stock record is created for that (sku, location) pair capturing the quantity and the combined inventory_code",
+  "status": "passing",
+  "layer": "E2E",
+  "architectural_notes": "Client-to-server round-trip: the operator submits the file-stock form and the browser must render the created-record confirmation from the live API response, so this is a client/server contract verified end-to-end (React SPA boundary at app/routes to service at app/services to repository at app/repositories writing the stock_records row). Cross-cutting: input validation owned at the app/routes boundary; the write transaction owned in the service layer. Owner module: app/services stock service coordinating app/repositories persistence."
+}

@@ -1,7 +1,12 @@
 {
   "$schema": "./scm-workflow-state.schema.json",
   "version": 1,
-  "state": "scaffold-complete",
+  "state": "feature-claimed",
   "tier_topology": 2,
-  "project_id": "stockflow-3-94"
+  "project_id": "stockflow-3-94",
+  "feature_id": "F1-stock-visibility",
+  "branch": "feature-f1-stock-visibility",
+  "parent_branch": "staging",
+  "lakebase_branch_uid": "br-gentle-grass-d2ca80ao",
+  "claimed_at": "2026-09-17T02:56:14.746Z"
 }

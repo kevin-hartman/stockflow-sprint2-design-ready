@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "feature_id": "F1-stock-visibility",
+  "stories": {
+    "S1-file-stock": {
+      "status": "done",
+      "acceptance": {
+        "decision": "accepted",
+        "history": [
+          {
+            "decision": "revise",
+            "at": "2026-09-17T03:12:31.740Z",
+            "approver": "human-proxy",
+            "reason": "blocking smell \"reflect-spec-defect\": reflection gate: AC3-collision-resolved-at-write declares layer: \"API\" but architecture.md test strategy explicitly assigns it \"(E2E)\" (\"repeat write updates in place; exactly one row (PI1), no error page\") and the covering test T14 is kind: \"client\" (Playwright E2E under client/tests/e2e/). The observable outcome 'no error page shown' requires browser observation, not API-layer inspection. AC3's layer field must be changed to \"E2E\" to align with the architecture assignment and T14's mechanism."
+          },
+          {
+            "decision": "accepted",
+            "at": "2026-09-17T04:44:39.569Z",
+            "approver": "Kevin Hartman"
+          }
+        ],
+        "approver": "Kevin Hartman",
+        "at": "2026-09-17T04:44:39.569Z",
+        "reason": "blocking smell \"reflect-spec-defect\": reflection gate: AC3-collision-resolved-at-write declares layer: \"API\" but architecture.md test strategy explicitly assigns it \"(E2E)\" (\"repeat write updates in place; exactly one row (PI1), no error page\") and the covering test T14 is kind: \"client\" (Playwright E2E under client/tests/e2e/). The observable outcome 'no error page shown' requires browser observation, not API-layer inspection. AC3's layer field must be changed to \"E2E\" to align with the architecture assignment and T14's mechanism."
+      },
+      "gate": {
+        "status": "approved",
+        "history": [
+          {
+            "action": "approved",
+            "at": "2026-09-17T03:26:45.405Z",
+            "approver": "Kevin Hartman"
+          }
+        ],
+        "approver": "Kevin Hartman",
+        "approved_at": "2026-09-17T03:26:45.405Z"
+      },
+      "experiment": {
+        "slug": "exp1",
+        "branch": "experiment-s1-file-stock-exp1",
+        "parent": "feature-f1-stock-visibility",
+        "n": 1,
+        "status": "merged",
+        "cut_at": "2026-09-17T04:02:20.236Z",
+        "design_fingerprint": "9aeb65538f6a25a2",
+        "closed_at": "2026-09-17T04:44:39.569Z"
+      }
+    },
+    "S2-stock-by-location-table": {
+      "status": "done",
+      "acceptance": {
+        "decision": "accepted",
+        "history": [
+          {
+            "decision": "revise",
+            "at": "2026-09-17T03:35:04.144Z",
+            "approver": "human-proxy",
+            "reason": "blocking smell \"reflect-spec-defect\": reflection gate: AC3 says 'given a location has no stock records, when the operator views that location on the home screen' — implying the home screen has per-location navigation or filtering. But AC1 describes the home screen as a flat global table of all stock records, with no location filter declared. 'Views that location' introduces an undescribed UI affordance (location selector / route param). T23 compounds the ambiguity by saying 'the live API returns no records for a location' (location-scoped query) rather than 'returns no records at all' (empty table). As written, AC3 either (a) contradicts AC1 by requiring a per-location view that AC1 doesn't expose, or (b) means 'the table is entirely empty' — but if (b), the AC wording and test precondition must say so. The Driver cannot determine which behavior to build without clarification."
+          },
+          {
+            "decision": "accepted",
+            "at": "2026-09-17T05:06:13.168Z",
+            "approver": "Kevin Hartman"
+          }
+        ],
+        "approver": "Kevin Hartman",
+        "at": "2026-09-17T05:06:13.168Z",
+        "reason": "blocking smell \"reflect-spec-defect\": reflection gate: AC3 says 'given a location has no stock records, when the operator views that location on the home screen' — implying the home screen has per-location navigation or filtering. But AC1 describes the home screen as a flat global table of all stock records, with no location filter declared. 'Views that location' introduces an undescribed UI affordance (location selector / route param). T23 compounds the ambiguity by saying 'the live API returns no records for a location' (location-scoped query) rather than 'returns no records at all' (empty table). As written, AC3 either (a) contradicts AC1 by requiring a per-location view that AC1 doesn't expose, or (b) means 'the table is entirely empty' — but if (b), the AC wording and test precondition must say so. The Driver cannot determine which behavior to build without clarification."
+      },
+      "gate": {
+        "status": "approved",
+        "history": [
+          {
+            "action": "approved",
+            "at": "2026-09-17T03:43:11.209Z",
+            "approver": "Kevin Hartman"
+          }
+        ],
+        "approver": "Kevin Hartman",
+        "approved_at": "2026-09-17T03:43:11.209Z"
+      },
+      "experiment": {
+        "slug": "exp1",
+        "branch": "experiment-s2-stock-by-location-table-exp1",
+        "parent": "feature-f1-stock-visibility",
+        "n": 1,
+        "status": "merged",
+        "cut_at": "2026-09-17T04:45:19.702Z",
+        "design_fingerprint": "b003aba2c2098018",
+        "closed_at": "2026-09-17T05:06:13.168Z"
+      }
+    },
+    "S3-sku-detail-view": {
+      "status": "awaiting-acceptance",
+      "gate": {
+        "status": "approved",
+        "history": [
+          {
+            "action": "approved",
+            "at": "2026-09-17T04:02:10.031Z",
+            "approver": "Kevin Hartman"
+          }
+        ],
+        "approver": "Kevin Hartman",
+        "approved_at": "2026-09-17T04:02:10.031Z"
+      },
+      "experiment": {
+        "slug": "exp1",
+        "branch": "experiment-s3-sku-detail-view-exp1",
+        "parent": "feature-f1-stock-visibility",
+        "n": 1,
+        "status": "active",
+        "cut_at": "2026-09-17T05:06:51.303Z",
+        "design_fingerprint": "a7e53482c4d31ec9"
+      },
+      "acceptance": {
+        "decision": null,
+        "history": []
+      }
+    }
+  },
+  "build_queue": [],
+  "build_active": "S3-sku-detail-view"
+}

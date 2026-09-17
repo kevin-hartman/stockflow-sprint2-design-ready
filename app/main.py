@@ -6,12 +6,17 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.routes.stock import router as stock_router
+
 app = FastAPI(title="stockflow-3-94", version="0.1.0")
 
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+app.include_router(stock_router)
 
 
 # ── Register API routes ABOVE this line ─────────────────────────────────────

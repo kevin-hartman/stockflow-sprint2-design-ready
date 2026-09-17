@@ -1,0 +1,13 @@
+{
+  "id": "AC2-quantity-right-aligned",
+  "status": "passing",
+  "given": "the home-screen stock table is displaying one or more rows",
+  "when": "the operator scans the table",
+  "then": "the quantity values are right-aligned in their column so they read as a scannable numeric list",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1 asserts the rows and their SKU/location/quantity content exist; AC2 asserts a distinct presentation outcome — the quantity column's right-alignment — which can break independently while the rows still render correctly."
+  },
+  "layer": "E2E",
+  "architectural_notes": "E2E: right-alignment is a presentation outcome on the same flat server-populated table. The boundary returns JSON only (R5); presentation lives in the React client component, never in the boundary or a template. Verified through the SPA rendering real server rows against the live API — the quantity column reads as a scannable right-aligned numeric list. No backend/domain logic."
+}

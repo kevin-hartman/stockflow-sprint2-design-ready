@@ -1,0 +1,168 @@
+{
+  "feature_id": "F1-stock-visibility",
+  "story_id": "S1-file-stock",
+  "ordered_for": "design-momentum",
+  "items": [
+    {
+      "id": "T1",
+      "description": "after a single-step downgrade then upgrade the stock_records table is recreated with all its columns and constraints present (@pytest.mark.migration, schema-recreation semantics, not data-preservation)",
+      "ac_id": "AC1-file-stock-record",
+      "status": "green",
+      "kind": "fitness",
+      "invariant_id": "PI4-migration-reversible"
+    },
+    {
+      "id": "T2",
+      "description": "inserting a stock_records row with sku NULL raises an IntegrityError directly from the database",
+      "ac_id": "AC1-file-stock-record",
+      "status": "green",
+      "kind": "fitness",
+      "invariant_id": "PI2-required-fields-not-null"
+    },
+    {
+      "id": "T3",
+      "description": "inserting a stock_records row with location NULL raises an IntegrityError directly from the database",
+      "ac_id": "AC1-file-stock-record",
+      "status": "green",
+      "kind": "fitness",
+      "invariant_id": "PI2-required-fields-not-null"
+    },
+    {
+      "id": "T4",
+      "description": "inserting a stock_records row with quantity NULL raises an IntegrityError directly from the database",
+      "ac_id": "AC1-file-stock-record",
+      "status": "green",
+      "kind": "fitness",
+      "invariant_id": "PI2-required-fields-not-null"
+    },
+    {
+      "id": "T5",
+      "description": "inserting a stock_records row with inventory_code NULL raises an IntegrityError directly from the database",
+      "ac_id": "AC1-file-stock-record",
+      "status": "green",
+      "kind": "fitness",
+      "invariant_id": "PI2-required-fields-not-null"
+    },
+    {
+      "id": "T7",
+      "description": "inserting a stock_records row with quantity = -1 raises an IntegrityError from the ck_stock_records_quantity_non_negative CHECK constraint directly at the database level",
+      "ac_id": "AC1-file-stock-record",
+      "status": "green",
+      "kind": "fitness",
+      "invariant_id": "PI3-quantity-non-negative"
+    },
+    {
+      "id": "T8",
+      "description": "calling the stock-filing service with a negative quantity is rejected before the repository write is reached (repository write is patched and assert_not_called; service called with its injected session)",
+      "ac_id": "AC1-file-stock-record",
+      "status": "green",
+      "kind": "fitness",
+      "nfr_id": "NFR-R2-no-negative-no-overcommit"
+    },
+    {
+      "id": "T13",
+      "description": "navigating to /adjust and submitting the file-stock form with valid sku, location, quantity, and inventory_code creates a stock record and the browser renders the created-record confirmation from the live API response (real Playwright e2e, no mocks)",
+      "ac_id": "AC1-file-stock-record",
+      "status": "green",
+      "kind": "client",
+      "scenario_file": "client/tests/e2e/file-stock-create.spec.ts"
+    },
+    {
+      "id": "T20",
+      "description": "submitting the file-stock form with a required field omitted renders a field__error element inline that names the offending field (design-guide seam: .field__error carries the field name per NFR-validation-messages-name-field)",
+      "ac_id": "AC1-file-stock-record",
+      "status": "green",
+      "kind": "client",
+      "scenario_file": "client/tests/pages/FileStockForm.test.tsx"
+    },
+    {
+      "id": "T6",
+      "description": "inserting a second row with the same (sku, location) as an existing row raises an IntegrityError at the database level (verifies PI1 unique constraint realized by the migration)",
+      "ac_id": "AC3-collision-resolved-at-write",
+      "status": "green",
+      "kind": "fitness",
+      "invariant_id": "PI1-unique-sku-location"
+    },
+    {
+      "id": "T9",
+      "description": "filing a stock record for a (sku, location) pair that already exists stores exactly one row in stock_records and surfaces no error to the caller (upsert path; verified with per-run-unique key against real branch DB)",
+      "ac_id": "AC3-collision-resolved-at-write",
+      "status": "green",
+      "kind": "fitness",
+      "invariant_id": "PI1-unique-sku-location",
+      "nfr_id": "NFR-R3-unique-sku-location"
+    },
+    {
+      "id": "T14",
+      "description": "submitting the file-stock form a second time for the same sku and location updates the record in place and the browser renders the confirmation without showing an error page (real Playwright e2e against live DB, no mocks)",
+      "ac_id": "AC3-collision-resolved-at-write",
+      "status": "green",
+      "kind": "client",
+      "scenario_file": "client/tests/e2e/file-stock-collision.spec.ts"
+    },
+    {
+      "id": "T10",
+      "description": "filing a stock record and retrieving by (sku, location) returns the exact quantity and inventory_code that were filed (happy-path read-back through the API boundary)",
+      "ac_id": "AC2-retrieve-stock-record",
+      "status": "green",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-file-stock.feature"
+    },
+    {
+      "id": "T11",
+      "description": "filing the same SKU at two different locations yields two independently retrievable records each returning their own quantity and inventory_code (distinct keys coexist)",
+      "ac_id": "AC2-retrieve-stock-record",
+      "status": "green",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-file-stock.feature"
+    },
+    {
+      "id": "T12",
+      "description": "filing the same (sku, location) pair a second time with a different quantity: the subsequent retrieval of that pair returns the new quantity (the refile updated the record in place)",
+      "ac_id": "AC2-retrieve-stock-record",
+      "status": "green",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-file-stock.feature"
+    },
+    {
+      "id": "T15",
+      "description": "filing a stock record with a negative quantity returns a 4xx response naming 'quantity' as the offending field",
+      "ac_id": "AC2-retrieve-stock-record",
+      "status": "green",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-file-stock.feature"
+    },
+    {
+      "id": "T16",
+      "description": "filing a stock record with the 'sku' field omitted returns a 4xx response naming 'sku' as the offending field",
+      "ac_id": "AC2-retrieve-stock-record",
+      "status": "green",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-file-stock.feature"
+    },
+    {
+      "id": "T17",
+      "description": "filing a stock record with the 'location' field omitted returns a 4xx response naming 'location' as the offending field",
+      "ac_id": "AC2-retrieve-stock-record",
+      "status": "green",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-file-stock.feature"
+    },
+    {
+      "id": "T18",
+      "description": "filing a stock record with the 'inventory_code' field omitted returns a 4xx response naming 'inventory_code' as the offending field",
+      "ac_id": "AC2-retrieve-stock-record",
+      "status": "green",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-file-stock.feature"
+    },
+    {
+      "id": "T19",
+      "description": "filing a stock record with the 'quantity' field omitted returns a 4xx response naming 'quantity' as the offending field",
+      "ac_id": "AC2-retrieve-stock-record",
+      "status": "green",
+      "kind": "behavior",
+      "scenario_file": "tests/features/S1-file-stock.feature"
+    }
+  ]
+}

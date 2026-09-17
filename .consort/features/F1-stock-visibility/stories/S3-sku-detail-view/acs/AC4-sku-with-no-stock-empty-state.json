@@ -1,0 +1,13 @@
+{
+  "id": "AC4-sku-with-no-stock-empty-state",
+  "status": "passing",
+  "given": "a SKU that holds no stock at any location",
+  "when": "the operator opens that SKU's detail view",
+  "then": "the view shows an explicit empty state indicating the SKU has no stock at any location, never a blank page or an error",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1-AC3 describe a SKU that has stock (rows, tracking code, par-level state); AC4 adds the distinct no-stock outcome, which can break (blank/error page) while the populated detail view still renders correctly."
+  },
+  "layer": "E2E",
+  "architectural_notes": "E2E: outcome is the SPA rendering an explicit empty state (never a blank page or error) when the SKU holds no stock at any location, derived from the real detail response returning zero rows. Boundary app/routes/ delegates to app/services -> app/repositories/ which returns an empty result set for that sku; the client renders the empty state. Verified end-to-end against the paired branch so the zero-row envelope is exercised as an actual client-server contract. Touches open decision OD1 (whether stock_records is the SKU authority) but does not resolve it; left open."
+}

@@ -1,0 +1,71 @@
+{
+  "feature_id": "F1-stock-visibility",
+  "tables": [
+    {
+      "name": "stock_records",
+      "columns": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "description": "Surrogate primary key."
+        },
+        {
+          "name": "sku",
+          "type": "text",
+          "nullable": false,
+          "description": "Stock keeping unit; part of the unique addressable (sku, location) pair (PI2)."
+        },
+        {
+          "name": "location",
+          "type": "text",
+          "nullable": false,
+          "description": "Location the stock is filed at; part of the unique addressable (sku, location) pair (PI2)."
+        },
+        {
+          "name": "quantity",
+          "type": "integer",
+          "nullable": false,
+          "description": "Stored stock level for the pair; constrained non-negative (PI2, PI3)."
+        },
+        {
+          "name": "inventory_code",
+          "type": "text",
+          "nullable": false,
+          "description": "Combined inventory code captured at filing; opaque string for S1 (PI2, OD2)."
+        }
+      ],
+      "primary_key": ["id"],
+      "unique_constraints": [["sku", "location"]],
+      "checks": [
+        {
+          "name": "ck_stock_records_quantity_non_negative",
+          "expression": "quantity >= 0"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "uq_stock_records_sku_location",
+          "columns": ["sku", "location"],
+          "unique": true
+        }
+      ]
+    }
+  ],
+  "schema_changes": [
+    {
+      "story_id": "S1-file-stock",
+      "kind": "create_table",
+      "table": "stock_records",
+      "detail": "Create stock_records with id (uuid pk, default gen_random_uuid()), sku (text not null), location (text not null), quantity (integer not null), inventory_code (text not null); UNIQUE (sku, location); CHECK (quantity >= 0).",
+      "migration_note": "Initial create_table. Reversible in a single step: upgrade creates the table with its columns and constraints, downgrade drops it. No pre-existing rows to preserve on an initial migration (PI4)."
+    }
+  ],
+  "realizes_invariants": [
+    "PI1-unique-sku-location",
+    "PI2-required-fields-not-null",
+    "PI3-quantity-non-negative",
+    "PI4-migration-reversible"
+  ]
+}

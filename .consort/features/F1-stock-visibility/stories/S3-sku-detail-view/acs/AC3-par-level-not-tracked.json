@@ -1,0 +1,13 @@
+{
+  "id": "AC3-par-level-not-tracked",
+  "status": "passing",
+  "given": "the SKU has no par level recorded (par level is not tracked in V1)",
+  "when": "the operator views that SKU's detail view",
+  "then": "the par level region shows an explicit \"not tracked\" indication rather than a blank region, a null value, or an error",
+  "independence": {
+    "distinct_from_prior": true,
+    "rationale": "AC1/AC2 cover the stock rows, quantities, and tracking code; AC3 adds the distinct outcome for an untracked optional field (par level), which can break (blank/null crash) while the stock rows and tracking code still render correctly."
+  },
+  "layer": "E2E",
+  "architectural_notes": "E2E: outcome is the SPA rendering an explicit 'not tracked' indication for an untracked optional field (par level) rather than a blank region, null, or crash, derived from the real detail response where par level is absent. Boundary app/routes/ returns par level as null/absent; the client maps that to the 'not tracked' state. Verified as a real client-server round-trip against the paired branch (the missing-optional-detail rendering preference). No new persistence invariant; par level is not a stock_records column in V1."
+}
