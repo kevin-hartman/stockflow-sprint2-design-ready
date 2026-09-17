@@ -1,0 +1,511 @@
+# On merge to any long-lived branch (main, staging, ...): run migrations on the
+# MATCHING Lakebase branch (main → production / default; staging → staging;
+# etc.), then delete ci-pr-* and the merged feature branch's Lakebase clone.
+# Language-aware: detects Java/Flyway, Python/Alembic, or Node.js/Knex.
+#
+# Two-tier flow:
+#   PR feature/* → staging  → push to staging   → migrate Lakebase 'staging'
+#   PR staging   → main     → push to main      → migrate Lakebase default (prod)
+#
+# Job design:
+#   - migrate-target: runs on push to any listed branch (triggered by PR merges or direct pushes)
+#     Resolves target Lakebase branch via scripts/ci/resolve-lakebase-branch.sh
+#     (same mapping used by pr.yml and scripts/post-checkout.sh).
+#   - cleanup-lakebase-branches: runs on pull_request closed+merged regardless
+#     of base.ref – any merged feature branch's ci-pr-N + its feature Lakebase
+#     clone are torn down.
+#
+# Auth: OAuth token refreshed by pre-push hook and synced to DATABRICKS_TOKEN secret.
+name: Merge
+
+on:
+  push:
+    # Migrate on a push to ANY long-living PARENT tier, not a hardcoded list.
+    # A PR merge pushes to its base (the parent), so migrating github.ref_name on
+    # every non-ephemeral push covers every promotion regardless of the tier's
+    # name (main / master / staging / a custom tier). Only ephemeral branches are
+    # excluded - they use pr.yml's CI branch and never receive promotions.
+    # migrate-target is push-gated (its `if` requires event_name==push), so a PR
+    # merge migrates the parent exactly once (on the push to base.ref). The
+    # pull_request:closed trigger below drives only cleanup-lakebase-branches.
+    branches-ignore:
+      - 'feature-**'
+      - 'feature/**'
+      - 'experiment-**'
+      - 'experiment/**'
+      - 'ci-pr-**'
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  migrate-target:
+    runs-on: self-hosted
+    # Skip the initial branch-creation push. github.event.before is the
+    # all-zeros SHA when a ref is being created for the first time (the
+    # scaffold's initial commit being pushed to main; the first cut of
+    # staging via createLongRunningBranch; etc.). On those pushes, the
+    # project tree has only the V1 placeholder migration which is
+    # already present on the Lakebase default branch, so migrate-target
+    # has nothing to apply - and trying to run it (a) wastes a runner
+    # slot for 1-2 minutes per migrate-target invocation that's a no-op,
+    # and (b) the orphaned in-progress run on a fresh project can block
+    # the runner queue for subsequent real promotion merges. Any
+    # real merge to main/staging (PR-merge or direct push) has
+    # before != 0000... and runs normally.
+    # Run for any non-ephemeral parent push (the trigger's branches-ignore already
+    # scoped this to tier branches); skip only the ref-creation push (all-zeros
+    # before-SHA), which carries only the V1 placeholder already on the default branch.
+    if: github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve substrate ref
+        # The runtime substrate (scripts/lk) resolves the substrate from .lakebase/scm-utils-ref;
+        # CI follows the SAME ref so a scm-utils-ref bump takes effect here without editing
+        # this workflow (FEIP-8050, Finding 24). Falls back to v0.2.36,
+        # the version this project was scaffolded from, when .lakebase/scm-utils-ref is absent.
+        run: |
+          SCM_UTILS_REF="$(tr -d '[:space:]' < .lakebase/scm-utils-ref 2>/dev/null || true)"
+          echo "SCM_UTILS_REF=${SCM_UTILS_REF:-v0.2.36}" >> "$GITHUB_ENV"
+
+      - name: Detect project language
+        id: detect-lang
+        # Routes through the substrate's lakebase-detect-language CLI so
+        # the substrate.s marker-file detection (mirrors lakebase-schema-migrate's auto-
+        # detect) is the single source of truth across pr.yml + merge.yml +
+        # the substrate's migrate runners. 0.2.36 is
+        # substituted at scaffold time to the substrate version that produced
+        # this project.
+        run: |
+          LANG="$(npx --yes \
+            --package=github:databricks-solutions/lakebase-scm-utils#"${SCM_UTILS_REF}" \
+            lakebase-detect-language)"
+          echo "lang=$LANG" >> $GITHUB_OUTPUT
+          echo "Detected language: $LANG"
+
+      - name: Set up JDK (probe local)
+        id: jdk-probe
+        if: steps.detect-lang.outputs.lang == 'java'
+        run: |
+          JH=""
+          if [ "$(uname)" = "Darwin" ]; then
+            JH="$(/usr/libexec/java_home 2>/dev/null || true)"
+          elif command -v java >/dev/null 2>&1 && java -version >/dev/null 2>&1; then
+            JH="$(dirname $(dirname $(readlink -f $(which java))))"
+          fi
+          if [ -n "$JH" ] && [ -x "$JH/bin/java" ]; then
+            echo "JAVA_HOME=$JH" >> $GITHUB_ENV
+            echo "local_jdk=found" >> $GITHUB_OUTPUT
+            echo "Using local JDK: $JH"
+            "$JH/bin/java" -version
+          else
+            echo "local_jdk=missing" >> $GITHUB_OUTPUT
+            echo "No local JDK; will fall back to actions/setup-java in the next step."
+          fi
+
+      - name: Set up JDK (download via actions/setup-java fallback)
+        if: steps.detect-lang.outputs.lang == 'java' && steps.jdk-probe.outputs.local_jdk == 'missing'
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+
+      - name: Set Java env vars
+        if: steps.detect-lang.outputs.lang == 'java'
+        run: echo "MAVEN_OPTS=--enable-native-access=ALL-UNNAMED" >> $GITHUB_ENV
+
+      - name: Set up Python + uv
+        if: steps.detect-lang.outputs.lang == 'python'
+        run: |
+          if command -v uv >/dev/null 2>&1; then
+            echo "uv already on PATH"; uv --version
+          elif command -v pip >/dev/null 2>&1; then
+            pip install uv
+          else
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            export PATH="$HOME/.local/bin:$PATH"
+            echo "PATH=$HOME/.local/bin:$PATH" >> $GITHUB_ENV
+          fi
+          uv sync --all-extras
+
+      - name: Set up Node.js
+        if: steps.detect-lang.outputs.lang == 'nodejs'
+        run: |
+          if command -v node >/dev/null 2>&1; then
+            echo "Node.js already on PATH"; node --version
+          fi
+          npm install
+
+      # The official action installs to a user-writable path (no sudo). It's
+      # a no-op if a compatible databricks CLI is already on PATH.
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Authenticate Databricks
+        id: db-auth
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          # Force PAT auth so the CLI uses DATABRICKS_TOKEN and skips any
+          # legacy ~/.databricks/ cache that v1+ refuses to read. Self-
+          # hosted runners with older CLI installations have such a cache.
+          DATABRICKS_AUTH_TYPE: pat
+          # Clear any runner-inherited CLI profile so AUTH_TYPE=pat is used cleanly
+          # (a leaked DATABRICKS_CONFIG_PROFILE makes the CLI attempt OAuth resolution,
+          # which hangs headless and times out the substrate's databricks calls).
+          DATABRICKS_CONFIG_PROFILE: ""
+        run: |
+          if [ -z "$DATABRICKS_HOST" ] || [ -z "$DATABRICKS_TOKEN" ]; then
+            echo "::error::DATABRICKS_HOST or DATABRICKS_TOKEN secret not set. Push from local to refresh: git push triggers pre-push hook which syncs the token."
+            exit 1
+          fi
+          echo "DATABRICKS_HOST=$DATABRICKS_HOST" >> $GITHUB_ENV
+          echo "DATABRICKS_TOKEN=$DATABRICKS_TOKEN" >> $GITHUB_ENV
+          echo "DATABRICKS_AUTH_TYPE=pat" >> $GITHUB_ENV
+
+          # Capture stderr so the real reason (expired token, incompatible
+          # credential cache, etc.) surfaces in the run log instead of being
+          # swallowed by >/dev/null 2>&1.
+          AUTH_ERR="$(databricks current-user me -o json 2>&1 >/dev/null || true)"
+          if [ -n "$AUTH_ERR" ]; then
+            echo "::error::Databricks authentication failed: ${AUTH_ERR}"
+            exit 1
+          fi
+          echo "Databricks authenticated."
+
+      # Resolve the Lakebase branch paired with the pushed git branch.
+      # main  → default (production) Lakebase branch
+      # staging → 'staging' Lakebase branch
+      # (mapping matches scripts/post-checkout.sh via scripts/sanitize-branch-name.sh)
+      - name: Resolve target DB credentials (Lakebase)
+        id: target-db
+        env:
+          LAKEBASE_PROJECT_ID: ${{ secrets.LAKEBASE_PROJECT_ID }}
+          TARGET_GIT_BRANCH: ${{ github.ref_name }}
+        run: |
+          if [ -z "$LAKEBASE_PROJECT_ID" ]; then
+            echo "::error::LAKEBASE_PROJECT_ID secret not set. Add it in repo Settings → Secrets."
+            exit 1
+          fi
+          echo "Resolving Lakebase branch for git '$TARGET_GIT_BRANCH'..."
+          if ! ./scripts/ci/resolve-lakebase-branch.sh \
+                --git-branch "$TARGET_GIT_BRANCH" \
+                --ensure-endpoint \
+                --github-env; then
+            echo "::error::Failed to resolve Lakebase branch for git '$TARGET_GIT_BRANCH'. Ensure the paired Lakebase branch exists (main → default; staging → 'staging')."
+            exit 1
+          fi
+          echo "Target branch resolved: $LAKEBASE_BRANCH_NAME (git: $TARGET_GIT_BRANCH)"
+
+      # Install Flyway CLI for Java/Kotlin projects only. The substrate's
+      # migrate runner spawns the standalone `flyway` binary; non-Java
+      # projects don't need it. Runtime-gated on pom.xml so the YAML is
+      # one shape for every language.
+      #
+      # Resolution order (mirrors pr.yml's Install Flyway CLI step):
+      #   1. `flyway` already on PATH (self-hosted runner with brew /
+      #      apt install): use it, skip download.
+      #   2. $FLYWAY_DOWNLOAD_BASE_URL env override (runners behind a
+      #      Maven-proxy mirror that block repo1.maven.org). Wire via
+      #      repo Variables → vars.FLYWAY_DOWNLOAD_BASE_URL.
+      #   3. Default https://repo1.maven.org/maven2 for GitHub-hosted
+      #      runners with public internet.
+      - name: Install Flyway CLI
+        if: hashFiles('pom.xml') != ''
+        env:
+          FLYWAY_DOWNLOAD_BASE_URL: ${{ vars.FLYWAY_DOWNLOAD_BASE_URL }}
+        run: |
+          if command -v flyway >/dev/null 2>&1; then
+            echo "Flyway already on PATH ($(command -v flyway)); skipping download."
+            flyway --version 2>&1 | head -1 || true
+            exit 0
+          fi
+          FLYWAY_VERSION=10.20.1
+          FLYWAY_BASE="${FLYWAY_DOWNLOAD_BASE_URL:-https://repo1.maven.org/maven2}"
+          DEST="$RUNNER_TEMP/flyway"
+          mkdir -p "$DEST"
+          echo "Downloading Flyway $FLYWAY_VERSION from $FLYWAY_BASE ..."
+          curl --fail --silent --location \
+            "$FLYWAY_BASE/org/flywaydb/flyway-commandline/$FLYWAY_VERSION/flyway-commandline-$FLYWAY_VERSION.zip" \
+            -o "$DEST/flyway.zip"
+          unzip -q "$DEST/flyway.zip" -d "$DEST"
+          rm -f "$DEST/flyway.zip"
+          echo "$DEST/flyway-$FLYWAY_VERSION" >> $GITHUB_PATH
+
+      # Snapshot the production branch before migrating. Cut via the
+      # substrate's lakebase-cut-backup CLI so the snapshot name +
+      # lineage rules stay aligned with the release-sprint flow.
+      #
+      # The substrate primitive doesn't currently take a TTL; the cleanup
+      # step below explicitly deletes on success and preserves on failure.
+      # A catastrophic runner crash between cut-backup and cleanup would
+      # leak the snapshot, where the previous inline call's ttl=86400s
+      # was a backstop - tracked as a follow-up on.
+      - name: Create pre-migration snapshot
+        id: snapshot
+        env:
+          # Pull auth from secrets directly. The substrate's lakebase-cut-backup
+          # CLI shells out to `databricks postgres create-branch`, which on
+          # Databricks CLI v1+ rejects the pre-v1 credential cache and won't
+          # fall back to DATABRICKS_TOKEN unless DATABRICKS_AUTH_TYPE=pat
+          # pins it. Same pattern as pr.yml's "Run migrations (CI branch)".
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_AUTH_TYPE: pat
+          # Clear any runner-inherited CLI profile so AUTH_TYPE=pat is used cleanly
+          # (a leaked DATABRICKS_CONFIG_PROFILE makes the CLI attempt OAuth resolution,
+          # which hangs headless and times out the substrate's databricks calls).
+          DATABRICKS_CONFIG_PROFILE: ""
+          LAKEBASE_PROJECT_ID: ${{ secrets.LAKEBASE_PROJECT_ID }}
+        run: |
+          PROJ_PATH="projects/${LAKEBASE_PROJECT_ID}"
+          # Extract PR number from merge commit message (e.g. "Merge pull request #7")
+          PR_NUM="$(git log -1 --pretty=%s | grep -oE '#[0-9]+' | head -1 | tr -d '#')" || true
+          SNAPSHOT_NAME="pre-migrate-pr-${PR_NUM:-$(date +%s)}"
+
+          # Find the default branch (snapshot source). The Lakebase API
+          # marks the production branch with status.default=true; we
+          # snapshot that one, not the merge-target git branch.
+          LIST_RAW="$(databricks postgres list-branches "$PROJ_PATH" -o json 2>&1)"
+          BRANCHES="$(echo "$LIST_RAW" | jq -c 'if type == "array" then . elif type == "object" then (.branches // .items // []) else [] end' 2>/dev/null)" || BRANCHES="[]"
+          DEFAULT_NAME="$(echo "$BRANCHES" | jq -r '.[] | select((.status.default == true) or (.is_default == true)) | .name' 2>/dev/null | head -1)"
+
+          if [ -z "$DEFAULT_NAME" ]; then
+            echo "::warning::Could not find default branch for snapshot. Proceeding without rollback safety."
+            echo "SNAPSHOT_NAME=" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          echo "Routing snapshot through substrate's lakebase-cut-backup CLI"
+          echo "  substrate ref: ${SCM_UTILS_REF}"
+          echo "  instance:    $LAKEBASE_PROJECT_ID"
+          echo "  source:      $DEFAULT_NAME"
+          echo "  backup:      $SNAPSHOT_NAME"
+          if CREATE_OUT="$(npx --yes --package=github:databricks-solutions/lakebase-scm-utils#"${SCM_UTILS_REF}" \
+                              lakebase-cut-backup \
+                              --instance "$LAKEBASE_PROJECT_ID" \
+                              --source "$DEFAULT_NAME" \
+                              --name "$SNAPSHOT_NAME" \
+                              --pretty 2>&1)"; then
+            echo "$CREATE_OUT"
+            echo "SNAPSHOT_NAME=$SNAPSHOT_NAME" >> $GITHUB_ENV
+            echo "SNAPSHOT_PROJ_PATH=$PROJ_PATH" >> $GITHUB_ENV
+          else
+            echo "$CREATE_OUT"
+            echo "::warning::Failed to create pre-migration snapshot. Proceeding without rollback safety."
+            echo "SNAPSHOT_NAME=" >> $GITHUB_ENV
+          fi
+
+      - name: Run migrations (target)
+        env:
+          # Substrate's lakebase-schema-migrate CLI handles language detection,
+          # baseline flags, and tool spawning. Auth pulled from secrets
+          # directly (DATABRICKS_AUTH_TYPE=pat required for CLI v1+;
+          # see pr.yml's "Run migrations (CI branch)" for the rationale).
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_AUTH_TYPE: pat
+          # Clear any runner-inherited CLI profile so AUTH_TYPE=pat is used cleanly
+          # (a leaked DATABRICKS_CONFIG_PROFILE makes the CLI attempt OAuth resolution,
+          # which hangs headless and times out the substrate's databricks calls).
+          DATABRICKS_CONFIG_PROFILE: ""
+          LAKEBASE_PROJECT_ID: ${{ secrets.LAKEBASE_PROJECT_ID }}
+        run: |
+          if [ -z "$LAKEBASE_BRANCH_NAME" ]; then
+            echo "::error::LAKEBASE_BRANCH_NAME not set; the resolve-credentials step should have populated it."
+            exit 1
+          fi
+          echo "Routing migrations through the substrate's lakebase-schema-migrate CLI"
+          echo "  substrate ref: ${SCM_UTILS_REF}"
+          echo "  instance:    $LAKEBASE_PROJECT_ID"
+          echo "  branch:      $LAKEBASE_BRANCH_NAME"
+          echo "  git ref:     $GITHUB_REF_NAME"
+          # apply-tier (not plain apply): this step migrates the PARENT TIER
+          # (staging / main / dev), which `apply` refuses on purpose. apply-tier
+          # is the promotion opt-in (allowTier) + verifies the tier reached head,
+          # so a partial promotion fails the job instead of leaving git ahead of
+          # the Lakebase schema. Single-tier (default branch) also goes through it.
+          npx --yes --package=github:databricks-solutions/lakebase-scm-utils#"${SCM_UTILS_REF}" \
+            lakebase-schema-migrate apply-tier \
+            --instance "$LAKEBASE_PROJECT_ID" \
+            --branch "$LAKEBASE_BRANCH_NAME" \
+            --pretty
+          echo "Migrations completed."
+
+      - name: Clean up or preserve snapshot
+        if: always()
+        env:
+          # Same v1 CLI cache trap as the substrate-routed steps: this
+          # step calls `databricks postgres list-branches` + `delete-branch`,
+          # which on CLI v1+ refuse the pre-v1 credential cache without
+          # DATABRICKS_AUTH_TYPE=pat pinning auth to DATABRICKS_TOKEN.
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_AUTH_TYPE: pat
+          # Clear any runner-inherited CLI profile so AUTH_TYPE=pat is used cleanly
+          # (a leaked DATABRICKS_CONFIG_PROFILE makes the CLI attempt OAuth resolution,
+          # which hangs headless and times out the substrate's databricks calls).
+          DATABRICKS_CONFIG_PROFILE: ""
+          LAKEBASE_PROJECT_ID: ${{ secrets.LAKEBASE_PROJECT_ID }}
+        run: |
+          if [ -z "${SNAPSHOT_NAME}" ]; then
+            echo "No snapshot to manage."
+            exit 0
+          fi
+          PROJ_PATH="projects/${LAKEBASE_PROJECT_ID}"
+
+          # Find the snapshot branch path
+          LIST_RAW="$(databricks postgres list-branches "$PROJ_PATH" -o json 2>&1)"
+          BRANCHES="$(echo "$LIST_RAW" | jq -c 'if type == "array" then . elif type == "object" then (.branches // .items // []) else [] end' 2>/dev/null)" || BRANCHES="[]"
+          SNAP_PATH="$(echo "$BRANCHES" | jq -r ".[] | select(.name | test(\"${SNAPSHOT_NAME}\")) | .name" 2>/dev/null | head -1)"
+
+          if [ -z "$SNAP_PATH" ]; then
+            echo "Snapshot branch not found in listing. May have already expired."
+            exit 0
+          fi
+
+          # job.status reflects whether the migration step (or any earlier
+          # step in this job) failed – the failure() / success() boundary that
+          # decides preserve-vs-delete. The migration step has no `id`, so
+          # there's no per-step outcome to consult; the job-level status is
+          # the authoritative signal.
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "Migrations succeeded. Deleting snapshot: $SNAP_PATH"
+            databricks postgres delete-branch "$SNAP_PATH" 2>&1 || true
+          else
+            echo "::warning::Migrations failed. Snapshot preserved for rollback: $SNAP_PATH"
+            echo "### Migration Rollback Available" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "A pre-migration snapshot was preserved: \`${SNAPSHOT_NAME}\`" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "To recover, point your application at this branch or use it as the source for a new default branch." >> $GITHUB_STEP_SUMMARY
+            echo "The snapshot will auto-expire in 24 hours." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      # Post-migrate verification via the substrate. lakebase-schema-migrate
+      # status reports the applied version + any pending migrations on the
+      # target branch, replacing the previous hand-rolled psql + grep-the-
+      # migration-files table check. The substrate is the single source of
+      # truth for migration state across every language, so the verify path
+      # stays one shape (no per-language CREATE/DROP TABLE parsing).
+      - name: Verify migrations applied (substrate status)
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_AUTH_TYPE: pat
+          # Clear any runner-inherited CLI profile so AUTH_TYPE=pat is used cleanly
+          # (a leaked DATABRICKS_CONFIG_PROFILE makes the CLI attempt OAuth resolution,
+          # which hangs headless and times out the substrate's databricks calls).
+          DATABRICKS_CONFIG_PROFILE: ""
+          LAKEBASE_PROJECT_ID: ${{ secrets.LAKEBASE_PROJECT_ID }}
+        run: |
+          if [ -z "$LAKEBASE_BRANCH_NAME" ]; then
+            echo "::warning::LAKEBASE_BRANCH_NAME not set; skipping post-migrate status."
+            exit 0
+          fi
+          echo "Reporting applied migrations on '$LAKEBASE_BRANCH_NAME' via the substrate"
+          echo "  substrate ref: ${SCM_UTILS_REF}"
+          echo "  instance:    $LAKEBASE_PROJECT_ID"
+          echo "  branch:      $LAKEBASE_BRANCH_NAME"
+          npx --yes --package=github:databricks-solutions/lakebase-scm-utils#"${SCM_UTILS_REF}" \
+            lakebase-schema-migrate status \
+            --instance "$LAKEBASE_PROJECT_ID" \
+            --branch "$LAKEBASE_BRANCH_NAME" \
+            --pretty | tee -a $GITHUB_STEP_SUMMARY
+
+  # Separate job: branch cleanup runs only on PR merge (not direct pushes to main).
+  # Uses PR event data directly – no commit message parsing needed.
+  cleanup-lakebase-branches:
+    runs-on: self-hosted
+    # Fire on ANY merged PR regardless of base.ref. Two-tier: feature→staging
+    # and staging→main both need their ci-pr-N + feature Lakebase clones torn
+    # down. Persistent branches (main, staging) are never deleted (the delete
+    # helper script's allowlist guards against that).
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # Resolve the substrate into the local cache so the thin-wrap scripts
+      # (sanitize-branch-name.sh + delete-lakebase-branches.sh) can find it. A
+      # fresh checkout has no node_modules, and a Python project never has one ,
+      # the substrate is resolved via scripts/lk from .lakebase/scm-utils-ref, not npm.
+      # Without warming, the scripts exit "lakebase-scm-utils not installed"
+      # under `bash -e`, the whole job dies before the delete runs, and the
+      # ci-pr-<N> branch is never cleaned up.
+      - name: Warm the substrate resolver (cleanup job)
+        run: bash scripts/lk --warm
+
+      # No-sudo install via the official action; no-op if already on PATH.
+      - name: Install Databricks CLI (cleanup job)
+        uses: databricks/setup-cli@main
+
+      - name: Authenticate Databricks (cleanup job)
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_AUTH_TYPE: pat
+          # Clear any runner-inherited CLI profile so AUTH_TYPE=pat is used cleanly
+          # (a leaked DATABRICKS_CONFIG_PROFILE makes the CLI attempt OAuth resolution,
+          # which hangs headless and times out the substrate's databricks calls).
+          DATABRICKS_CONFIG_PROFILE: ""
+        run: |
+          if [ -z "$DATABRICKS_HOST" ] || [ -z "$DATABRICKS_TOKEN" ]; then
+            echo "::error::DATABRICKS_HOST or DATABRICKS_TOKEN secret not set."
+            exit 1
+          fi
+          echo "DATABRICKS_HOST=$DATABRICKS_HOST" >> $GITHUB_ENV
+          echo "DATABRICKS_TOKEN=$DATABRICKS_TOKEN" >> $GITHUB_ENV
+          echo "DATABRICKS_AUTH_TYPE=pat" >> $GITHUB_ENV
+
+          AUTH_ERR="$(databricks current-user me -o json 2>&1 >/dev/null || true)"
+          if [ -n "$AUTH_ERR" ]; then
+            echo "::error::Databricks authentication failed: ${AUTH_ERR}"
+            exit 1
+          fi
+          echo "Databricks authenticated."
+
+      - name: Delete CI and feature DB branches (Lakebase)
+        env:
+          LAKEBASE_PROJECT_ID: ${{ secrets.LAKEBASE_PROJECT_ID }}
+        run: |
+          if [ -z "$LAKEBASE_PROJECT_ID" ]; then
+            echo "::error::LAKEBASE_PROJECT_ID secret not set."
+            exit 1
+          fi
+
+          PR_NUM="${{ github.event.pull_request.number }}"
+          HEAD_REF="${{ github.event.pull_request.head.ref }}"
+
+          # Sanitize feature branch name via shared script
+          FEATURE_BRANCH=""
+          if [ -n "$HEAD_REF" ]; then
+            FEATURE_BRANCH="$(bash scripts/sanitize-branch-name.sh "$HEAD_REF")"
+          fi
+
+          echo "PR_NUM=${PR_NUM} HEAD_REF=${HEAD_REF} FEATURE_BRANCH=${FEATURE_BRANCH:-none}"
+
+          ARGS=""
+          [ -n "$PR_NUM" ] && ARGS="ci-pr-${PR_NUM}"
+          if [ -n "$FEATURE_BRANCH" ] && [ "$FEATURE_BRANCH" != "main" ] && [ "$FEATURE_BRANCH" != "master" ]; then
+            ARGS="${ARGS:+$ARGS }${FEATURE_BRANCH}"
+          fi
+
+          if [ -z "$ARGS" ]; then
+            echo "::warning::No branch names resolved from PR event."
+            exit 0
+          fi
+
+          echo "Deleting Lakebase branches: $ARGS"
+          if ! ./scripts/delete-lakebase-branches.sh $ARGS; then
+            echo "::warning::Some Lakebase branches could not be deleted (may already be gone)."
+          fi
+          echo "Lakebase branch cleanup finished."

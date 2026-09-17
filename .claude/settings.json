@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./scripts/run-tests.sh)",
+      "Bash(./scripts/run-tests.sh *)",
+      "Bash(./scripts/lk *)",
+      "Bash(uv run *)",
+      "Bash(npm test)",
+      "Bash(npm test *)",
+      "Bash(npm run *)",
+      "Bash(npm --prefix *)",
+      "Bash(npm ci)",
+      "Bash(npm ci *)",
+      "Bash(npm install)",
+      "Bash(npm install *)",
+      "Bash(npx playwright *)",
+      "Bash(npx --yes playwright *)"
+    ]
+  }
+}

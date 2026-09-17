@@ -1,0 +1,58 @@
+# Deploy targets for the /deploy phase.
+#
+# Each target carries a `type` discriminator. Only `local` is implemented today
+# (run the app on this machine and verify it is reachable); remote types
+# (databricks-app, vercel) are declared here but deferred, consort-deploy
+# exits cleanly with "unsupported target type" until they land.
+#
+# /deploy <feature-id> --target local        (the orchestrated deploy phase)
+# Local is the per-sprint "working software" target: it starts the app and
+# polls base_url+health_path until it answers, so each iteration ends as
+# running, reachable software.
+targets:
+  local:
+    type: local
+    # Command that starts the app in the foreground (backgrounded by the deploy
+    # primitive). It MUST bind $PORT: the deploy injects PORT + E2E_BACKEND_PORT and
+    # relocates off a busy port, so a stale server on :8000 moves the deploy instead of
+    # halting it. Fall back to :8000 when unset — e.g. `uvicorn --port ${PORT:-8000}`.
+    run: make run
+    # Preferred port. The deploy probes upward for a free one if this is busy, then
+    # threads the chosen port via PORT / E2E_BACKEND_PORT / BASE_URL to the app + verify.
+    # Use 127.0.0.1, NOT localhost: the app binds IPv4 (uvicorn's default host is
+    # 127.0.0.1), but on macOS `localhost` resolves to IPv6 ::1 FIRST, so the
+    # reachability poll stalls on ::1 where nothing listens and the deploy/verify
+    # reports the app "not reachable after 60s" even though it is healthy on IPv4.
+    base_url: http://127.0.0.1:8000
+    # Probe the app's real health endpoint. /health returns 200 in EVERY lane
+    # (build/honest-GREEN, dev, and production). Do NOT use "/": it is reserved for
+    # the React SPA catch-all that mounts ONLY when client/dist exists, so in the
+    # build lane "/" 404s and readiness false-negatives even though the app is
+    # healthy. /health is defined before the catch-all (which excludes it), so it
+    # answers 200 whether or not the SPA is built.
+    health_path: /health
+    ready_timeout_seconds: 60
+    # Verify the running app actually works: the language-agnostic test entrypoint
+    # (runs pending migrations + the project's test suite against the branch DB,
+    # with BASE_URL exported so E2E/Playwright hits this deployment). This is the
+    # teeth for BOTH the deploy gate AND per-cycle honest GREEN , without it the
+    # substrate cannot confirm working software and a build correctly escalates.
+    verify: ./scripts/run-tests.sh
+    # Forward-only migrate applied to the DEPLOYED branch BEFORE the app starts
+    # (per-story gate deploy only). Honest-GREEN verify migrates a DISPOSABLE
+    # CHILD branch to isolate reversibility up/down fixtures, so the experiment
+    # branch the PO reviews is otherwise never upgraded , its write path 500s
+    # ("relation does not exist") even though every test passed. This is the
+    # language-agnostic migrate entrypoint (Python: alembic upgrade head; Node:
+    # knex migrate:latest; Java: flyway:migrate) , forward-only + idempotent.
+    migrate: ./scripts/flyway-migrate.sh
+
+  # Remote target (Databricks Apps). Declared for the type discriminator;
+  # NOT yet implemented by /deploy. Deploy via the extension / app-deploy skill.
+  prod:
+    type: databricks-app
+    workspace_profile: your-profile-name
+    workspace_path: /Workspace/Users/you@databricks.com/stockflow-3-94
+    app_name: stockflow-3-94
+    lakebase_project: stockflow-3-94
+    lakebase_branch: production

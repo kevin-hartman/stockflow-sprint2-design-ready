@@ -1,0 +1,361 @@
+# consort
+
+Consort's spec-first, test-driven build on paired Lakebase branches (Lakebase is Databricks' serverless Postgres/OLTP database, not the Delta Lakehouse) for building transactional applications: RED → GREEN → REFACTOR composed with paired-branch primitives (cheap experiments, parent-aware schema diff, real per-branch databases) and human-in-the-loop gates at every phase boundary.
+
+**Spec-first: two disciplines, back to back.** Consort runs the design lane as **Spec Driven Development (SDD)** and the build lane as **Test Driven Development (TDD)**:
+
+- **Design lane = SDD** (`/design`). Spec Author, Architect Reviewer, and Test Strategist turn intent into a gated, executable spec – feature spec, stories, ACs, architecture notes, and a Beck-ordered test list – before any product code exists. The spec is the artifact that drives everything downstream.
+- **Build lane = TDD** (`/build`). RED → GREEN → REFACTOR cycles turn that approved spec into working software on a paired branch, one test-list item at a time. The test list authored by SDD is the build lane's horizon.
+
+SDD produces the spec; TDD consumes it. The HITL gates between them (`spec`, `test_list`) are where the spec is frozen before a single line of product code is written.
+
+**Iterative and evolutionary.** That freeze is per increment, not forever. Specs and features are living, not static: each sprint the PO re-plans, folding in what the last working software revealed. The architecture evolves under fitness functions, and the database schema evolves by migration on the paired branch (see `architectural-design-principles`: evolutionary architecture + evolutionary database design). Spec-first within an increment; evolutionary across increments.
+
+This README is the human-facing overview. The agent's operating contract – hard rules, function names, code patterns – lives in [`SKILL.md`](SKILL.md).
+
+## When to use
+
+- A new feature needs a spec authored, architected, and test-listed.
+- A feature needs cutting, running, and tearing down on a paired branch.
+- A TDD cycle (RED → GREEN → REFACTOR) needs running against a per-branch Lakebase DB.
+- Multiple parallel experiments need comparing and a winner promoted or synthesized.
+- Bad smells (test list drift, cycle stall, fragility) need detecting and surfacing to a Product Owner.
+
+## Lexicon
+
+| Term | Definition |
+|---|---|
+| **Feature** | A user-facing capability. Decomposes into stories with ACs. The durable unit: one feature branch is claimed / PR'd / merged-to-trunk / tier-promoted / deployed-per-sprint. |
+| **Story** | A slice of a feature with its own ACs. The unit of the streaming design->build pipeline, and the scope an experiment is built at. |
+| **AC** | Acceptance Criterion. One observable behavior. Tagged `[API]` / `[E2E]` / `[Infra]`. |
+| **Test list** | Beck's planning artifact. Ordered list of behavioral scenarios that define done. Feature-level master, scoped per story for the build lane. |
+| **Cycle** | One RED → GREEN → REFACTOR pass for a single test list item. |
+| **Spike** | Throwaway exploration on a Lakebase branch. No test list, no rigor. Goal: learn. Code is never merged, only the learning carries forward. Attaches to a feature OR a story. |
+| **Experiment** | A rigorous, isolated TDD branch (test list, cycles, working code + tests) forked from feature-branch HEAD, scoped to a **story**. N=1 (default) = the story's one isolated build; N>=2 = competing strategies for that story. The PO reviews it as working software, then accepts (merge), discards, or sends back to revise. |
+| **N=1 (the default)** | One experiment per story, iterative refinement. No promote/synthesize ceremony, no compare report. What most stories look like. |
+| **N≥2 (parallel experiments)** | Deliberate race between competing strategies for a story. Used when the design-spec gate finds opinion gaps the team wants to resolve by trying them. HITL chooses promote vs synthesize among that story's experiments. |
+| **merge** | (PO accept) Take a story's experiment into the feature branch: a real git-merge of its code PLUS running its migrations against the feature branch's Lakebase DB. Then the experiment branch is torn down. Distinct from the SCM feature->trunk merge. |
+| **discard / revise** | (PO reject) Tear down the experiment with no trace: `discard` drops the story from the sprint; `revise` sends it back to designing for a re-spec. |
+| **Promote** | (N≥2 only) Take one of a story's competing experiments as-is; the losers are archived. The winner then merges into the feature. |
+| **Synthesize** | (N≥2 only) PO menu-picks capabilities across a story's experiments; spec is renegotiated; a fresh experiment produces the final code. |
+| **Bad smell** | A pattern the orchestrator detects that signals the build is sliding. Surfaces a proposed remediation to the HITL. |
+| **Adapter** | Pluggable component that syncs the spec format to/from an external tracker (JIRA, Linear, GitHub Issues, plain markdown). |
+
+"Experiment" is the noun for the rigorous TDD branch; it is scoped to a story (N=1 is one experiment per story, N>=2 races several). The feature branch is the durable integration unit each accepted experiment merges into.
+
+## Roles
+
+| Role | Responsibility | Agent prompt |
+|---|---|---|
+| **Feature Requester** | Writes `feature-request.md`, the original ask. The Spec Author's INPUT; read but never overwritten. | The human (or upstream PM). |
+| **Spec Author** | Reads the Feature Requester's `feature-request.md` and the PO's `product-overview.md`, and turns them into the structured draft spec (`feature-spec.{md,json}`, stories, ACs). | [`agents/spec-author.md`](agents/spec-author.md) (first phase of `/design`). |
+| **UX Designer** | The experience lens (UI projects only). Owns the design guide + information architecture and ensures downstream UI adheres to them. | [`agents/ux-designer.md`](agents/ux-designer.md) |
+| **Architect Reviewer** | Applies layering lens; populates `layer` and `architectural_notes` per AC; imports `software-design-principles`. | [`agents/architect-reviewer.md`](agents/architect-reviewer.md) |
+| **DBA** | The physical-database lens. Consumes `architecture.json` and produces `db-design.json` (tables, columns/types, indexes, and a per-story schema-change plan) that realizes the architect's persistence invariants. Runs after the Architect Reviewer, before the Test Strategist. | [`agents/dba.md`](agents/dba.md) |
+| **Test Strategist** | Converts annotated ACs into a Beck-style ordered test list; emits per-AC views. | [`agents/test-strategist.md`](agents/test-strategist.md) |
+| **Orchestrator** | The deterministic driver (`consort-drive`), not an agent. Routes over `workflow-state.json`: runs the design-spec gate; spawns experiments to budget; runs cycles; watches smells; presents outcomes to HITL. | `consort-drive` (code, not an agent def). |
+| **Navigator** | PLAN, RED (writes failing tests), REVIEW. Never weakens an assertion. | [`agents/navigator.md`](agents/navigator.md) |
+| **Driver** | GREEN (minimal honest code), REFACTOR. Never deletes or weakens a test. | [`agents/driver.md`](agents/driver.md) |
+| **Deploy + promote** (deterministic, no agent) | `/deploy`: the orchestrator runs `consort-deploy` (deploy the increment, poll reachable, run the feature verify) and `lakebase-scm-merge` (promote via PR + CI + merge), surfacing the `deploy` and `promote` gates to the PO. Logged under the `release-engineer` label. | Deterministic phase (no agent). |
+| **Product Owner / HITL** | Owns the project-level `product-overview.md` (open-ended intent; software is a product), ACs, test list ordering. Decides promote vs synthesize. Owns every gate. | The human. |
+
+## Phases and gates
+
+The **SDD (Spec Driven Development)** lane produces and freezes the spec; the **TDD (Test Driven Development)** lane builds against it. The design lane runs its lenses **as a unit** — draft spec, then the UX, architectural, schema, and test-list lenses, then a reflect pass — and stops at a **single** HITL review, the `spec` gate. There is **no per-lens gate**: the human reviews the whole design once, per story, at the end of the lane. (The design does the work of all those lenses; it just doesn't pause between them.)
+
+| Lane | Steps, in order (deterministic within the lane) | Output | HITL gate(s) |
+|---|---|---|---|
+| Planning | PO drafts intake · Spec Author proposes a backlog · Architect sizes it · PO authors the picked feature-requests | `product-overview.md`, `nfrs.md`, `feature-proposals.md`, `requested.json` | **`intake`** (drafted intake), **`backlog`** (human commits the sprint's features), **`plan`** (locks the backlog) |
+| SDD — design | Spec Author (breakdown → stories/ACs) · UX Designer (design guide + IA, UI only) · Architect Reviewer (layer + `architectural_notes`; NFR coverage) · DBA (`db-design.json`) · Test Strategist (ordered `test-list`) · Navigator (reflect) | Frozen spec: `feature-spec` + stories + ACs + `architecture` + `db-design` + `test-list` (+ the experiment plan: N, strategies, budget) | **`spec`** — one review of the whole design, per story |
+| TDD — build | Per-experiment RED / GREEN / REVIEW / REFACTOR cycles | Tests + code on the paired branch | Continuous: smells; at the end **`acceptance`** (accept / discard / revise; promote / synthesize when N≥2) |
+| TDD — deploy | Deploy the increment (reachable + verify), then promote via PR + CI + merge | Deployed + merged increment | **`deploy`**, then **`promote`** |
+
+Each step has a defined predecessor + artifact contract; the orchestrator refuses to transition if prior artifacts are missing or invalid. The SDD→TDD handoff is hard: the build lane cannot start until the `spec` gate is approved, so TDD always builds against a frozen, reviewed spec.
+
+## Operations
+
+What Consort does on your behalf, in user-journey order. You don't invoke these directly – the agent does, in response to the prompts in [How to use](#how-to-use).
+
+### 1. Design-spec gate
+
+As part of the design lane (after the test list is built), the orchestrator runs the design-spec analyzer. It scans the list for unresolved design choices (keywords like "either", "consider", "alternatively", "decide", "TBD") and proposes either N=1 (iterative refinement) or N≥2 (parallel race), with strategies and a resource budget (concurrent branches, wall-clock minutes, agent-pair count).
+
+The proposal is conservative by design: the analyzer's job is to surface the choice to the PO, not to decide. The PO signs off on it as part of the single `spec` gate that closes the design lane. The plan and the decision are persisted here:
+
+```
+.consort/
+  features/
+    F1-checkout/
+      plan.json                  ← { feature_id, N, mode, strategies[], budget, rationale }
+  selection-log.md               ← append-only HITL decision record (every gate)
+```
+
+### 2. Experiment
+
+With a story's plan approved, the agent cuts branches per the plan – one for N=1, multiple for N≥2 – forked from feature HEAD, and runs cycles against them in phase 4 (Implementation). Experiments are scoped to the story: `experiments/<feature>/<story>/<slug>/`.
+
+```
+.consort/
+  experiments/
+    F1-checkout/
+      S1-submit/                 ← the story
+        s1-submit/               ← single experiment (N=1) – the story's build
+          branch.txt             ← Lakebase branch id (forked from the feature branch)
+          notes.md               ← strategy + learning notes
+          outcomes.json          ← { status, tests_passed, tests_failed, schema_diff_summary, ... }
+          timeline.json          ← per-cycle + smell history
+        exp-postgres-arrays/     ← parallel experiment (N≥2) for this story
+          ...
+        exp-json-blob/
+          ...
+        _archive/                ← losers from a promote decision land here
+          exp-json-blob/
+```
+
+Teardown is HITL-gated: the experiment record is preserved on disk by default even when the Lakebase branch is removed, so the learning survives. The orchestrator proposes deletions to the Product Owner; it never tears down unilaterally.
+
+### 3. Spike
+
+Exploration that sits outside the main loop. No test list, no gates, no rigor. The agent runs this when you ask to "spike X" or "explore whether Y is possible" – typically before authoring a spec, to de-risk a choice you'll later put into the design-spec gate.
+
+```
+.consort/
+  spikes/
+    explore-cart-storage/
+      branch.txt                 ← Lakebase branch id (often deleted shortly after)
+      notes.md                   ← learning that carries forward; survives branch teardown
+```
+
+The branch is deleted by default after notes are captured. **Spike code is never promoted into a TDD branch** – only the learning carries over.
+
+**Spike → design-spec carry-forward.** Tag a spike with the feature it informs (either YAML frontmatter `for_feature: F1-checkout` or a body line `For feature: F1-checkout`, with `feature:`, `feature_id:`, and `for_feature:` all accepted, tolerant of markdown bold). When that feature later goes through `analyzeForGate`, the analyzer's `proposed_plan.spike_inputs[]` automatically lists every matching spike with a short notes preview. The orchestrator surfaces these to the PO at Gate 4 and `attachSpikeInputs` persists the kept ones onto `plan.json` so the experiment record always carries the rationale.
+
+Before cutting any new experiment, the orchestrator checks the budget – at the concurrent-branch or wall-clock limit, it asks the PO to extend or stop, rather than cutting anyway. The plan also carries a `budget.per_experiment` cap (default 30 cycles + 60 minutes wall-clock) so one runaway experiment cannot starve its siblings: `checkPerExperimentCap` fires when an experiment crosses its cycle or wall-clock threshold, `recordExperimentCap` writes a `capped: { reason, at_cycle, ... }` record onto `outcomes.json`, and the comparison report tags the experiment with a `capped` signal and prompts the PO to `extend`, `abandon`, or `continue-suite`.
+
+### 4. Cycle (RED / GREEN / REFACTOR)
+
+Inside an experiment branch the orchestrator advances one test-list item at a time through a Beck-style cycle. Each cycle is persisted as a JSON artifact under `.consort/experiments/<feature>/<slug>/cycles/<cycleId>.json`, with stage transitions (`PLAN` → `RED` → `GREEN` → `REFACTOR`), the verdict (`passed | failed | skipped`), runner output, and any smells flagged during the cycle. The cycle primitives (`beginCycle`, `recordRunnerOutcome`, `markGreen`, `markRefactored`, `flagSmells`) are the only sanctioned way to write that history – the agent never edits cycle JSON by hand.
+
+### 5. Smells
+
+After every cycle, and at each gate transition, the orchestrator runs the detector catalog (`detectAll`) over the feature state and writes any hits to `.consort/features/<feature>/smells.json`. A hit surfaces a proposed remediation to the HITL – the orchestrator does not auto-fix. The catalog covers: cycle stall, fragility ratio, test cost spiral, test deletion attempts, boundary violations, test-list drift, API coherence drift, cross-experiment divergence, dead-requirement signal, and E2E-row perma-red.
+
+### 6. Comparison, promote, synthesize (N≥2)
+
+At convergence of a parallel race, the orchestrator builds a `ComparisonReport` (`compareExperiments`) – one row per experiment with tag-matrix outcomes, plus a Markdown render written next to the feature. The PO then chooses:
+
+- **Promote** (`promoteExperiment`) – one experiment becomes the feature PR; losers are moved to `_archive/`.
+- **Synthesize** (`synthesizeExperiments`) – PO picks capabilities across experiments; the spec is renegotiated and a fresh branch runs the next cycle.
+- **Archive** (`archiveExperiment`) – move an experiment record into `_archive/` without promoting.
+
+Both promote and synthesize require `hitlApproved: true` at the function boundary; the gate cannot be skipped programmatically.
+
+Experiments that hit a per-experiment cap (`max_cycles` or `max_wall_clock_minutes`) appear in the report with signal `capped` and a new `Cap` column showing the reason. The HITL decision block then lists capped experiments separately and prompts the PO to choose `extend` (raise the cap and resume via `clearExperimentCap`), `abandon` (archive this experiment, let siblings continue), or `continue-suite` (leave it capped and decide at end).
+
+### 7. Gates and integrity
+
+Every HITL decision is recorded in `.consort/features/<feature>/gates.json` via `approveGate` / `withdrawGate`. `verifyGateIntegrity` hashes the artifacts referenced by an approved gate (`hashArtifact`, `normalizeForHash`) and reports drift if the underlying files have changed since approval. `withGatesLock` serializes concurrent writes to the gates file so two agents (e.g. Navigator + Driver running in parallel) cannot corrupt state. `migrateGatesFromSelectionLog` upgrades legacy projects that pre-date the gates schema.
+
+## How to use
+
+Three flows – shown as what you'd prompt your agent to do, using a cart-checkout example throughout. The deterministic orchestrator (`consort-drive`) routes the work and spawns the role agents (Navigator, Driver, and the rest), which read their prompts and run the workflow on your behalf.
+
+The project-level slash commands `/design` and `/build` are the canonical entry points. They're thin wrappers around the orchestrator, scaffolded into new projects by `lakebase-create-project` under `.claude/commands/` (opt-out via `--skip-commands`). Projects extend them with their own concerns (JIRA hierarchy, IDE branch suggestions, manual review gates) by dropping sibling `design.{pre,post}-hook.md` or `build.{pre,post}-hook.md` files next to the scaffolded command. If a slash command isn't installed in your project, just describe what you want to your agent directly; the prompts below work either way.
+
+### 1. Author a feature spec (the SDD lane)
+
+This is Spec Driven Development: you produce the spec before any product code. Just describe what you want to build. The design agent walks Spec Author → Architect Reviewer → Test Strategist and asks you to sign off at each HITL gate; you don't need to tell it about schemas, file layout, IDs, or which questions to ask – that's its job.
+
+> `/design`
+
+…or describe it freeform:
+
+> "I want to build a checkout flow. A shopper should be able to submit their cart and get back an order id with a 201. Empty carts should be rejected with a 400. There'll be more behaviors later (inventory checks, payment) but start with just place-order. Walk me through drafting the spec."
+
+When you're done, your `.consort/features/F1-checkout/` tree has the feature, stories, ACs, architecture notes, and an ordered test list. If you'd rather author by hand, copy `templates/consort-bootstrap/.consort/` into your project and edit the files using [`references/spec-format.md`](references/spec-format.md) as the layout reference.
+
+### 2. Build a feature end-to-end (the TDD lane, N=1 default)
+
+This is Test Driven Development against the spec the SDD lane froze. The most common flow. One feature, one branch, iterative refinement. The branch IS the feature.
+
+> `/build F1-checkout`
+
+…or:
+
+> "Build the checkout feature."
+
+The orchestrator picks up the approved spec, runs the design-spec gate (which proposes N=1 for work without opinion gaps), waits for your sign-off, cuts the feature branch off staging, and alternates Navigator + Driver per test list item. After every cycle it runs the smell detectors and pauses to surface any remediation to you. When the list is exhausted, the feature branch goes straight to PR – no promote/synthesize step.
+
+### 3. Race parallel experiments and either promote or synthesize (N≥2)
+
+When the team has a real opinion gap and wants to resolve it by trying competing strategies. You name the strategies; the agent runs them in parallel.
+
+> "Build the checkout feature, but I want to compare two ways of storing the cart – one as a Postgres array column on orders, one as a JSON blob on a separate carts table. Race them and let me pick a winner."
+
+The orchestrator cuts a branch per strategy, runs the same test list through each, and at convergence presents the comparison report. It asks you to choose:
+
+- **Promote** – one experiment is the clear winner; take it as-is into the feature PR.
+- **Synthesize** – pick capabilities across the experiments (storage schema from one, API surface from the other), renegotiate the spec, and run a fresh cycle on a synthesized branch.
+- **Continue** – let cycles finish.
+- **Abandon all** – stalled population; re-run the design-spec gate.
+
+The `hitlApproved` flag on the promote and synthesize primitives is enforced at the function boundary, so the agent cannot skip this gate.
+
+### CLI cheat sheet
+
+For when you want to run something directly without the agent. Most TDD work goes through `/design` and `/build`; these are useful for debugging or one-off introspection.
+
+| Command | Purpose |
+|---|---|
+| `lakebase-feature-status <featureId> [--tdd <dir>] [--json]` | One-screen snapshot of a feature's workflow state (phase, plan, test-list completion, experiments, recent decisions, open smells). |
+| `node dist/bin/consort/spec-sync.cli.js <consortDir>` | Walk the `.consort/` tree and print drift reports. Exit 0 even when reports exist (warn-only by design). |
+| `node dist/bin/consort/test-list.cli.js <consortDir> <featureId> [storyId]` | Regenerate per-AC views from the feature-level master test list. With a `storyId`, instead write that story's scoped per-story test list (`stories/<story>/test-list-per-story.json`), the streaming build lane's per-story input. |
+| `bash tests/run_all.sh` (per scaffolded project) | Run every `validate_*.sh` in the project's `tests/` directory (the project's full validation suite). |
+
+## Project-level entry points
+
+- **`/sprint [name]`** – the top-level orchestrator: runs sprint planning to the plan gate, then claims + drives each backlog feature `design` → `build` → `deploy`. Resumable; halts at the next HITL gate.
+- **`/plan [name]`** – sprint planning above the per-feature loop: the Spec Author proposes the breakdown, the Architect t-shirt-sizes it, the PO commits the backlog, gated at the sprint plan gate. Stops there (does not flow into design).
+- **`/design`** – the **SDD (Spec Driven Development)** lane: wraps Spec Author + Architect Reviewer + Test Strategist phases to produce the gated, executable spec. Scaffolded into new projects by `lakebase-create-project`. Project-specific JIRA hierarchy creation lives in `design.pre-hook.md`.
+- **`/build`** – the **TDD (Test Driven Development)** lane: wraps the Orchestrator running RED → GREEN → REFACTOR against the frozen spec. Scaffolded into new projects by `lakebase-create-project`. Project-specific PR/merge ceremony lives in `build.post-hook.md`.
+- **`/deploy <feature-id>`** – deploys the merged feature (or one story's branch), verifies reachable + feature-verify, and surfaces the `deploy` gate for the PO. The local target is the one implemented; remote release rides the scaffolded `merge.yml`.
+- **`/ship`** – not part of this skill. Promotion past PR merge (tier promote, release-on-merge) is the deterministic promote/merge phase (`lakebase-scm-merge` + the scaffolded `merge.yml`).
+
+Consort ships no installed slash commands; the scaffolder writes the command files into the project at `lakebase-create-project` time (templated, with a version pin). The runtime surface is skills + agents + scripts + CLI bins. The MCP server (`apps/mcp-server/`) exposes the tool surface for MCP-capable consumers.
+
+## Agents
+
+The role agents under [`agents/`](agents/) are self-contained prompts. `lakebase-create-project` scaffolds them into a project's `.claude/agents/`, and the deterministic orchestrator (`consort-drive`) spawns them as `claude --agent <role>` when it delegates a phase. They are not shipped as plugin agents, so there is no `@consort/<role>` invocation; the orchestrator (code, not an agent) coordinates them.
+
+| Agent | File | Invoked when |
+|---|---|---|
+| Spec Author | [`agents/spec-author.md`](agents/spec-author.md) | Phase 0. Turns the feature request and product overview into the structured draft spec (stories, ACs). |
+| Architect Reviewer | [`agents/architect-reviewer.md`](agents/architect-reviewer.md) | Phase 1. Applies the layering lens to each AC and populates `layer` + `architectural_notes`. Imports `software-design-principles`. |
+| DBA | [`agents/dba.md`](agents/dba.md) | Phase 1, after the architect. Produces `db-design.json` (tables, columns, indexes, per-story schema-change plan) realizing the architect's persistence invariants. |
+| Test Strategist | [`agents/test-strategist.md`](agents/test-strategist.md) | Phase 2. Converts annotated ACs into the ordered master test list and emits per-AC views. |
+| Navigator | [`agents/navigator.md`](agents/navigator.md) | Each cycle, RED step. Writes the failing test for the current test-list item and reviews the Driver's GREEN code. Never weakens an assertion. |
+| Driver | [`agents/driver.md`](agents/driver.md) | Each cycle, GREEN + REFACTOR steps. Writes the minimal honest code to make the failing test pass, then cleans up. Never deletes or weakens a test. |
+
+## Under the covers (internal primitives)
+
+Consort's behavior is implemented as TypeScript functions under `consort/`. These are the internal primitives that the deterministic orchestrator and the CLI bins call; they are not a public import API. The tables below name them so you can read the source and understand what each phase does.
+
+### Experiments and spikes
+
+| Primitive | Purpose |
+|---|---|
+| `cutExperiment(args)` | Cut a paired Lakebase branch for an experiment and write its record under `.consort/experiments/<feature>/<story>/<slug>/`. |
+| `listExperiments(consortDir, featureId, storyId)` | Enumerate a story's experiment records. |
+| `readOutcomes(consortDir, featureId, storyId, slug)` / `writeOutcomes(...)` | Read/write the per-experiment `outcomes.json` (tag matrix, tests passed/failed, schema diff summary). |
+| `recordTagRun(outcomes, tag, verdict)` / `tagRunCount(outcomes, tag)` / `acLayerToTag(layer)` | Helpers for maintaining the tag-matrix bookkeeping on `outcomes.json`. |
+| `deleteExperiment(args)` | Tear down a Lakebase branch and (optionally) the on-disk experiment record. HITL-gated. |
+| `cutSpike(args)` / `listSpikes(consortDir)` / `deleteSpike(args)` | Same lifecycle for spikes (exploration outside the main loop) under `.consort/spikes/`. |
+| `collectSpikeInputs({ consortDir, featureId })` / `attachSpikeInputs(args)` | Scan `.consort/spikes/` for notes tagged with a feature id (via YAML frontmatter or body line) and persist the resolved inputs onto the feature's `plan.json`. |
+| `archiveExperiment(args)` | Move an experiment record into `_archive/` without tearing down its branch. |
+| `checkPerExperimentCap(args)` / `recordExperimentCap(args)` / `clearExperimentCap(args)` | Per-experiment cap helpers. `checkPerExperimentCap` is a pure read; `recordExperimentCap` writes `outcomes.capped`; `clearExperimentCap` removes it on the PO's `extend` reply. |
+
+### Cycle and runner
+
+| Primitive | Purpose |
+|---|---|
+| `beginCycle({ consortDir, featureId, slug, acId, stage })` | Start a new RED/GREEN/REFACTOR cycle and return the cycle artifact. |
+| `nextCycleId(scope)` / `listCycles(scope)` | Cycle-id allocation and history walk. |
+| `writeCycleArtifact(scope, artifact)` / `readCycleArtifact(scope, cycleId)` | Low-level cycle artifact IO; prefer `beginCycle` + the stage helpers. |
+| `recordRunnerOutcome(args)` | Attach a test-runner outcome (pass/fail/skip + raw output) to a cycle. |
+| `markGreen(scope, cycleId)` / `markRefactored(scope, cycleId, notes?)` / `flagSmells(scope, cycleId, smells)` | Stage transitions on an in-flight cycle. |
+| `readAcLayer(consortDir, featureId, acId)` | Resolve the architect-assigned layer for an AC. |
+| `openBranchDsn(args)` | Open a per-branch Postgres DSN for the cycle's runner (delegates to `lakebase-scm-workflows`). |
+
+### Test list
+
+| Primitive | Purpose |
+|---|---|
+| `readMasterTestList(consortDir, featureId)` / `writeMasterTestList(consortDir, list)` | Read/write the feature-level ordered test list. |
+| `viewByAc(list, acId)` / `viewsForAllAcs(list)` | Build per-AC slices of the master list. |
+| `writePerAcViews(consortDir, featureId, list)` | Regenerate the per-AC view files on disk (also what `test-list.cli.js` calls). |
+| `mutateTestList(args)` | Authorized mutation path: enforces ordering invariants and rejects unsafe deletes. Throws `TestListImmutabilityError` when the list is gate-protected. |
+| `isTestListProtected(featureId, opts?)` | True once Gate 3 has approved the list; further mutation requires explicit reopen. |
+
+### Plan and design-spec gate
+
+| Primitive | Purpose |
+|---|---|
+| `analyzeForGate(input, options?)` | The design-spec analyzer. Scans the approved test list for unresolved design choices and returns an `ExperimentPlan` proposal (N, strategies, budget incl. `per_experiment` default cap, rationale, plus `spike_inputs[]` populated automatically from any tagged spike under `.consort/spikes/`). |
+| `recordPlan(consortDir, plan, deciderEmail?)` | Persist an approved plan to `plan.json` and append the decision to `selection-log.md`. |
+| `readPlan(consortDir, featureId, storyId)` / `writePlan(consortDir, plan)` | Direct plan IO. |
+| `checkE2eGate({ consortDir, featureId })` | Pre-merge guard: refuses to advance if any `[E2E]`-tagged AC is still red. |
+
+### Gates and integrity
+
+| Primitive | Purpose |
+|---|---|
+| `approveGate({ featureId, gate, approver, hitlApproved, artifactInputs })` | Record HITL approval for one of `spec | plan | test_list | promote | deploy`. Throws `GateAlreadyClosedError` on double-approve. |
+| `withdrawGate(args)` | Revoke a previously approved gate (e.g. after a smell flags drift). |
+| `verifyGateIntegrity({ consortDir, featureId, gate })` | Re-hash referenced artifacts and report drift since approval. |
+| `readGates(featureId, opts?)` / `writeGates(state, opts?)` / `defaultGatesState(featureId)` | Direct gate-state IO. |
+| `withGatesLock(featureId, fn, opts?)` | Serialize concurrent writes; throws `GatesLockBusyError` if another process holds the lock. |
+| `migrateGatesFromSelectionLog(args)` | One-shot migration for legacy projects that pre-date `gates.json`. |
+| `hashArtifact(content)` / `normalizeForHash(content)` | Content-addressable hashing used by gate integrity checks. |
+
+### Comparison, promote, synthesize
+
+| Primitive | Purpose |
+|---|---|
+| `compareExperiments(consortDir, featureId, storyId)` | Build a `ComparisonReport` (rows + tag matrix) over a story's experiments. |
+| `writeComparisonReport(args)` / `renderComparisonReport(report)` | Persist and render the Markdown comparison artifact. |
+| `promoteExperiment({ consortDir, featureId, storyId, winnerSlug, hitlApproved })` | Promote one experiment into the feature PR; archive the rest. `hitlApproved` is mandatory. |
+| `synthesizeExperiments({ consortDir, featureId, storyId, picks, hitlApproved })` | Cut a fresh synthesis branch built from capabilities picked across experiments. `hitlApproved` is mandatory. |
+
+### Smells
+
+| Primitive | Purpose |
+|---|---|
+| `detectAll(input)` | Run every detector in `SMELL_CATALOG` against the current feature state. |
+| `detectCycleStall` / `detectFragilityRatio` / `detectTestCostSpiral` / `detectTestDeletionAttempt` / `detectBoundaryViolation` / `detectTestListDrift` / `detectApiCoherenceDrift` / `detectCrossExperimentDivergence` / `detectDeadRequirementSignal` / `detectE2eRowPermaRed` | Individual detectors; call directly when you want to bound the scope. |
+| `runDetectorsForScope(scope, input)` | Run the subset of detectors appropriate to a given scope (cycle, gate, comparison). |
+| `readSmellsLog(consortDir)` / `writeSmellsLog(consortDir, hits)` | Read/write the persisted smells log. |
+| `SMELL_CATALOG` | The canonical catalog of detectors with id, description, and severity. |
+
+### Budget
+
+| Primitive | Purpose |
+|---|---|
+| `snapshotBudget(consortDir, featureId)` | Current usage (open experiment count, wall-clock minutes spent) against the approved plan budget. |
+| `checkBudget(snapshot)` | Compute violations from a snapshot. |
+| `canCutAnotherExperiment(consortDir, featureId)` | Pre-flight check used by the orchestrator before `cutExperiment`. |
+
+### Spec IO and validation
+
+| Primitive | Purpose |
+|---|---|
+| `readFeature(consortDir, featureId)` / `writeFeature(consortDir, feature)` | Read/write the feature record (`.consort/features/<id>/feature-spec.json`). |
+| `readWorkflowState(consortDir)` / `writeWorkflowState(consortDir, state)` | Cross-feature workflow pointer (which feature is "current", last gate, etc.). |
+| `validateSpec(consortDir)` | Walk the `.consort/` tree and return `DriftReport[]`. Backs `spec-sync.cli.js`. |
+| `writeArtifact(args)` / `listArtifacts(consortDir, featureId, kind?)` / `readArtifact(args)` | Generic artifact IO under `.consort/features/<id>/artifacts/`. |
+
+### Status
+
+| Primitive | Purpose |
+|---|---|
+| `getFeatureStatus(consortDir, featureId)` | Build a `FeatureStatusSnapshot` (phase, plan, test-list summary, experiments, recent decisions, open smells). |
+| `renderFeatureStatus(snapshot)` | Pretty-print the snapshot for terminals. Backs `lakebase-feature-status`. |
+
+### Parallel runner
+
+| Primitive | Purpose |
+|---|---|
+| `runExperimentsInParallel<T>(args)` | Fan out a worker function across N experiments with concurrency + per-task timeout, collecting `ExperimentRunResult<T>` for each. Used by the orchestrator when racing strategies under N≥2. |
+
+### Spec adapters
+
+`SpecAdapter` is the pluggable surface that syncs `.consort/` entities to/from an external tracker. The skill ships two implementations:
+
+- `markdownAdapter` (instance) / `MarkdownAdapter` (class) – the default; treats the on-disk Markdown + JSON pair as the source of truth. `pushFeature` / `pushStory` / `pushAC` emit typed external_ids (`markdown:feature:<id>` / `markdown:story:<feature>:<id>` / `markdown:ac:_:<story>:<id>`). `pull(externalId, ctx)` resolves the matching entity from disk and also accepts the legacy `markdown:<id>` shape via a tree scan for backward compatibility.
+- `JiraAdapter` (constructed with `JiraAdapterConfig`) – mirrors features/stories/ACs to JIRA hierarchy. Configured by the project's `design.pre-hook.md` in scaffolded projects.
+
+Implement your own adapter against the `SpecAdapter` interface (with the `SyncEventHooks` lifecycle) to bridge to Linear, GitHub Issues, or any other tracker.
+
+## Integration with sibling skills
+
+- **`lakebase-scm-workflows`** – the paired-branch SCM primitives (`createFeatureBranch`, `deleteBranch`, `getSchemaDiff`, `getConnection`) that experiments and spikes run on. This skill is deployed into each scaffolded project's `.claude/skills/`.
+- **[`software-design-principles`](../software-design-principles/SKILL.md)** – imported as canon by the Architect Reviewer (layering + cross-cutting concerns) and the Navigator (refactor heuristics).

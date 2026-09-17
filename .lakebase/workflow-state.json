@@ -1,0 +1,7 @@
+{
+  "$schema": "./scm-workflow-state.schema.json",
+  "version": 1,
+  "state": "scaffold-complete",
+  "tier_topology": 2,
+  "project_id": "stockflow-3-94"
+}

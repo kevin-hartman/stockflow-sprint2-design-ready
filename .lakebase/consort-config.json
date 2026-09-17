@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "roles": {
+    "spec-author": {},
+    "architect-reviewer": {},
+    "dba": {},
+    "test-strategist": {},
+    "ux-designer": {},
+    "navigator": {},
+    "driver": {},
+    "product-owner": {}
+  },
+  "build": {
+    "loopGranularity": "story",
+    "batchCap": 3,
+    "sessionScope": "story"
+  },
+  "plan": {
+    "sizing": true
+  },
+  "project": {
+    "uiTrack": true,
+    "gates": "interactive",
+    "deployTarget": "local",
+    "clientFramework": "react",
+    "language": "python"
+  }
+}
