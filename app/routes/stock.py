@@ -66,6 +66,24 @@ def file_stock(payload: FileStockRequest, db: Session = Depends(get_db)):
     )
 
 
+@router.get("/list", response_model=list[StockRecordResponse])
+def list_stock(
+    location: str | None = Query(default=None),
+    db: Session = Depends(get_db),
+):
+    records = stock_service.list_stock(db, location=location)
+    return [
+        StockRecordResponse(
+            id=r.id,
+            sku=r.sku,
+            location=r.location,
+            quantity=r.quantity,
+            inventory_code=r.inventory_code,
+        )
+        for r in records
+    ]
+
+
 @router.get("", response_model=StockRecordResponse)
 def get_stock(
     sku: str = Query(...),
@@ -88,6 +106,16 @@ def get_stock(
 def delete_stock(
     sku: str = Query(...),
     location: str = Query(...),
+    db: Session = Depends(get_db),
+):
+    stock_service.delete_stock(db, sku=sku, location=location)
+    return Response(status_code=204)
+
+
+@router.delete("/{sku}/{location}", status_code=204)
+def delete_stock_by_path(
+    sku: str,
+    location: str,
     db: Session = Depends(get_db),
 ):
     stock_service.delete_stock(db, sku=sku, location=location)

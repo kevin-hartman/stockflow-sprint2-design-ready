@@ -1,4 +1,4 @@
-import { postJson } from "./client";
+import { getJson, postJson } from "./client";
 
 // api/ layer: the only layer that issues fetch. Pages/components call this typed
 // wrapper, never fetch directly.
@@ -19,4 +19,10 @@ export interface FileStockInput {
 
 export function fileStock(input: FileStockInput): Promise<StockRecord> {
   return postJson<StockRecord>("/api/stock", input);
+}
+
+/** List stock records, optionally scoped to a single location. */
+export function listStock(location?: string): Promise<StockRecord[]> {
+  const query = location ? `?location=${encodeURIComponent(location)}` : "";
+  return getJson<StockRecord[]>(`/api/stock/list${query}`);
 }
