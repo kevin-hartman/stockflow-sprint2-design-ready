@@ -76,6 +76,26 @@
       "resolution": "revised by human-proxy: full design re-run (test_list gate)",
       "resolution_kind": "revised",
       "revised_artifact_sha": "ceb3dd2679689711c6012f7a1b338fe90c04225c"
+    },
+    {
+      "smell": "reflect-testlist-defect",
+      "cycle_ids": [],
+      "detail": "reflection gate: T19 is kind:behavior (scenario_file in tests/features/S2-contract-schema.feature) but AC3-down-migration-reconstructs-code's architectural_notes explicitly require 'schema-mutating test on an isolated ephemeral migration branch.' Behavior tests connect to the shared experiment branch; running alembic downgrade -1 inside a pytest-bdd step on that branch would corrupt the post-UP schema that T13/T14/T15/T16 depend on. T19 must be kind:fitness with @pytest.mark.migration (matching T17/T18/T21's pattern), not a Gherkin scenario.; T20 is kind:behavior (scenario_file in tests/features/S2-contract-schema.feature) but AC4-round-trip-returns-to-dropped-state's architectural_notes explicitly require 'schema-mutating test (downgrade then re-upgrade) run on an isolated ephemeral migration branch.' Same corruption risk as T19: applying alembic down + re-up inside pytest-bdd step defs on the shared experiment branch would break T13-T16. T20 must be kind:fitness with @pytest.mark.migration, not a Gherkin scenario.; No S2 test-list item carries nfr_id:\"NFR-R1-migration-data-survival\", yet AC2-stock-rows-survive-drop explicitly states it 'realizes R1 at the contract boundary (R1).' T17 (invariant_id:PI4) and T18 (invariant_id:PI3) cover the intent but are untagged for R1. Since NFR-R1 declares a fitness_functions ARRAY, checkFitnessClauseCoverage enforces per-entry nfr_id coverage — but NFR-R1's array has no S2-contract-migration entry, so S2's R1 realization cannot be gated mechanically. Add nfr_id:\"NFR-R1-migration-data-survival\" to T17 (or T18) once the corresponding S2 clause is added to the array (see spec-author finding).",
+      "story_id": "S2-contract-schema",
+      "detected_at": "2026-09-17T08:53:29.217Z",
+      "resolution": "revised by human-proxy: full design re-run (test_list gate)",
+      "resolution_kind": "revised",
+      "revised_artifact_sha": "b8da44d663fbd0936d2c988da5097b75a5775329"
+    },
+    {
+      "smell": "reflect-spec-defect",
+      "cycle_ids": [],
+      "detail": "reflection gate: NFR-R1-migration-data-survival.fitness_functions array in architecture.json has no S2-contract-migration clause — both existing entries say 'the F6 expand migration' (S1 content). AC2 states S2 realizes R1 at the contract boundary, but without a contract-migration data-preservation clause in the array, checkFitnessClauseCoverage cannot enforce S2's R1 coverage deterministically. Add a clause such as 'the F6 contract migration (dropping inventory_code) preserves every pre-existing stock_records row across the DROP COLUMN with no row loss or corruption, and the paired down/re-up round-trip leaves every row intact with location/batch_number/serial_number unchanged (PI3, PI4, AC2)' to NFR-R1.fitness_functions so the gate can check S2's test-list against it.",
+      "story_id": "S2-contract-schema",
+      "detected_at": "2026-09-17T08:53:29.217Z",
+      "resolution": "revised by human-proxy: full design re-run (test_list gate)",
+      "resolution_kind": "revised",
+      "revised_artifact_sha": "b8da44d663fbd0936d2c988da5097b75a5775329"
     }
   ]
 }

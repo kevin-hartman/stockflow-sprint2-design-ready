@@ -131,6 +131,38 @@
       "status": "pending",
       "kind": "fitness",
       "invariant_id": "PI3-contract-migration-reversible"
+    },
+    {
+      "id": "T17",
+      "description": "E2E: navigate to stock table route in deployed app and assert each row has a data-testid='batch-number-cell' element with a visible label and a data-testid='serial-number-cell' element with a visible label, with no element carrying data-testid='inventory-code-cell' anywhere in the table",
+      "ac_id": "AC1-stock-table-shows-split-fields",
+      "status": "pending",
+      "kind": "client",
+      "scenario_file": "client/tests/e2e/S3-split-fields-ui.spec.ts"
+    },
+    {
+      "id": "T18",
+      "description": "E2E: navigate to SKU detail route in deployed app and assert the detail panel has a data-testid='batch-number-field' element with its label and a data-testid='serial-number-field' element with its label, with no element carrying data-testid='inventory-code-field' present",
+      "ac_id": "AC2-sku-detail-shows-split-fields",
+      "status": "pending",
+      "kind": "client",
+      "scenario_file": "client/tests/e2e/S3-split-fields-ui.spec.ts"
+    },
+    {
+      "id": "T19",
+      "description": "E2E: navigate to stock table route in deployed app with a real null-bearing record from the live DB and assert the row's data-testid='batch-number-cell' carries the design-guide empty-state 'not tracked' indicator text and the data-testid='serial-number-cell' carries the 'not tracked' indicator text, with neither cell blank nor showing an error",
+      "ac_id": "AC3-untracked-dimension-empty-state",
+      "status": "pending",
+      "kind": "client",
+      "scenario_file": "client/tests/e2e/S3-split-fields-ui-untracked.spec.ts"
+    },
+    {
+      "id": "T20",
+      "description": "E2E: navigate to SKU detail route in deployed app with a real null-bearing record from the live DB and assert the detail panel's data-testid='batch-number-field' carries the design-guide empty-state 'not tracked' indicator text and data-testid='serial-number-field' carries the 'not tracked' indicator text, with neither field blank nor showing an error",
+      "ac_id": "AC3-untracked-dimension-empty-state",
+      "status": "pending",
+      "kind": "client",
+      "scenario_file": "client/tests/e2e/S3-split-fields-ui-untracked.spec.ts"
     }
   ]
 }
