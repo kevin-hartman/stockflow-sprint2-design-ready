@@ -1,6 +1,6 @@
 {
   "id": "AC4-sku-with-no-stock-empty-state",
-  "status": "draft",
+  "status": "passing",
   "given": "a SKU that holds no stock at any location",
   "when": "the operator opens that SKU's detail view",
   "then": "the view shows an explicit empty state indicating the SKU has no stock at any location, never a blank page or an error",

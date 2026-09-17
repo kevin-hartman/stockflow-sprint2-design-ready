@@ -1,6 +1,6 @@
 {
   "id": "AC2-shows-tracking-code",
-  "status": "draft",
+  "status": "passing",
   "given": "a SKU's stock record carries its combined tracking code (inventory_code)",
   "when": "the operator views that SKU's detail view",
   "then": "the record's tracking code is shown alongside its location and quantity",

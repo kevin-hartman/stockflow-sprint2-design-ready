@@ -1,6 +1,6 @@
 {
   "id": "AC3-par-level-not-tracked",
-  "status": "draft",
+  "status": "passing",
   "given": "the SKU has no par level recorded (par level is not tracked in V1)",
   "when": "the operator views that SKU's detail view",
   "then": "the par level region shows an explicit \"not tracked\" indication rather than a blank region, a null value, or an error",

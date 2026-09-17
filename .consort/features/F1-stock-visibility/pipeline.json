@@ -91,7 +91,7 @@
       }
     },
     "S3-sku-detail-view": {
-      "status": "building",
+      "status": "awaiting-acceptance",
       "gate": {
         "status": "approved",
         "history": [
@@ -103,6 +103,19 @@
         ],
         "approver": "Kevin Hartman",
         "approved_at": "2026-09-17T04:02:10.031Z"
+      },
+      "experiment": {
+        "slug": "exp1",
+        "branch": "experiment-s3-sku-detail-view-exp1",
+        "parent": "feature-f1-stock-visibility",
+        "n": 1,
+        "status": "active",
+        "cut_at": "2026-09-17T05:06:51.303Z",
+        "design_fingerprint": "a7e53482c4d31ec9"
+      },
+      "acceptance": {
+        "decision": null,
+        "history": []
       }
     }
   },

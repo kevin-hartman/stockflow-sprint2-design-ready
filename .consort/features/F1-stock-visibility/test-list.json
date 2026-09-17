@@ -191,7 +191,7 @@
       "id": "T24",
       "description": "navigating to the SKU detail route for a SKU with stock at multiple locations renders one stock-table row per location with location and quantity visible (real Playwright e2e against live paired-branch DB, no mocks)",
       "ac_id": "AC1-lists-stock-across-locations",
-      "status": "pending",
+      "status": "green",
       "kind": "client",
       "scenario_file": "client/tests/e2e/S3-sku-detail-view/AC1-lists-stock-across-locations.spec.ts"
     },
@@ -199,7 +199,7 @@
       "id": "T25",
       "description": "navigating to the SKU detail route for a SKU whose stock record carries an inventory_code shows the tracking code in the stock-table row alongside location and quantity (real Playwright e2e against live paired-branch DB, no mocks)",
       "ac_id": "AC2-shows-tracking-code",
-      "status": "pending",
+      "status": "green",
       "kind": "client",
       "scenario_file": "client/tests/e2e/S3-sku-detail-view/AC2-shows-tracking-code.spec.ts"
     },
@@ -207,7 +207,7 @@
       "id": "T26",
       "description": "navigating to the SKU detail route for a SKU with no par level shows an element carrying the empty-state class with 'not tracked' text, never a blank region, raw null, or error (real Playwright e2e against live paired-branch DB, no mocks)",
       "ac_id": "AC3-par-level-not-tracked",
-      "status": "pending",
+      "status": "green",
       "kind": "client",
       "scenario_file": "client/tests/e2e/S3-sku-detail-view/AC3-par-level-not-tracked.spec.ts"
     },
@@ -215,7 +215,7 @@
       "id": "T27",
       "description": "navigating to the SKU detail route for a SKU that holds no stock at any location renders an element carrying the empty-state class indicating no stock, never a blank page or an error (real Playwright e2e against live paired-branch DB, no mocks)",
       "ac_id": "AC4-sku-with-no-stock-empty-state",
-      "status": "pending",
+      "status": "green",
       "kind": "client",
       "scenario_file": "client/tests/e2e/S3-sku-detail-view/AC4-sku-with-no-stock-empty-state.spec.ts"
     }

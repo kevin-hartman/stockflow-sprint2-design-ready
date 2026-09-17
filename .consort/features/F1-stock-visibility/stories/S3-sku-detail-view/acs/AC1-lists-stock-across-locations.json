@@ -1,6 +1,6 @@
 {
   "id": "AC1-lists-stock-across-locations",
-  "status": "draft",
+  "status": "passing",
   "given": "a SKU has stock records at more than one location",
   "when": "the operator opens that SKU's detail view",
   "then": "the view lists one row per location for that SKU showing the location and its quantity, covering every location where the SKU holds stock",
