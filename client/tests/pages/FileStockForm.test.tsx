@@ -7,7 +7,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { MemoryRouter } from "react-router-dom";
-import { FileStockForm } from "../../src/pages/FileStockPage";
+import { FileStockForm } from "../../src/components/FileStockForm";
 
 describe("T20 FileStockForm – inline validation error names the offending field", () => {
   it("shows a .field__error that names 'sku' when sku is omitted", async () => {
